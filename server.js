@@ -5,10 +5,13 @@ const port = process.env.PORT || 8000;
 const bodyParser = require('body-parser')
 const path = require('path')
 const mongo = require('./database/dbConfig');
+const cors = require('cors')
 
 // midilwear to parse the body 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+app.use(cors())
 
 // public path
 app.use(express.static(path.join(__dirname, 'public')));
