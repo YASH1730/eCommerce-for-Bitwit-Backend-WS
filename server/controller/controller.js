@@ -85,11 +85,12 @@ exports.login = (req, res) => {
 
 exports.addCatagories = async (req, res) => {
 
-  //  console.log(req.file)
-  //  console.log(req.body)
+   console.log(req.file)
+   console.log(req.body)
 
   const data = categories({
     category_name: req.body.category_name,
+    sub_category_name : req.body.category_sub_name,
     category_image: req.file.path
   })
 
@@ -110,10 +111,14 @@ exports.getCatagories = async (req, res) => {
 
   await categories.find()
     .then((data) => {
-      res.send(data)
+
+      if (data)
+        res.send(data)
+      else
+        res.send('no entries found')
     })
     .catch((error) => {
-      res.send(error)
+      res.status(500).send(error)
     })
 
 }
@@ -128,7 +133,10 @@ exports.editCatagories = async (req, res) => {
   if (req.file !== undefined && req.body.category_name !== undefined) {
     await categories.findOneAndUpdate({ category_name: req.query.category_name }, { category_name: req.body.category_name, category_image: req.file.path })
       .then((data) => {
-        return res.status(200).send({ message: 'Category name & image is updated successfully.' })
+        if (data)
+          return res.status(200).send({ message: 'Category name & image is updated successfully.' })
+        else
+          return res.status(203).send({ message: 'No entries found' })
       })
       .catch((error) => {
         return res.status(500).send(error)
@@ -139,8 +147,10 @@ exports.editCatagories = async (req, res) => {
   else if (req.file !== undefined) {
     await categories.findOneAndUpdate({ category_name: req.query.category_name }, { category_image: req.file.path })
       .then((data) => {
-        return res.status(200).send({ message: 'Category image is updated successfully.' })
-
+        if (data)
+          return res.status(200).send({ message: 'Category image is updated successfully.' })
+        else
+          return res.status(203).send({ message: 'No entries found' })
       })
       .catch((error) => {
         return res.status(500).send(error)
@@ -152,8 +162,10 @@ exports.editCatagories = async (req, res) => {
 
     await categories.findOneAndUpdate({ category_name: req.query.category_name }, { category_name: req.body.category_name })
       .then((data) => {
-        return res.status(200).send({ message: 'Category name  is updated successfully.' })
-
+        if (data)
+          return res.status(200).send({ message: 'Category name  is updated successfully.' })
+        else
+          return res.status(203).send({ message: 'No entries found' })
       })
       .catch((error) => {
         return res.status(500).send(error)

@@ -75,6 +75,7 @@ route.use(bodyParser.json());
 function AuthJwt(req, res, next) {
   // console.log(req.headers)
   // when token is not sent by user while requesting
+  
   if (req.headers.authorization === undefined) return res.sendStatus(401);
 
   let token = req.headers.authorization.split("Bearer ")[1];
