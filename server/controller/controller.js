@@ -5,6 +5,7 @@ const JWT = require('jsonwebtoken');
 // DB modules 
 const userDB = require("../../database/models/user");
 const categories = require("../../database/models/categories");
+const res = require("express/lib/response");
 
 
 // for deafulting paging
@@ -82,6 +83,7 @@ exports.login = (req, res) => {
 
 
 // add categoier ======================
+const loacalBaseUrl = 'http://localhost:8000'
 
 exports.addCatagories = async (req, res) => {
 
@@ -91,16 +93,17 @@ exports.addCatagories = async (req, res) => {
   const data = categories({
     category_name: req.body.category_name,
     sub_category_name : req.body.category_sub_name,
-    category_image: req.file.path
+    category_image: `${loacalBaseUrl}/${req.file.path}`
   })
 
   await data.save()
     .then(() => {
-      res.send('Categories Added sucessfully !!!')
+      res.send({message : 'Categories Added sucessfully !!!'})
     })
     .catch((error) => {
       console.log(error)
-      res.status(500).send(error)
+      res.status(406);
+      res.send({message : 'Duplicate Category !!!'})
     })
 
 }
@@ -128,10 +131,13 @@ exports.getCatagories = async (req, res) => {
 
 exports.editCatagories = async (req, res) => {
 
-  if (req.query.category_name === undefined) return res.status(204).send('Payload is absent.')
+  console.log(req.body);
+  if (req.file !== undefined)
+    req.body.category_image = `${loacalBaseUrl}/${req.file.path}`;
 
-  if (req.file !== undefined && req.body.category_name !== undefined) {
-    await categories.findOneAndUpdate({ category_name: req.query.category_name }, { category_name: req.body.category_name, category_image: req.file.path })
+  if (req.body._id === undefined) return res.status(204).send('Payload is absent.')
+
+  await categories.findOneAndUpdate({ _id: req.body._id }, req.body)
       .then((data) => {
         if (data)
           return res.status(200).send({ message: 'Category name & image is updated successfully.' })
@@ -141,40 +147,19 @@ exports.editCatagories = async (req, res) => {
       .catch((error) => {
         return res.status(500).send(error)
       })
-  }
 
+}
 
-  else if (req.file !== undefined) {
-    await categories.findOneAndUpdate({ category_name: req.query.category_name }, { category_image: req.file.path })
-      .then((data) => {
-        if (data)
-          return res.status(200).send({ message: 'Category image is updated successfully.' })
-        else
-          return res.status(203).send({ message: 'No entries found' })
-      })
-      .catch((error) => {
-        return res.status(500).send(error)
-      })
-  }
+// delete category
 
+exports.deleteCategory = async (req,res) =>{
 
-  else if (req.body.category_name !== undefined) {
+  console.log(req.query)
 
-    await categories.findOneAndUpdate({ category_name: req.query.category_name }, { category_name: req.body.category_name })
-      .then((data) => {
-        if (data)
-          return res.status(200).send({ message: 'Category name  is updated successfully.' })
-        else
-          return res.status(203).send({ message: 'No entries found' })
-      })
-      .catch((error) => {
-        return res.status(500).send(error)
-      })
-
-  }
-  else {
-    return res.status(204).send('Payload is absent')
-  }
+   await categories.deleteOne({_id : req.query.ID}).then((data)=>{
+    console.log(data)
+    res.send({massage : 'Category deleted !!!'})
+  })
 
 }
 

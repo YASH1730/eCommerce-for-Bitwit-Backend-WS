@@ -105,5 +105,8 @@ route.get("/listCategory",AuthJwt,controller.getCatagories);
 // edit list of the categories
 route.patch("/editCategory",AuthJwt,upload.single('category_image'),controller.editCatagories);
 
+// delete category 
+route.delete("/deleteCategory",AuthJwt,controller.deleteCategory);
+
 
 module.exports = route;
