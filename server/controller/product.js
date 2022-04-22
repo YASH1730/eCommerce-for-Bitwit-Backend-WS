@@ -22,7 +22,7 @@ const localhost = 'http://localhost:8000/'
 exports.addProduct = async (req,res) =>{
     console.log(req.file);
     
-    req.body.product_image = `${localhost}/${req.file.path}`
+    req.body.product_image = `${localhost}${req.file.path}`
     
     console.log(req.body);
 
