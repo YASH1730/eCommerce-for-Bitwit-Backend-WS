@@ -118,6 +118,6 @@ route.delete("/deleteCategory",AuthJwt,categoier.deleteCategory);
 
 // add product
 
-route.post('/addProducts',AuthJwt,upload.single('Product_Images'),products.addProduct);
+route.post('/addProducts',AuthJwt,upload.single('product_image'),products.addProduct);
 
 module.exports = route;

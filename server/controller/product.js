@@ -20,21 +20,23 @@ const localhost = 'http://localhost:8000/'
 // l. Dispatch time
 
 exports.addProduct = async (req,res) =>{
-    // console.log(req.body);
-    // console.log(req.file);
-
-    req.body.Product_Images = `${localhost}/${req.file.path}`
+    console.log(req.file);
+    
+    req.body.product_image = `${localhost}/${req.file.path}`
+    
+    console.log(req.body);
 
     const data = product(req.body);
 
     data.save()
     .then((response)=>{
         console.log(response)
-        res.send('All Okay !!!')
+        res.send({message:'Product added successfully !!!'})
     })
     .catch((err)=>{
         console.log(err)
-        res.send('Some error occured !!!')
+        res.status(203).send({message:'Some error occured !!!'})
+
     })
 
 
