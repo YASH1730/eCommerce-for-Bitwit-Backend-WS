@@ -1,11 +1,13 @@
 const route = require("express").Router();
-const controller = require("./controller/controller");
 const JWT = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const bodyParser = require('body-parser')
 const multer = require('multer')
 
-
+// CONTROLLER
+const user = require("./controller/user");
+const categoier = require("./controller/categories");
+const products = require("./controller/product");
 
 // middilwear for the multer setup
 
@@ -87,26 +89,35 @@ function AuthJwt(req, res, next) {
   });
 }
 
+// =============== User routes =======================
+
 // home route
-route.get("/", controller.home);
+route.get("/", user.home);
 
 // registration route
-route.post("/register",encode,controller.register);
+route.post("/register",encode,user.register);
 
 // login route
-route.post("/login", controller.login);
+route.post("/login", user.login);
+
+// =============== Categories routes =======================
 
 // addCategory route
-route.post("/addCategory",AuthJwt,upload.single('category_image'),controller.addCatagories);
+route.post("/addCategory",AuthJwt,upload.single('category_image'),categoier.addCatagories);
 
 // get list of the categories
-route.get("/listCategory",AuthJwt,controller.getCatagories);
+route.get("/listCategory",AuthJwt,categoier.getCatagories);
 
 // edit list of the categories
-route.patch("/editCategory",AuthJwt,upload.single('category_image'),controller.editCatagories);
+route.patch("/editCategory",AuthJwt,upload.single('category_image'),categoier.editCatagories);
 
 // delete category 
-route.delete("/deleteCategory",AuthJwt,controller.deleteCategory);
+route.delete("/deleteCategory",AuthJwt,categoier.deleteCategory);
 
+// =============== Products routes =======================
+
+// add product
+
+route.post('/addProducts',AuthJwt,upload.single('Product_Images'),products.addProduct);
 
 module.exports = route;
