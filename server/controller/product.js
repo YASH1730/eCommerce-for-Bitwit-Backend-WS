@@ -1,4 +1,5 @@
 
+const products = require('../../database/models/products');
 const product = require('../../database/models/products')
 const localhost = 'http://localhost:8000/'
 // ================================================= Apis for Products ======================================================= 
@@ -42,6 +43,30 @@ exports.addProduct = async (req,res) =>{
 
   }
   
+
+//   Get last product
+
+exports.getLastProduct = async(req,res)=>{
+ 
+ await product.find()
+ .sort({_id:-1})
+ .limit(1)
+ .then((response)=>{
+     if(response !== null)
+     {
+         console.log(response);
+         res.send(response);
+     }
+     else{
+         res.status(203).send('WS-01001')
+     }
+ })
+ .catch((err)=>{
+     console.log(err)
+     res.send({message : 'Some error ouccers !!!'})
+ })
+
+}
   
   // ================================================= Apis for Products Ends =======================================================
   

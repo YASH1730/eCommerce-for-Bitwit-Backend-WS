@@ -120,4 +120,8 @@ route.delete("/deleteCategory",AuthJwt,categoier.deleteCategory);
 
 route.post('/addProducts',AuthJwt,upload.single('product_image'),products.addProduct);
 
+// Find last document for SKU id increment 
+
+route.get('/getLastProduct',AuthJwt,products.getLastProduct);
+
 module.exports = route;
