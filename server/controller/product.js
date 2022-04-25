@@ -21,7 +21,7 @@ const localhost = 'http://localhost:8000/'
 // l. Dispatch time
 
 exports.addProduct = async (req,res) =>{
-    console.log(req.file);
+    // console.log(req.file);
     
     req.body.product_image = `${localhost}${req.file.path}`
     
@@ -29,7 +29,7 @@ exports.addProduct = async (req,res) =>{
 
     const data = product(req.body);
 
-    data.save()
+    await data.save()
     .then((response)=>{
         console.log(response)
         res.send({message:'Product added successfully !!!'})
@@ -54,7 +54,7 @@ exports.getLastProduct = async(req,res)=>{
  .then((response)=>{
      if(response !== null)
      {
-         console.log(response);
+        //  console.log(response);
          res.send(response);
      }
      else{
@@ -62,7 +62,7 @@ exports.getLastProduct = async(req,res)=>{
      }
  })
  .catch((err)=>{
-     console.log(err)
+    //  console.log(err)
      res.send({message : 'Some error ouccers !!!'})
  })
 
