@@ -8,6 +8,7 @@ const multer = require('multer')
 const user = require("./controller/user");
 const categoier = require("./controller/categories");
 const products = require("./controller/product");
+const banner = require("./controller/banner");
 
 // middilwear for the multer setup
 
@@ -135,5 +136,16 @@ route.patch('/updateProduct',AuthJwt,upload.single('product_image'),products.upd
 // Find last document for SKU id increment
 
 route.get('/getLastProduct',AuthJwt,products.getLastProduct);
+
+// ================== Banner Routes =============================
+
+// add banners
+
+route.post('/addBanner',AuthJwt,upload.single('banner_image'),banner.addBanner);
+
+// list banners
+
+route.get('/listBanner',AuthJwt,banner.listBanner);
+
 
 module.exports = route;
