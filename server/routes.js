@@ -124,7 +124,15 @@ route.post('/addProducts',AuthJwt,upload.single('product_image'),products.addPro
 
 route.get('/getListProduct',AuthJwt,products.getListProduct);
 
-// Find last document for SKU id increment 
+// delete product
+
+route.delete('/deleteProduct',AuthJwt,products.deleteProduct);
+
+// update product
+
+route.patch('/updateProduct',AuthJwt,upload.single('product_image'),products.updateProduct);
+
+// Find last document for SKU id increment
 
 route.get('/getLastProduct',AuthJwt,products.getLastProduct);
 

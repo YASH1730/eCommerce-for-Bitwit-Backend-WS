@@ -1,7 +1,6 @@
 
-const products = require('../../database/models/products');
 const product = require('../../database/models/products')
-const localhost = 'http://localhost:8000/'
+const localhost = 'http://localhost:8000'
 // ================================================= Apis for Products ======================================================= 
 //==============================================================================================================================
 
@@ -35,11 +34,11 @@ exports.addProduct = async (req,res) =>{
 exports.getListProduct = async(req,res)=>{
     await product.find()
     .then((response)=>{
-      console.log(response)
+    //   console.log(response)
       res.send(response)
     })
     .catch((err)=>{
-        console.log(err)
+        // console.log(err)
         res.send("Not Done !!!")
     })
 }
@@ -68,6 +67,40 @@ exports.getLastProduct = async(req,res)=>{
  })
 
 }
-  
+
+// delete products 
+
+exports.deleteProduct = async (req,res)=>{
+    product.deleteOne({_id: req.query.ID})
+    .then((data)=>{
+        res.send({message : "Product deleted successfully !!!"})
+    })
+    .catch((err)=>{
+        res.send({message : 'Some error occures !!!'})
+
+    })
+}
+
+// update products 
+
+exports.updateProduct = async (req,res)=>{
+//    console.log(req.body);
+
+   if (req.file !== undefined)
+        req.body.product_image = `${localhost}/${req.file.path}`;
+
+        if (req.body._id === undefined) return res.status(204).send('Payload is absent.')
+
+        await product.findOneAndUpdate({ _id: req.body._id }, req.body)
+            .then((data) => {
+            if (data)
+                return res.status(200).send({ message: 'Product is updated successfully.' })
+            else
+                return res.status(203).send({ message: 'No entries found' })
+            })
+            .catch((error) => {
+            return res.status(500).send(error)
+            })
+}
   // ================================================= Apis for Products Ends =======================================================
   
