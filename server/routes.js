@@ -72,7 +72,6 @@ function encode(req, res, next) {
 // midilwear to parse the body 
 route.use(bodyParser.urlencoded({ extended: true }));
 route.use(bodyParser.json());
-
 // Midilwear For Authenticaion
 
 function AuthJwt(req, res, next) {
@@ -146,6 +145,10 @@ route.post('/addBanner',AuthJwt,upload.single('banner_image'),banner.addBanner);
 // list banners
 
 route.get('/listBanner',AuthJwt,banner.listBanner);
+
+// change status banners
+
+route.post('/chaneStatusBanner',upload.single(),AuthJwt,banner.changeStatus);
 
 
 module.exports = route;

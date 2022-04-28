@@ -8,7 +8,7 @@ const mongo = require('./database/dbConfig');
 const cors = require('cors')
 
 // midilwear to parse the body 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(cors())
