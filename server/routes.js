@@ -9,6 +9,7 @@ const user = require("./controller/user");
 const categoier = require("./controller/categories");
 const products = require("./controller/product");
 const banner = require("./controller/banner");
+const order = require("./controller/order");
 
 // middilwear for the multer setup
 
@@ -149,6 +150,17 @@ route.get('/listBanner',AuthJwt,banner.listBanner);
 // change status banners
 
 route.post('/chaneStatusBanner',upload.single(),AuthJwt,banner.changeStatus);
+
+
+// ================== Order Routes =============================
+
+// Make Order
+
+route.post('/makeOrder',upload.single(),AuthJwt,order.makeOrder);
+
+// List Order
+
+route.get('/listOrder',AuthJwt,order.listOrder);
 
 
 module.exports = route;
