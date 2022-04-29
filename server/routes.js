@@ -10,6 +10,7 @@ const categoier = require("./controller/categories");
 const products = require("./controller/product");
 const banner = require("./controller/banner");
 const order = require("./controller/order");
+const subCategories = require("./controller/subCategories");
 
 // middilwear for the multer setup
 
@@ -37,7 +38,7 @@ const upload = multer({
     fileSize: 1024 * 1024 * 5
   },
   fileFilter: fileFilter
-});
+}).fields([{name: "product_image"}, {name: "featured_image"} , {name: "category_image"},{name : 'banner_image'}]);
 
 
 // middilwear for encryption
@@ -104,22 +105,25 @@ route.post("/login", user.login);
 // =============== Categories routes =======================
 
 // addCategory route
-route.post("/addCategory",AuthJwt,upload.single('category_image'),categoier.addCatagories);
+route.post("/addCategory",AuthJwt,upload,categoier.addCatagories);
 
 // get list of the categories
 route.get("/listCategory",AuthJwt,categoier.getCatagories);
 
 // edit list of the categories
-route.patch("/editCategory",AuthJwt,upload.single('category_image'),categoier.editCatagories);
+route.patch("/editCategory",AuthJwt,upload,categoier.editCatagories);
 
 // delete category 
 route.delete("/deleteCategory",AuthJwt,categoier.deleteCategory);
+
+// change category status 
+route.post("/changeStatusCategory",upload,AuthJwt,categoier.changeStatus);
 
 // =============== Products routes =======================
 
 // add product
 
-route.post('/addProducts',AuthJwt,upload.single('product_image'),products.addProduct);
+route.post('/addProducts',AuthJwt,upload,products.addProduct);
 
 // Get the list product
 
@@ -131,7 +135,7 @@ route.delete('/deleteProduct',AuthJwt,products.deleteProduct);
 
 // update product
 
-route.patch('/updateProduct',AuthJwt,upload.single('product_image'),products.updateProduct);
+route.patch('/updateProduct',AuthJwt,upload,products.updateProduct);
 
 // Find last document for SKU id increment
 
@@ -141,7 +145,7 @@ route.get('/getLastProduct',AuthJwt,products.getLastProduct);
 
 // add banners
 
-route.post('/addBanner',AuthJwt,upload.single('banner_image'),banner.addBanner);
+route.post('/addBanner',AuthJwt,upload,banner.addBanner);
 
 // list banners
 
@@ -149,18 +153,35 @@ route.get('/listBanner',AuthJwt,banner.listBanner);
 
 // change status banners
 
-route.post('/chaneStatusBanner',upload.single(),AuthJwt,banner.changeStatus);
+route.post('/chaneStatusBanner',upload,AuthJwt,banner.changeStatus);
 
 
 // ================== Order Routes =============================
 
 // Make Order
 
-route.post('/makeOrder',upload.single(),AuthJwt,order.makeOrder);
+route.post('/makeOrder',upload,AuthJwt,order.makeOrder);
 
 // List Order
 
 route.get('/listOrder',AuthJwt,order.listOrder);
+
+// ================== sub categories Routes =============================
+
+
+// addCategory route
+route.post("/addSubCategories",AuthJwt,upload,subCategories.addSubCatagories);
+
+// list sub cat route
+route.get("/getSubCatagories",AuthJwt,subCategories.getSubCatagories);
+
+// cahge status of sub cat route
+route.post("/changeSubStatus",AuthJwt,upload,subCategories.changeSubStatus);
+
+// edit sub cat 
+route.post("/editSubCatagories",AuthJwt,upload,subCategories.editSubCatagories);
+
+
 
 
 module.exports = route;

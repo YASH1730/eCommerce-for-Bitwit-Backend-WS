@@ -1,29 +1,26 @@
 
-const categories = require("../../database/models/categories");
+const subCategories = require("../../database/models/subCategories");
 
 
-// ================================================= Apis for categories ======================================================= 
+// ================================================= Apis for sub categories ======================================================= 
 //==============================================================================================================================
 
 // add categoier ======================
 
 const loacalBaseUrl = 'http://localhost:8000'
 
-exports.addCatagories = async (req, res) => {
+exports.addSubCatagories = async (req, res) => {
 
-  console.log(req.files['category_image'])
-  req.body.category_image = `${loacalBaseUrl}/${req.files['category_image'][0].path}` 
+console.log(req.body)
 
-  
-
-  const data = categories(req.body)
+  const data = subCategories(req.body)
 
   await data.save()
     .then(() => {
-      res.send({message : 'Categories Added sucessfully !!!'})
+      res.send({message : 'Sub Categories Added sucessfully !!!'})
     })
     .catch((error) => {
-      // console.log(error)
+      console.log(error)
       res.status(406);
       res.send({message : 'Duplicate Category !!!'})
     })
@@ -32,9 +29,9 @@ exports.addCatagories = async (req, res) => {
 
 // get categories ===================
 
-exports.getCatagories = async (req, res) => {
+exports.getSubCatagories = async (req, res) => {
 
-  await categories.find()
+  await subCategories.find()
     .then((data) => {
 
       if (data)
@@ -51,18 +48,15 @@ exports.getCatagories = async (req, res) => {
 // edit categories ======================
 
 
-exports.editCatagories = async (req, res) => {
+exports.editSubCatagories = async (req, res) => {
 
   console.log(req.body);
-  console.log(req.files['category_image'])
-  req.body.category_image = `${loacalBaseUrl}/${req.files['category_image'][0].path}` 
-
   
 
-  await categories.findOneAndUpdate({ _id: req.body._id }, req.body)
+  await subCategories.findOneAndUpdate({ _id: req.body._id }, req.body)
       .then((data) => {
         if (data)
-          return res.status(200).send({ message: 'Category name & image is updated successfully.' })
+          return res.status(200).send({ message: 'Sub Category  is updated successfully.' })
         else
           return res.status(203).send({ message: 'No entries found' })
       })
@@ -88,9 +82,9 @@ exports.deleteCategory = async (req,res) =>{
 
 // for Changing the Status of the category
 
-exports.changeStatus = async(req,res) =>{
+exports.changeSubStatus = async(req,res) =>{
   console.log(req.body)
-  await categories.findByIdAndUpdate({_id : req.body._id},{category_status : req.body.category_status})
+  await subCategories.findByIdAndUpdate({_id : req.body._id},{sub_category_status : req.body.sub_category_status})
   .then((data)=>{
       console.log(data)
       res.send('all okay')

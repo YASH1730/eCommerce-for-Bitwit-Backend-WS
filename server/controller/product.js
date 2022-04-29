@@ -7,9 +7,23 @@ const localhost = 'http://localhost:8000'
 // Add Products 
      
 exports.addProduct = async (req,res) =>{
-    // console.log(req.file);
-    
-    req.body.product_image = `${localhost}${req.file.path}`
+    // console.log(req.files);
+
+    console.log(req.files['product_image'])
+    console.log(req.files['featured_image'])
+
+    let image_urls = []
+    let featured_urls = []
+
+    req.files['product_image'].map((val)=>{
+            image_urls.push(`${localhost}/${val.path}`)
+    })
+    req.files['featured_image'].map((val)=>{
+        featured_urls.push(`${localhost}/${val.path}`)
+    })
+
+    req.body.product_image = image_urls;
+    req.body.featured_image = featured_urls;
     
     console.log(req.body);
 

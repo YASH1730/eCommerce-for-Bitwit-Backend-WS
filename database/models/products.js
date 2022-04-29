@@ -1,4 +1,5 @@
 const { default: mongoose } = require("mongoose");
+const { stringify } = require("nodemon/lib/utils");
 
 const product = mongoose.Schema({
     SKU : {required : true, type : String, unique: true},
@@ -8,7 +9,8 @@ const product = mongoose.Schema({
     product_description : {required : true, type : String},
     seo_title : {required : true, type : String},
     seo_description : {required : true, type : String},
-    product_image : {required : true, type : String},
+    product_image : {required : true, type : Array},
+    featured_image : {required : true, type : Array},
     primary_material : {required : true, type : String},
     secondary_marterial : { type : String},
     secondary_marterial_weight : {type :  Number},
@@ -21,7 +23,7 @@ const product = mongoose.Schema({
     knob : { type : String},
     handle : { type : String},
     door : { type : String},
-    fitting : {required : true, type : String},
+    fitting : { type : String},
     selling_points : {required : true, type : String},
     top_size : {type : Number},
     dual_size : { type : Number},
@@ -32,13 +34,16 @@ const product = mongoose.Schema({
     wall_hanging : { type : String},
     assembly_required : { type : String},
     assembly_part : { type : Number},
+    legs : { type : String},
     mirror : { type : String},
     mirror_length : { type : String},
     mirror_width : { type : String},
     silver : { type : String},
+    silver_weight : { type : Number},
     joints : { type : String},
     wheel : { type : String},
     trolley : { type : String},
+    trolly_matterial : { type : String},
     rotating_seats : { type : Boolean},
     eatable_oil_polish : { type : Boolean},
     no_chemical : { type : Boolean},
