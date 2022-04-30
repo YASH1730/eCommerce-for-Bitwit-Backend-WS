@@ -11,6 +11,8 @@ const products = require("./controller/product");
 const banner = require("./controller/banner");
 const order = require("./controller/order");
 const subCategories = require("./controller/subCategories");
+const primaryMaterial = require("./controller/primaryMaterial");
+const secondaryMaterial = require("./controller/secondaryMaterial");
 
 // middilwear for the multer setup
 
@@ -153,7 +155,7 @@ route.get('/listBanner',AuthJwt,banner.listBanner);
 
 // change status banners
 
-route.post('/chaneStatusBanner',upload,AuthJwt,banner.changeStatus);
+route.patch('/chaneStatusBanner',upload,AuthJwt,banner.changeStatus);
 
 
 // ================== Order Routes =============================
@@ -176,10 +178,41 @@ route.post("/addSubCategories",AuthJwt,upload,subCategories.addSubCatagories);
 route.get("/getSubCatagories",AuthJwt,subCategories.getSubCatagories);
 
 // cahge status of sub cat route
-route.post("/changeSubStatus",AuthJwt,upload,subCategories.changeSubStatus);
+route.patch("/changeSubStatus",AuthJwt,upload,subCategories.changeSubStatus);
 
 // edit sub cat 
-route.post("/editSubCatagories",AuthJwt,upload,subCategories.editSubCatagories);
+route.patch("/editSubCatagories",AuthJwt,upload,subCategories.editSubCatagories);
+
+// ================== Primary Material Routes =============================
+
+
+// addCategory route
+route.post("/addPrimaryMaterial",AuthJwt,upload,primaryMaterial.addPrimaryMaterial);
+
+// list sub cat route
+route.get("/getPrimaryMaterial",AuthJwt,primaryMaterial.getPrimaryMaterial);
+
+// cahge status of changePrimaryMaterialStatus route
+route.patch("/changePrimaryMaterialStatus",AuthJwt,upload,primaryMaterial.changePrimaryMaterialStatus);
+
+// edit editPrimaryMaterial 
+route.patch("/editPrimaryMaterial",AuthJwt,upload,primaryMaterial.editPrimaryMaterial);
+
+
+// ==================  Secondary Material Routes =============================
+
+
+// addCategory route
+route.post("/addSecondaryMaterial",AuthJwt,upload,secondaryMaterial.addSecondaryMaterial);
+
+// list sub cat route
+route.get("/getSecondaryMaterial",AuthJwt,secondaryMaterial.getSecondaryMaterial);
+
+// cahge status of changeSecondaryMaterialStatus route
+route.patch("/changeSecondaryMaterialStatus",AuthJwt,upload,secondaryMaterial.changeSecondaryMaterialStatus);
+
+// edit editPrimaryMaterial 
+route.patch("/editSecondaryMaterial",AuthJwt,upload,secondaryMaterial.editSecondaryMaterial);
 
 
 
