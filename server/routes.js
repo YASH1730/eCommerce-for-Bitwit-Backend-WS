@@ -17,6 +17,8 @@ const polish = require("./controller/polish");
 const hinge = require("./controller/hinge");
 const fitting = require("./controller/fitting");
 const knob = require("./controller/knob");
+const Door = require("./controller/door");
+const Handle = require("./controller/handle");
 
 // middilwear for the multer setup
 
@@ -283,6 +285,38 @@ route.patch("/changeKnobStatus",AuthJwt,upload,knob.changeKnobStatus);
 
 // edit editKnob 
 route.patch("/editKnob",AuthJwt,upload,knob.editKnob);
+
+// ==================  Door  Routes =============================
+
+
+// addDoor route
+route.post("/addDoor",AuthJwt,upload,Door.addDoor);
+
+// list getDoor route
+route.get("/getDoor",AuthJwt,Door.getDoor);
+
+// cahge status of changeDoorStatus route
+route.patch("/changeDoorStatus",AuthJwt,upload,Door.changeDoorStatus);
+
+// edit editDoor 
+route.patch("/editDoor",AuthJwt,upload,Door.editDoor);
+
+
+
+// ==================  Handle  Routes =============================
+
+
+// addHandle route
+route.post("/addHandle",AuthJwt,upload,Handle.addHandle);
+
+// list getHandle route
+route.get("/getHandle",AuthJwt,Handle.getHandle);
+
+// cahge status of changeHandleStatus route
+route.patch("/changeHandleStatus",AuthJwt,upload,Handle.changeHandleStatus);
+
+// edit editHandle 
+route.patch("/editHandle",AuthJwt,upload,Handle.editHandle);
 
 
 
