@@ -15,12 +15,19 @@ exports.addProduct = async (req,res) =>{
     let image_urls = []
     let featured_urls = []
 
-    req.files['product_image'].map((val)=>{
-            image_urls.push(`${localhost}/${val.path}`)
-    })
-    req.files['featured_image'].map((val)=>{
+    if (req.files['product_image'] !== null)
+    {
+        req.files['product_image'].map((val)=>{
+                image_urls.push(`${localhost}/${val.path}`)
+        })
+    }
+
+    if (req.files['featured_image'] !== null)
+    {
+        req.files['featured_image'].map((val)=>{
         featured_urls.push(`${localhost}/${val.path}`)
     })
+    }
 
     req.body.product_image = image_urls;
     req.body.featured_image = featured_urls;

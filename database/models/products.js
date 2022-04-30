@@ -27,6 +27,7 @@ const product = mongoose.Schema({
     selling_points : {required : true, type : String},
     top_size : {type : Number},
     dial_size : { type : Number},
+
     seating_size_width : { type : Number},
     seating_size_depth : { type : Number},
     seating_size_height : { type : Number},

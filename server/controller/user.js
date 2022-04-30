@@ -47,7 +47,9 @@ function genrateJWT(data) {
 
 exports.login = (req, res) => {
 
+  console.log(req.body)
   if (req.body.email === undefined || req.body.password === undefined) return res.status(203).send('Please provides the vaild data')
+
 
 
 
@@ -62,21 +64,21 @@ exports.login = (req, res) => {
             let token = genrateJWT(req.body);
             console.log(data)
             console.log("User Found !!!", data);
-            return res.send({ massage: "Log In Sucessfully !!!", token, name: data.user_Name, email: data.email })
+            return res.send({ message: "Log In Sucessfully !!!", token, name: data.user_Name, email: data.email })
 
           }
           else
-            return res.status(203).send({ massage: "User Not Found !!!" })
+            return res.status(203).send({ message: "User Not Found !!!" })
         });
       }
       else {
-        return res.status(203).send({ massage: "User Not Found !!!" })
+        return res.status(203).send({ message: "User Not Found !!!" })
         console.log({ massage: "User Not Found !!!" });
       }
     })
     .catch((err) => {
-      console.log({ massage: "User Not Found !!!", err });
-      return res.status(203).send({ massage: "User Not Found !!!", err })
+      console.log({ message: "User Not Found !!!", err });
+      return res.status(203).send({ message: "User Not Found !!!", err })
     })
 
 }

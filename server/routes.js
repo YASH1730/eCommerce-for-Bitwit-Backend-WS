@@ -108,7 +108,7 @@ route.get("/", user.home);
 route.post("/register",encode,user.register);
 
 // login route
-route.post("/login", user.login);
+route.post("/login",upload, user.login);
 
 // =============== Categories routes =======================
 
