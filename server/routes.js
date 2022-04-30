@@ -14,6 +14,9 @@ const subCategories = require("./controller/subCategories");
 const primaryMaterial = require("./controller/primaryMaterial");
 const secondaryMaterial = require("./controller/secondaryMaterial");
 const polish = require("./controller/polish");
+const hinge = require("./controller/hinge");
+const fitting = require("./controller/fitting");
+const knob = require("./controller/knob");
 
 // middilwear for the multer setup
 
@@ -230,6 +233,56 @@ route.patch("/changePolishStatus",AuthJwt,upload,polish.changePolishStatus);
 
 // edit editPrimaryMaterial 
 route.patch("/editPolish",AuthJwt,upload,polish.editPolish);
+
+
+
+// ==================  Hinge  Routes =============================
+
+
+// addCategory route
+route.post("/addHinge",AuthJwt,upload,hinge.addHinge);
+
+// list sub cat route
+route.get("/getHinge",AuthJwt,hinge.getHinge);
+
+// cahge status of changePolishStatus route
+route.patch("/changeHingeStatus",AuthJwt,upload,hinge.changeHingeStatus);
+
+// edit editPrimaryMaterial 
+route.patch("/editHinge",AuthJwt,upload,hinge.editHinge);
+
+
+// ==================  Fitting  Routes =============================
+
+
+// addFitting route
+route.post("/addFitting",AuthJwt,upload,fitting.addFitting);
+
+// list getFitting route
+route.get("/getFitting",AuthJwt,fitting.getFitting);
+
+// cahge status of changeFittingStatus route
+route.patch("/changeFittingStatus",AuthJwt,upload,fitting.changeFittingStatus);
+
+// edit editPrimaryMaterial 
+route.patch("/editFitting",AuthJwt,upload,fitting.editFitting);
+
+
+
+// ==================  Knob  Routes =============================
+
+
+// addKnob route
+route.post("/addKnob",AuthJwt,upload,knob.addKnob);
+
+// list getKnob route
+route.get("/getKnob",AuthJwt,knob.getKnob);
+
+// cahge status of changeKnobStatus route
+route.patch("/changeKnobStatus",AuthJwt,upload,knob.changeKnobStatus);
+
+// edit editKnob 
+route.patch("/editKnob",AuthJwt,upload,knob.editKnob);
 
 
 
