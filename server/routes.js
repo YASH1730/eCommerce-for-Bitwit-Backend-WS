@@ -13,6 +13,7 @@ const order = require("./controller/order");
 const subCategories = require("./controller/subCategories");
 const primaryMaterial = require("./controller/primaryMaterial");
 const secondaryMaterial = require("./controller/secondaryMaterial");
+const polish = require("./controller/polish");
 
 // middilwear for the multer setup
 
@@ -213,6 +214,22 @@ route.patch("/changeSecondaryMaterialStatus",AuthJwt,upload,secondaryMaterial.ch
 
 // edit editPrimaryMaterial 
 route.patch("/editSecondaryMaterial",AuthJwt,upload,secondaryMaterial.editSecondaryMaterial);
+
+
+// ==================  Polish  Routes =============================
+
+
+// addCategory route
+route.post("/addPolish",AuthJwt,upload,polish.addPolish);
+
+// list sub cat route
+route.get("/getPolish",AuthJwt,polish.getPolish);
+
+// cahge status of changePolishStatus route
+route.patch("/changePolishStatus",AuthJwt,upload,polish.changePolishStatus);
+
+// edit editPrimaryMaterial 
+route.patch("/editPolish",AuthJwt,upload,polish.editPolish);
 
 
 
