@@ -10,7 +10,7 @@ const product = mongoose.Schema({
     seo_title : {required : true, type : String},
     seo_description : {required : true, type : String},
     product_image : {required : true, type : Array},
-    featured_image : {required : true, type : Array},
+    featured_image : {required : true, type : String},
     primary_material : {required : true, type : String},
     secondary_marterial : { type : String},
     secondary_marterial_weight : {type :  Number},
