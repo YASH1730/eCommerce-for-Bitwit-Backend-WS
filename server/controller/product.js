@@ -77,7 +77,7 @@ exports.getLastProduct = async(req,res)=>{
  })
  .catch((err)=>{
     //  console.log(err)
-     res.send({message : 'Some error ouccers !!!'})
+    res.status(203).send({message : 'Some error ouccers !!!'})
  })
 
 }

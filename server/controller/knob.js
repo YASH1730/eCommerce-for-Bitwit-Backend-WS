@@ -19,7 +19,7 @@ console.log(req.body)
     })
     .catch((error) => {
       console.log(error)
-      res.status(406);
+      res.status(203);
       res.send({message : 'Duplicate knob !!!'})
     })
 
@@ -38,7 +38,7 @@ exports.getKnob = async (req, res) => {
         res.send('no entries found')
     })
     .catch((error) => {
-      res.status(500).send(error)
+      res.status(203).send(error)
     })
 
 }
@@ -58,7 +58,7 @@ exports.editKnob = async (req, res) => {
           return res.status(203).send({ message: 'No entries found' })
       })
       .catch((error) => {
-        return res.status(500).send(error)
+        return res.status(203).send(error)
       })
 
 }
@@ -89,7 +89,7 @@ exports.changeKnobStatus = async(req,res) =>{
 
   .catch((err)=>{
       console.log(err)
-      res.send('Somthing went worang !!!')
+      res.status(203).send('Somthing went worang !!!')
   })
 }
 

@@ -19,7 +19,7 @@ console.log(req.body)
     })
     .catch((error) => {
       console.log(error)
-      res.status(406);
+      res.status(203);
       res.send({message : 'Duplicate Handle !!!'})
     })
 

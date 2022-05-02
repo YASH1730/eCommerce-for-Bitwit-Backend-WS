@@ -5,7 +5,9 @@ const product = mongoose.Schema({
     SKU : {required : true, type : String, unique: true},
     product_title : {required : true, type : String},
     category_name : {required : true, type : String},
+    category_id : {required : true, type : String},
     sub_category_name : {required : true, type : String},
+    sub_category_id : {required : true, type : String},
     product_description : {required : true, type : String},
     seo_title : {required : true, type : String},
     seo_description : {required : true, type : String},
@@ -27,7 +29,6 @@ const product = mongoose.Schema({
     selling_points : {required : true, type : String},
     top_size : {type : Number},
     dial_size : { type : Number},
-
     seating_size_width : { type : Number},
     seating_size_depth : { type : Number},
     seating_size_height : { type : Number},

@@ -21,8 +21,8 @@ console.log(req.body)
     })
     .catch((error) => {
       console.log(error)
-      res.status(406);
-      res.send({message : 'Duplicate Category !!!'})
+      res.status(203);
+      res.send({message : 'Duplicate Value Found !!!'})
     })
 
 }
@@ -61,7 +61,7 @@ exports.editPrimaryMaterial = async (req, res) => {
           return res.status(203).send({ message: 'No entries found' })
       })
       .catch((error) => {
-        return res.status(500).send(error)
+        return res.status(203).send({ message: 'Somthing Went Worang' })
       })
 
 }

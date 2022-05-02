@@ -1,7 +1,7 @@
 const { default: mongoose } = require("mongoose");
 
 const primaryMaterial = mongoose.Schema({
-   primaryMaterial_name : {type: String},
+   primaryMaterial_name : {type: String,unique : true},
    primaryMaterial_status : {type :Boolean}
 })
 

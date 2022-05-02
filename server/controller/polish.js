@@ -19,7 +19,7 @@ console.log(req.body)
     })
     .catch((error) => {
       console.log(error)
-      res.status(406);
+      res.status(203);
       res.send({message : 'Duplicate Polish !!!'})
     })
 
@@ -89,7 +89,7 @@ exports.changePolishStatus = async(req,res) =>{
 
   .catch((err)=>{
       console.log(err)
-      res.send('Somthing went worang !!!')
+      res.status(203).send('Somthing went worang !!!')
   })
 }
 
