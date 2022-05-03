@@ -19,6 +19,7 @@ const fitting = require("./controller/fitting");
 const knob = require("./controller/knob");
 const Door = require("./controller/door");
 const Handle = require("./controller/handle");
+const Gallery = require("./controller/gallery");
 
 // middilwear for the multer setup
 
@@ -317,6 +318,11 @@ route.patch("/changeHandleStatus",AuthJwt,upload,Handle.changeHandleStatus);
 
 // edit editHandle 
 route.patch("/editHandle",AuthJwt,upload,Handle.editHandle);
+
+// ===================== Gallery Routes =============
+
+// list getGallery route
+route.get("/getGallery",AuthJwt,Gallery.getGallery);
 
 
 
