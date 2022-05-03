@@ -10,6 +10,9 @@ exports.addProduct = async (req,res) =>{
     // console.log(req.files);
 
     console.log(req.files['product_image'])
+
+    if (req.files['product_image'] === undefined || req.files['featured_image'] === undefined) return res.status(203).send({message : 'Please Provide the required images !!!'})
+
     console.log(req.files['featured_image'])
 
     let image_urls = []
@@ -23,7 +26,7 @@ exports.addProduct = async (req,res) =>{
 
     req.body.product_image = image_urls;
     
-    req.body.featured_image = `${localhost}/${req.files['featured_image'].path}`;
+    req.body.featured_image = `${localhost}/${req.files['featured_image'][0].path}`;
     
     console.log(req.body);
 
@@ -98,9 +101,10 @@ exports.deleteProduct = async (req,res)=>{
 // update products 
 
 exports.updateProduct = async (req,res)=>{
-//    console.log(req.body);
+   console.log(req.body);
 
    if (req.file !== undefined)
+
         req.body.product_image = `${localhost}/${req.file.path}`;
 
         if (req.body._id === undefined) return res.status(204).send('Payload is absent.')
@@ -113,7 +117,8 @@ exports.updateProduct = async (req,res)=>{
                 return res.status(203).send({ message: 'No entries found' })
             })
             .catch((error) => {
-            return res.status(500).send(error)
+            console.log(error)    
+            return res.status(203).send('Somthing Went Worang')
             })
 }
   // ================================================= Apis for Products Ends =======================================================
