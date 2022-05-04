@@ -87,7 +87,6 @@ route.use(bodyParser.json());
 
 function AuthJwt(req, res, next) {
   // console.log(req.headers)
-  // when token is not sent by user while requesting
   
   if (req.headers.authorization === undefined) return res.sendStatus(401);
 
@@ -323,6 +322,18 @@ route.patch("/editHandle",AuthJwt,upload,Handle.editHandle);
 
 // list getGallery route
 route.get("/getGallery",AuthJwt,Gallery.getGallery);
+
+// delete 
+
+route.delete("/deleteImage",AuthJwt,Gallery.deleteImage)
+
+// updateImage
+
+route.patch("/updateImage",AuthJwt,upload,Gallery.updateImage)
+
+// addImage
+
+route.post("/addImage",AuthJwt,upload,Gallery.addImage)
 
 
 

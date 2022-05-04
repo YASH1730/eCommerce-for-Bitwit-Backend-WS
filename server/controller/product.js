@@ -102,10 +102,11 @@ exports.deleteProduct = async (req,res)=>{
 
 exports.updateProduct = async (req,res)=>{
    console.log(req.body);
+   console.log(req.files);
 
-   if (req.file !== undefined)
+   if (req.files['featured_image'] !== undefined)
+    req.body.featured_image = `${localhost}/${req.files['featured_image'][0].path}`;
 
-        req.body.product_image = `${localhost}/${req.file.path}`;
 
         if (req.body._id === undefined) return res.status(204).send('Payload is absent.')
 
