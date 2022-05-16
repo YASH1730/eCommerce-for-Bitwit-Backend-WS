@@ -7,13 +7,12 @@ const localhost = 'http://localhost:8000'
 // Add Products 
      
 exports.addProduct = async (req,res) =>{
-    // console.log(req.files);
+    console.log(req.files);
 
-    console.log(req.files['product_image'])
+    // console.log(req.files['product_image'])
 
-    if (req.files['product_image'] === undefined || req.files['featured_image'] === undefined) return res.status(203).send({message : 'Please Provide the required images !!!'})
-
-    console.log(req.files['featured_image'])
+    if (req.files['specification_image'] === undefined || req.files['featured_image'] === undefined || req.files['product_image'] === undefined) return res.status(203).send({message : 'Please Provide the required images !!!'})
+    
 
     let image_urls = []
 
@@ -27,6 +26,9 @@ exports.addProduct = async (req,res) =>{
     req.body.product_image = image_urls;
     
     req.body.featured_image = `${localhost}/${req.files['featured_image'][0].path}`;
+
+   req.body.specification_image = `${localhost}/${req.files['specification_image'][0].path}`;
+
     
     console.log(req.body);
 
@@ -106,6 +108,9 @@ exports.updateProduct = async (req,res)=>{
 
    if (req.files['featured_image'] !== undefined)
     req.body.featured_image = `${localhost}/${req.files['featured_image'][0].path}`;
+   if (req.files['specification_image'] !== undefined)
+    req.body.specification_image = `${localhost}/${req.files['specification_image'][0].path}`;
+
 
 
         if (req.body._id === undefined) return res.status(204).send('Payload is absent.')
