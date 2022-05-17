@@ -25,7 +25,7 @@ app.set('views','views')
 app.use('/upload', express.static('upload'));
 
 // requiring the routes
-app.use(require('./server/routes'))
+app.use('/api/',require('./server/routes'))
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
