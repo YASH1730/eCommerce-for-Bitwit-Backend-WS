@@ -9,11 +9,10 @@ const localBaseUrl = 'http://localhost:8000'
 //==============================================================================================================================
 
 exports.addBanner = async(req,res) => {
-console.log(req.file)
 
 
-if(req.file !== undefined)
-    req.body.banner_URL = `${localBaseUrl}/${req.file.path}`;
+if(req.files !== undefined)
+    req.body.banner_URL = `${localBaseUrl}/${req.files['banner_image'].path}`;
 else 
     return res.status(203);
 

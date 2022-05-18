@@ -21,8 +21,10 @@ app.set('views', './src/public');
 app.set('view engine','pug')
 app.set('views','views')
 
+
 // set uploads as static
-app.use('/upload', express.static('upload'));
+
+app.use('/upload',express.static(path.join(__dirname, 'upload')));
 
 // requiring the routes
 app.use('/api/',require('./server/routes'))
