@@ -343,9 +343,9 @@ route.post("/addImage", AuthJwt, upload, Gallery.addImage)
 // create Blog
 route.post("/createBlog", AuthJwt, upload, blog.createBlog)
 
-// get Blog for specific user
+// post Blog Image
 
-route.get("/getBlogOfUser", AuthJwt, upload, blog.getBlogOfUser)
+route.post("/uploadImage", AuthJwt, upload, blog.uploadImage)
 
 // get Blog Home
 route.get("/getBlogHome", AuthJwt, upload, blog.getBlogHome)
