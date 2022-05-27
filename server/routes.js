@@ -350,6 +350,15 @@ route.post("/uploadImage", AuthJwt, upload, blog.uploadImage)
 // get Blog Home
 route.get("/getBlogHome", AuthJwt, upload, blog.getBlogHome)
 
+// getBlog description
+route.get("/getBlog", AuthJwt, upload, blog.getBlog)
+
+// deleteBLog 
+route.delete("/deleteBLog", AuthJwt, upload, blog.deleteBLog)
+
+// updateBlog 
+route.patch("/updateBlog", AuthJwt, upload, blog.updateBlog)
+
 // ====================== For like Blog =========================
 
 
