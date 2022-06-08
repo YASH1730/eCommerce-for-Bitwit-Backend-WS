@@ -2,6 +2,7 @@
 const banner = require("../../database/models/banner");
 
 const localBaseUrl = 'http://localhost:8000'
+const official  = 'http://157.245.102.136'
 
 
 
@@ -12,7 +13,7 @@ exports.addBanner = async(req,res) => {
 
 
 if(req.files !== undefined)
-    req.body.banner_URL = `${localBaseUrl}/${req.files['banner_image'].path}`;
+    req.body.banner_URL = `${official}/${req.files['banner_image'].path}`;
 else 
     return res.status(203);
 
