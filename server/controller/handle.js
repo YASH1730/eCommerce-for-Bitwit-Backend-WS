@@ -15,7 +15,7 @@ console.log(req.body)
 
   await data.save()
     .then(() => {
-      res.send({message : 'Handle Added sucessfully !!!'})
+      res.send({message : 'Handle Added successfully !!!'})
     })
     .catch((error) => {
       console.log(error)

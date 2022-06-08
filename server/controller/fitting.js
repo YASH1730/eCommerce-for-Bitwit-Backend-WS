@@ -15,7 +15,7 @@ console.log(req.body)
 
   await data.save()
     .then(() => {
-      res.send({message : 'Fitting Added sucessfully !!!'})
+      res.send({message : 'Fitting Added successfully !!!'})
     })
     .catch((error) => {
       console.log(error)
@@ -89,7 +89,7 @@ exports.changeFittingStatus = async(req,res) =>{
 
   .catch((err)=>{
       console.log(err)
-      res.send('Somthing went worang !!!')
+      res.send('Something went wrong !!!')
   })
 }
 

@@ -17,7 +17,7 @@ console.log(req.body)
 
   await data.save()
     .then(() => {
-      res.send({message : 'Sub Categories Added sucessfully !!!'})
+      res.send({message : 'Sub Categories Added successfully !!!'})
     })
     .catch((error) => {
       console.log(error)
@@ -92,7 +92,7 @@ exports.changeSubStatus = async(req,res) =>{
 
   .catch((err)=>{
       console.log(err)
-      res.status(203).send('Somthing went worang !!!')
+      res.status(203).send('Something went wrong !!!')
   })
 }
 

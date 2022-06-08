@@ -101,14 +101,14 @@ exports.updateImage = async (req,res) => {
     })
     .catch((error)=>{
       console.error
-      return res.status(203).send({message : 'Something Went Worang'})
+      return res.status(203).send({message : 'Something Went Wrong'})
       
     })
     
   })
   .catch((error)=>{
 
-    return res.status(203).send({message : 'Something Went Worang'})
+    return res.status(203).send({message : 'Something Went Wrong'})
   })
 }
 // addImage =========================
@@ -151,14 +151,14 @@ exports.addImage = async (req,res) => {
     })
     .catch((error)=>{
       console.error
-      return res.status(203).send({message : 'Something Went Worang'})
+      return res.status(203).send({message : 'Something Went Wrong'})
       
     })
     
   })
   .catch((error)=>{
 
-    return res.status(203).send({message : 'Something Went Worang'})
+    return res.status(203).send({message : 'Something Went Wrong'})
   })
 }
 

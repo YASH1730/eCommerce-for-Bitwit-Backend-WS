@@ -7,14 +7,14 @@ const categories = require("../../database/models/categories");
 
 // add categoier ======================
 
-const loacalBaseUrl = 'http://localhost:8000'
+const localBaseUrl = 'http://localhost:8000'
 
 exports.addCatagories = async (req, res) => {
 
   console.log(req.files['category_image'])
 
   if (req.files['category_image'] === undefined) return res.status(203).send({message : 'Category Image Is Required !!!'})
-  req.body.category_image = `${loacalBaseUrl}/${req.files['category_image'][0].path}` 
+  req.body.category_image = `${localBaseUrl}/${req.files['category_image'][0].path}` 
 
   
 
@@ -58,7 +58,7 @@ exports.editCatagories = async (req, res) => {
   console.log(req.files['category_image'])
 
   if (req.files['category_image'] !== undefined) 
-      req.body.category_image = `${loacalBaseUrl}/${req.files['category_image'][0].path}` 
+      req.body.category_image = `${localBaseUrl}/${req.files['category_image'][0].path}` 
 
   
 

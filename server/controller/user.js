@@ -62,7 +62,7 @@ exports.login = (req, res) => {
                         let token = genrateJWT(req.body);
                         console.log(data)
                         console.log("User Found !!!", data);
-                        return res.send({ message: "Log In Sucessfully !!!", token, name: data.user_Name, email: data.email })
+                        return res.send({ message: "Log In Successfully !!!", token, name: data.user_Name, email: data.email })
 
                     } else
                         return res.status(203).send({ message: ">>User Not Found !!!" })

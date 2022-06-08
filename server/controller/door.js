@@ -15,7 +15,7 @@ console.log(req.body)
 
   await data.save()
     .then(() => {
-      res.send({message : 'Door Added sucessfully !!!'})
+      res.send({message : 'Door Added successfully !!!'})
     })
     .catch((error) => {
       console.log(error)
@@ -89,7 +89,7 @@ exports.changeDoorStatus = async(req,res) =>{
 
   .catch((err)=>{
       console.log(err)
-      res.send('Somthing went worang !!!')
+      res.send('Something went wrong !!!')
   })
 }
 
