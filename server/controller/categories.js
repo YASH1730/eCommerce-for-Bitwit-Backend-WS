@@ -1,5 +1,6 @@
 
 const categories = require("../../database/models/categories");
+const subCategories = require("../../database/models/subCategories");
 
 
 // ================================================= Apis for categories ======================================================= 
@@ -16,19 +17,34 @@ exports.addCatagories = async (req, res) => {
 
   if (req.files['category_image'] === undefined) return res.status(203).send({message : 'Category Image Is Required !!!'})
   req.body.category_image = `${official}/${req.files['category_image'][0].path}` 
-
-  
-
+ 
   const data = categories(req.body)
 
-  await data.save()
-    .then(() => {
-      res.send({message : 'Categories Added sucessfully !!!'})
-    })
-    .catch((error) => {
+  await subCategories.findOne({"sub_category_name":  { $regex : `^${req.body.category_name}`, $options: 'i' } })
+  .then(async (result)=>{
+    if(result === null)
+    {
+      await data.save()
+        .then(() => {
+          res.send({message : 'Sub Categories Added successfully !!!'})
+        })
+        .catch((error) => {
+          console.log(error)
+          res.status(203);
+          res.send({message : 'Duplicate Sub Category !!!'})
+        })
+    }
+    else {
       res.status(203);
-      res.send({message : 'Duplicate Category !!!'})
-    })
+      res.send({message : 'Category Name is already exist in sub category!!!'})  
+    }
+
+  })
+  .catch((error) => {
+    console.log(error)
+    res.status(203);
+    res.send({message : 'Something went wrong'})
+  })
 
 }
 
@@ -72,7 +88,7 @@ exports.editCatagories = async (req, res) => {
       })
       .catch((error) => {
         console.log(error)
-        return res.status(203).send({message : 'Somthing went worang !!!'})
+        return res.status(203).send({message : 'Something went wrong !!!'})
       })
 
 }
@@ -103,7 +119,7 @@ exports.changeStatus = async(req,res) =>{
 
   .catch((err)=>{
       console.log(err)
-      res.status(203).send('Somthing went worang !!!')
+      res.status(203).send('Something went wrong !!!')
   })
 }
 

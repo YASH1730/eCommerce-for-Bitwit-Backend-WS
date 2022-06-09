@@ -1,5 +1,6 @@
 
 const subCategories = require("../../database/models/subCategories");
+const categories = require("../../database/models/categories");
 
 
 // ================================================= Apis for sub categories ======================================================= 
@@ -15,15 +16,31 @@ console.log(req.body)
 
   const data = subCategories(req.body)
 
-  await data.save()
-    .then(() => {
-      res.send({message : 'Sub Categories Added successfully !!!'})
-    })
-    .catch((error) => {
-      console.log(error)
+  await categories.findOne({"category_name":  { $regex : `^${req.body.sub_category_name}`, $options: 'i' } })
+  .then(async (result)=>{
+    if(result === null)
+    {
+      await data.save()
+        .then(() => {
+          res.send({message : 'Sub Categories Added successfully !!!'})
+        })
+        .catch((error) => {
+          console.log(error)
+          res.status(203);
+          res.send({message : 'Duplicate Sub Category !!!'})
+        })
+    }
+    else {
       res.status(203);
-      res.send({message : 'Duplicate Category !!!'})
-    })
+      res.send({message : 'Sub Category Name is already exist in category!!!'})  
+    }
+
+  })
+  .catch((error) => {
+    console.log(error)
+    res.status(203);
+    res.send({message : 'Something went wrong'})
+  })
 
 }
 
