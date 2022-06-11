@@ -31,23 +31,6 @@ exports.getGallery = async (req, res) => {
 // add Photo ====================== 626cb3a9b09eb22c92f25303
 
 
-exports.addimage = async (req, res) => {
-
-  console.log(req.body);
-
-  await product.findOneAndUpdate({ _id: req.body.SKU }, req.body)
-      .then((data) => {
-        if (data)
-          return res.status(200).send({ message: 'Handle is updated successfully.' })
-        else
-          return res.status(203).send({ message: 'No entries found' })
-      })
-      .catch((error) => {
-        return res.status(500).send(error)
-      })
-
-}
-
 // delete image =========================
 
 exports.deleteImage = async (req,res) => {
@@ -132,32 +115,32 @@ exports.addImage = async (req,res) => {
 
   if(req.body.SKU === null) return res.status(203).send({message : 'SKU of the product in must'})
 
-  
-  await product.findOne({SKU : `${req.body.SKU}`})
+  await product.findOne({SKU : `WS-${req.body.SKU}`})
 
   .then(async(data)=>{
     const index = parseInt(req.body.ImageIndex)
     const newAarry = []
 
+
     data.product_image = data.product_image.concat(image_urls)
 
-    console.log(data.product_image)
+    console.log(">>>>",data.product_image)
 
-    await product.findOneAndUpdate({SKU :`${req.body.SKU}`},{product_image : data.product_image})
+    await product.findOneAndUpdate({SKU :`WS-${req.body.SKU}`},{product_image : data.product_image})
 
     .then((data)=>{
       console.log(data);
       return res.send({message : 'Image Added Successfully !!!'})
     })
     .catch((error)=>{
-      console.error
+      console.log(error)
       return res.status(203).send({message : 'Something Went Wrong'})
       
     })
     
   })
   .catch((error)=>{
-
+    console.log(error)
     return res.status(203).send({message : 'Something Went Wrong'})
   })
 }
