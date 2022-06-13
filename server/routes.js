@@ -68,7 +68,7 @@ function encode(req, res, next) {
     )
         return res
             .status(204)
-            .send({ error_massage: "Please enter all the required feilds." });
+            .send({ error_massage: "Please enter all the required felids." });
 
     // code to hash the password
 
@@ -97,7 +97,7 @@ function AuthJwt(req, res, next) {
 
     let token = req.headers.authorization.split("Bearer ")[1];
 
-    JWT.verify(token, process.env.JWT_Secreet, (err, user) => {
+    JWT.verify(token, "asdfijeh9oina3i432i4988*&*&(*&*()()ok5n3la^&*%*&T(bkjh9s8ew9(*H(OH**(H)OM)_(U)N)(Yn39873389(*u4054m5k4n5", (err, user) => {
         if (err) return res.sendStatus(403);
         req.user = user;
         next();

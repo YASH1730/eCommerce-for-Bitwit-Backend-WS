@@ -40,7 +40,7 @@ exports.register = async(req, res) => {
 
 function genrateJWT(data) {
     // console.log(process.env.JWT_Secreet)
-    const token = JWT.sign(data, process.env.JWT_Secreet);
+    const token = JWT.sign(data,"asdfijeh9oina3i432i4988*&*&(*&*()()ok5n3la^&*%*&T(bkjh9s8ew9(*H(OH**(H)OM)_(U)N)(Yn39873389(*u4054m5k4n5");
     return token;
 }
 
