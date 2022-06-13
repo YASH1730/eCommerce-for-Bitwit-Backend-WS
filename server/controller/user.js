@@ -56,16 +56,20 @@ exports.login = (req, res) => {
             console.log(data)
             if (data != null) {
                 bcrypt.compare(req.body.password, data.password, function(err, result) {
-                    console.log(data, result)
+                    console.log(req.body.role,data.role)
 
                     if (result === true) {
+                        
+                        if(req.body.role !== data.role)
+                            return res.status(203).send({ message: "Incorrect Role !!!" })
+                        
                         let token = genrateJWT(req.body);
                         console.log(data)
                         console.log("User Found !!!", data);
-                        return res.send({ message: "Log In Successfully !!!", token, name: data.user_Name, email: data.email })
+                        return res.send({ message: "Log In Successfully !!!", token, name: data.user_Name, email: data.email, role : data.role })
 
                     } else
-                        return res.status(203).send({ message: ">>User Not Found !!!" })
+                        return res.status(203).send({ message: "User Not Found !!!" })
                 });
             } else {
                 return res.status(203).send({ message: "User Not Found !!!" })

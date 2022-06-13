@@ -23,6 +23,7 @@ const Gallery = require("./controller/gallery");
 const blog = require("./controller/blog");
 const like = require("./controller/like");
 const review = require("./controller/review");
+const draft = require("./controller/draft");
 
 // middilwear for the multer setup
 
@@ -62,7 +63,8 @@ function encode(req, res, next) {
         req.body.phoneNumber == undefined ||
         req.body.email == undefined ||
         req.body.password == undefined ||
-        req.body.address == undefined
+        req.body.address == undefined ||
+        req.body.role == undefined
     )
         return res
             .status(204)
@@ -376,6 +378,11 @@ route.get("/getLike", AuthJwt, upload, like.like)
 
 route.post("/comment", AuthJwt, upload, review.comment)
 
+// ==================== Draft ===============================
+
+route.get("/getDraft", AuthJwt, draft.getDraftProduct)
+
+route.patch("/changeProductStatus", AuthJwt, upload, draft.changeProductStatus)
 
 
 module.exports = route;

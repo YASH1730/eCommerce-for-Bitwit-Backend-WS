@@ -8,7 +8,7 @@ const product = mongoose.Schema({
     category_id : {required : true, type : String},
     sub_category_name : {required : true, type : String},
     sub_category_id : {required : true, type : String},
-    product_description : {required : true, type : String},
+    product_description : {type : String},
     seo_title : {required : true, type : String},
     seo_description : {required : true, type : String},
     seo_keyword : {required : true, type : String},
@@ -36,7 +36,7 @@ const product = mongoose.Schema({
     door_name  : { type : String},
     fitting : { type : String},
     fitting_name : { type : String},
-    selling_points : {required : true, type : String},
+    selling_points : { type : String},
     top_size : {type : Number},
     dial_size : { type : Number},
     seating_size_width : { type : Number},
@@ -71,6 +71,7 @@ const product = mongoose.Schema({
     selling_price : {required : true, type : Number},
     discount_limit : {required : true, type : Number},
     dispatch_time : {required : true, type : String},
+    status : {required : true, type : Boolean}
 })
 
 module.exports = mongoose.model('products',product);
