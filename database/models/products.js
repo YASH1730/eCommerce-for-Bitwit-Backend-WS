@@ -43,6 +43,8 @@ const product = mongoose.Schema({
     seating_size_depth : { type : Number},
     seating_size_height : { type : Number},
     weight_capacity : { type : String},
+    fabric : { type : String},
+    fabric_name : { type : String},
     wall_hanging : { type : Boolean},
     assembly_required : { type : String},
     assembly_part : { type : Number},

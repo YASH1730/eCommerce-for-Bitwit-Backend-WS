@@ -24,6 +24,7 @@ const blog = require("./controller/blog");
 const like = require("./controller/like");
 const review = require("./controller/review");
 const draft = require("./controller/draft");
+const fabric = require("./controller/fabric");
 
 // middilwear for the multer setup
 
@@ -51,7 +52,7 @@ const upload = multer({
         fileSize: 1024 * 1024 * 5
     },
     fileFilter: fileFilter
-}).fields([{ name: "product_image" }, { name: "featured_image" }, { name: "category_image" }, { name: 'banner_image' }, { name: 'specification_image' } ]);
+}).fields([{ name: "product_image" }, { name: "featured_image" }, { name: "category_image" }, { name: 'banner_image' }, { name: 'specification_image' },  { name: 'fabric_image' } ]);
 
 
 // middilwear for encryption
@@ -383,6 +384,24 @@ route.post("/comment", AuthJwt, upload, review.comment)
 route.get("/getDraft", AuthJwt, draft.getDraftProduct)
 
 route.patch("/changeProductStatus", AuthJwt, upload, draft.changeProductStatus)
+
+
+// =============== Fabric routes =======================
+
+// addCategory route
+route.post("/addFabric", AuthJwt, upload, fabric.addFabric);
+
+// get list of the categories
+route.get("/getFabric", AuthJwt, fabric.getFabric);
+
+// edit list of the categories
+route.patch("/editFabric", AuthJwt, upload, fabric.editFabric);
+
+// delete category 
+route.delete("/deleteFabric", AuthJwt, fabric.deleteFabric);
+
+// change category status 
+route.patch("/changeFabricStatus", upload, AuthJwt, fabric.changeFabricStatus);
 
 
 module.exports = route;
