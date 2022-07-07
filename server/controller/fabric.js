@@ -15,7 +15,7 @@ exports.addFabric = async (req, res) => {
   console.log(req.files['fabric_image'])
 
   if (req.files['fabric_image'] === undefined) return res.status(203).send({message : 'Fabric Image Is Required !!!'})
-  req.body.fabric_image = `${localBaseUrl}/${req.files['fabric_image'][0].path}` 
+  req.body.fabric_image = `${official}/${req.files['fabric_image'][0].path}` 
  
   const data = fabric(req.body)
 
@@ -58,7 +58,7 @@ exports.editFabric = async (req, res) => {
   console.log(req.files['fabric_image'])
 
   if (req.files['fabric_image'] !== undefined) 
-      req.body.fabric_image = `${localBaseUrl}/${req.files['fabric_image'][0].path}` 
+      req.body.fabric_image = `${official}/${req.files['fabric_image'][0].path}` 
 
   
 
