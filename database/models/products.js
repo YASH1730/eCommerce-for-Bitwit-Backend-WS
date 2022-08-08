@@ -29,6 +29,7 @@ const product = mongoose.Schema({
     textile : { type : String},
     knob_name  : { type : String},
     textile_name  : { type : String},
+    textile_type  : { type : String},
     handle : { type : String},
     handle_name  : { type : String},
     door : { type : String},

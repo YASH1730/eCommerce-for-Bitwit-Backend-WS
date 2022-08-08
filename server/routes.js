@@ -156,6 +156,10 @@ route.patch('/updateProduct', AuthJwt, upload, products.updateProduct);
 
 route.get('/getLastProduct', AuthJwt, products.getLastProduct);
 
+// Update Bulk
+
+route.post('/updateBulk', AuthJwt,upload, products.updateBulk);
+
 // ================== Banner Routes =============================
 
 // add banners
