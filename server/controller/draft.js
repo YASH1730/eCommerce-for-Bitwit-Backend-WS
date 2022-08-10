@@ -110,7 +110,7 @@ exports.updateProduct = async (req,res)=>{
             })
             .catch((error) => {
             console.log(error)    
-            return res.status(203).send('Somthing Went Worang')
+            return res.status(203).send('Something Went Wrong')
             })
 }
 

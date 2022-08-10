@@ -45,7 +45,7 @@ exports.listBanner = async(req,res)=>{
     })
     .catch((err)=>{
         console.log(err)
-        return res.send("Somthing went worng !!!")
+        return res.send("Something went worng !!!")
     })
 
 
@@ -62,7 +62,7 @@ exports.changeStatus = async(req,res) =>{
     })
     .catch((err)=>{
         console.log(err)
-        res.send('Somthing went worang !!!')
+        res.send('Something went Wrong !!!')
     })
 }
 

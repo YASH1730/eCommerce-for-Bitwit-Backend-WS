@@ -6,7 +6,7 @@ const multer = require('multer')
 
 // CONTROLLER
 const user = require("./controller/user");
-const categoier = require("./controller/categories");
+const categories = require("./controller/categories");
 const products = require("./controller/product");
 const banner = require("./controller/banner");
 const order = require("./controller/order");
@@ -53,7 +53,7 @@ const upload = multer({
         fileSize: 1024 * 1024 * 5
     },
     fileFilter: fileFilter
-}).fields([{ name: "product_image" }, { name: "featured_image" }, { name: "category_image" }, { name: 'banner_image' }, { name: 'specification_image' },  { name: 'fabric_image' } ,  { name: 'textile_image' } ]);
+}).fields([{ name: "product_image" }, { name: "featured_image" }, { name: "category_image" }, { name: 'banner_image' }, { name: 'specification_image' },  { name: 'fabric_image' } ,  { name: 'textile_image' } ,  { name: 'primaryMaterial_image' } ]);
 
 
 // middilwear for encryption
@@ -90,7 +90,7 @@ function encode(req, res, next) {
 // midilwear to parse the body 
 route.use(bodyParser.urlencoded({ extended: true }));
 route.use(bodyParser.json());
-// Midilwear For Authenticaion
+// Midilwear For Authentication
 
 function AuthJwt(req, res, next) {
     // console.log(req.headers)
@@ -120,19 +120,19 @@ route.post("/login", upload, user.login);
 // =============== Categories routes =======================
 
 // addCategory route
-route.post("/addCategory", AuthJwt, upload, categoier.addCatagories);
+route.post("/addCategory", AuthJwt, upload, categories.addCatagories);
 
 // get list of the categories
-route.get("/listCategory", AuthJwt, categoier.getCatagories);
+route.get("/listCategory", AuthJwt, categories.getCatagories);
 
 // edit list of the categories
-route.patch("/editCategory", AuthJwt, upload, categoier.editCatagories);
+route.patch("/editCategory", AuthJwt, upload, categories.editCatagories);
 
 // delete category 
-route.delete("/deleteCategory", AuthJwt, categoier.deleteCategory);
+route.delete("/deleteCategory", AuthJwt, categories.deleteCategory);
 
 // change category status 
-route.post("/changeStatusCategory", upload, AuthJwt, categoier.changeStatus);
+route.post("/changeStatusCategory", upload, AuthJwt, categories.changeStatus);
 
 // =============== Products routes =======================
 

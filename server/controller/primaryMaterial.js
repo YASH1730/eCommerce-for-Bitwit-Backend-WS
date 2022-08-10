@@ -5,19 +5,25 @@ const primaryMaterial = require("../../database/models/primaryMaterial");
 // ================================================= Apis for sub categories ======================================================= 
 //==============================================================================================================================
 
-// add categoier ======================
+// add material ======================
 
-const loacalBaseUrl = 'http://localhost:8000'
+const localBaseUrl = 'http://localhost:8000'
+const official = 'http://157.245.102.136/'
 
 exports.addPrimaryMaterial = async (req, res) => {
 
-console.log(req.body)
+console.log(req.body,req.file)
+console.log(req.files['primaryMaterial_image'])
+
+if (req.files['primaryMaterial_image'] !== undefined) 
+req.body.primaryMaterial_image = `${official}/${req.files['primaryMaterial_image'][0].path}` 
+
 
   const data = primaryMaterial(req.body)
 
   await data.save()
     .then(() => {
-      res.send({message : 'Primary Material Added sucessfully !!!'})
+      res.send({message : 'Primary Material Added Successfully !!!'})
     })
     .catch((error) => {
       console.log(error)
@@ -50,8 +56,9 @@ exports.getPrimaryMaterial = async (req, res) => {
 
 exports.editPrimaryMaterial = async (req, res) => {
 
-  console.log(req.body);
-  
+  if (req.files['primaryMaterial_image'] !== undefined) 
+req.body.primaryMaterial_image = `${official}/${req.files['primaryMaterial_image'][0].path}` 
+
 
   await primaryMaterial.findOneAndUpdate({ _id: req.body._id }, req.body)
       .then((data) => {
@@ -61,7 +68,7 @@ exports.editPrimaryMaterial = async (req, res) => {
           return res.status(203).send({ message: 'No entries found' })
       })
       .catch((error) => {
-        return res.status(203).send({ message: 'Somthing Went Worang' })
+        return res.status(203).send({ message: 'Something Went Wrong' })
       })
 
 }
@@ -74,7 +81,7 @@ exports.deleteCategory = async (req,res) =>{
 
    await categories.deleteOne({_id : req.query.ID}).then((data)=>{
     // console.log(data)
-    res.send({massage : 'Category deleted !!!'})
+    res.send({massage : 'Material deleted !!!'})
   })
 
 }
@@ -92,7 +99,7 @@ exports.changePrimaryMaterialStatus = async(req,res) =>{
 
   .catch((err)=>{
       console.log(err)
-      res.send('Somthing went worang !!!')
+      res.send('Something went Wrong !!!')
   })
 }
 

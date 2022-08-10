@@ -6,7 +6,7 @@ const subCategories = require("../../database/models/subCategories");
 // ================================================= Apis for categories ======================================================= 
 //==============================================================================================================================
 
-// add categoier ======================
+// add categories ======================
 
 const localBaseUrl = 'http://localhost:8000'
 const official  = 'http://157.245.102.136'
@@ -15,8 +15,8 @@ exports.addCatagories = async (req, res) => {
 
   console.log(req.files['category_image'])
 
-  // if (req.files['category_image'] === undefined) return res.status(203).send({message : 'Category Image Is Required !!!'})
-  // req.body.category_image = `${official}/${req.files['category_image'][0].path}` 
+  if (req.files['category_image'] !== undefined) 
+  req.body.category_image = `${official}/${req.files['category_image'][0].path}` 
  
   const data = categories(req.body)
 
