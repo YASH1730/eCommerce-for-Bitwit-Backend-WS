@@ -83,7 +83,7 @@ exports.getLastProduct = async(req,res)=>{
  })
  .catch((err)=>{
     //  console.log(err)
-    res.status(203).send({message : 'Some error ouccers !!!'})
+    res.status(203).send({message : 'Some error occurred !!!'})
  })
 
 }
@@ -96,7 +96,7 @@ exports.deleteProduct = async (req,res)=>{
         res.send({message : "Product deleted successfully !!!"})
     })
     .catch((err)=>{
-        res.send({message : 'Some error occures !!!'})
+        res.send({message : 'Some error occurred !!!'})
 
     })
 }

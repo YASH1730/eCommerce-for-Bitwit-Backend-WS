@@ -15,7 +15,7 @@ console.log(req.body)
 
   await data.save()
     .then(() => {
-      res.send({message : 'Polish Added sucessfully !!!'})
+      res.send({message : 'Polish Added successfully !!!'})
     })
     .catch((error) => {
       console.log(error)

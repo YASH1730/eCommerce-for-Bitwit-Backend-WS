@@ -8,7 +8,7 @@ const categories = require("../../database/models/categories");
 
 // add categoier ======================
 
-const loacalBaseUrl = 'http://localhost:8000'
+const LocalBaseUrl = 'http://localhost:8000'
 
 exports.addSubCatagories = async (req, res) => {
 

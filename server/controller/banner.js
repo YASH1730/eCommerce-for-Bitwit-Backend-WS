@@ -25,7 +25,7 @@ await data.save()
     return res.send('Banner Added Successfully !!!')
 })
 .catch((err)=>{
-    return res.send('Something went worng')
+    return res.send('Something went wrong')
 })
 
 }
@@ -45,7 +45,7 @@ exports.listBanner = async(req,res)=>{
     })
     .catch((err)=>{
         console.log(err)
-        return res.send("Something went worng !!!")
+        return res.send("Something went wrong !!!")
     })
 
 
