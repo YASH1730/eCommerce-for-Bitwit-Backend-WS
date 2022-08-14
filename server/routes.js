@@ -8,6 +8,7 @@ const multer = require('multer')
 const user = require("./controller/user");
 const categories = require("./controller/categories");
 const products = require("./controller/product");
+const mergeProduct = require("./controller/mergeProduct");
 const banner = require("./controller/banner");
 const order = require("./controller/order");
 const subCategories = require("./controller/subCategories");
@@ -159,6 +160,33 @@ route.get('/getLastProduct', AuthJwt, products.getLastProduct);
 // Update Bulk
 
 route.post('/updateBulk', AuthJwt,upload, products.updateBulk);
+
+
+// =============== Merge Product routes =======================
+
+// add product
+
+route.post('/addMergeProduct', AuthJwt, upload, mergeProduct.addMergeProduct);
+
+// Get the list product
+
+route.get('/getListMergeProduct', AuthJwt, mergeProduct.getListMergeProduct);
+
+// delete MergeProduct
+
+route.delete('/deleteMergeProduct', AuthJwt, mergeProduct.deleteMergeProduct);
+
+// update MergeProduct
+
+route.patch('/updateMergeProduct', AuthJwt, upload, mergeProduct.updateMergeProduct);
+
+// Find last document for SKU id increment
+
+route.get('/getLastMergeProduct', AuthJwt, mergeProduct.getLastMergeProduct);
+
+// Update Bulk
+
+// route.post('/updateBulk', AuthJwt,upload, mergeMergeProduct.updateBulk);
 
 // ================== Banner Routes =============================
 
