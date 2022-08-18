@@ -1,46 +1,66 @@
 const order = require("../../database/models/order");
-
-const localBaseUrl = 'http://localhost:8000'
-
-
+const { v4: uuidv4 } = require('uuid');
 
 // ================================================= Apis for banner ======================================================= 
 //==============================================================================================================================
 
-// add order 
+// place an order 
 
-exports.makeOrder = async(req,res) => {
+exports.placeOrder = async(req,res) => {   
+    req.body.OID = `OID-${uuidv4()}`
 
-    // console.log(req.body)
-
-    const data =  order(req.body);
-
-    await data.save()
+    req.body.products = req.body.products.split(',')
+    
+    const data = order(req.body);
+    await data.save(req.body)
     .then((response)=>{
-    // console.log(response)
-        res.send(response)
+       return res.status(200).send(response);
     })
     .catch((err)=>{
-     res.send(err)
+       return res.status(500)
     })
-
 }
 
 // list order
 
-exports.listOrder = async(req,res) => {
+exports.listOrder = async(req,res) => {   
+    req.body.OID = `OID-${uuidv4()}`
 
-    await order.find()
-
-    .then((data)=>{
-        
-        return res.send(data)
+    await order.find({$sort: { order_time : -1 }})
+    .then((response)=>{
+       return res.status(200).send(response);
     })
-
     .catch((err)=>{
-        console.log(err)
-        return res.send('Something went Wrong !!!')
+       return res.status(500)
     })
-    
-
 }
+
+// get specific order
+
+exports.searchOrder = async(req,res) => {   
+    
+    await order.find(req.query)
+    .then((response)=>{
+       return res.status(200).send(response);
+    })
+    .catch((err)=>{
+       return res.status(500).send(err);
+    })
+}
+
+
+// for Changing the Status of the Order
+
+exports.changeOrderStatus = async(req,res) =>{
+   console.log(req.body)
+   await order.findByIdAndUpdate({_id : req.body._id},{status : req.body.status})
+   .then((data)=>{
+       console.log(data)
+       res.send('all okay')
+   })
+ 
+   .catch((err)=>{
+       console.log(err)
+       res.status(203).send('Something went wrong !!!')
+   })
+ }

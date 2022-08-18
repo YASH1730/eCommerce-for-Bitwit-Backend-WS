@@ -161,6 +161,10 @@ route.get('/getLastProduct', AuthJwt, products.getLastProduct);
 
 route.post('/updateBulk', AuthJwt,upload, products.updateBulk);
 
+// Get SKUs
+
+route.get('/getPresentSKUs',AuthJwt,upload, products.getPresentSKUs);
+
 
 // =============== Merge Product routes =======================
 
@@ -207,11 +211,19 @@ route.patch('changStatusBanner', upload, AuthJwt, banner.changeStatus);
 
 // Make Order
 
-route.post('/makeOrder', upload, AuthJwt, order.makeOrder);
+route.post('/placeOrder',  upload, order.placeOrder);
 
 // List Order
 
-route.get('/listOrder', AuthJwt, order.listOrder);
+route.get('/listOrders', AuthJwt, order.listOrder);
+
+// Change Status
+
+route.post('/changeOrderStatus', AuthJwt,upload, order.changeOrderStatus);
+
+// Search Order
+
+route.get('/searchOrder', order.searchOrder);
 
 // ================== sub categories Routes =============================
 

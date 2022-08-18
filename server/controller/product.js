@@ -68,7 +68,7 @@ exports.getListProduct = async(req,res)=>{
 
 exports.getLastProduct = async(req,res)=>{
  
- await product.find()
+ await product.find({},'SKU')
  .sort({_id:-1})
  .limit(1)
  .then((response)=>{
@@ -152,5 +152,30 @@ exports.updateBulk = async (req,res)=>{
     })
         
 }
+
+
+
+// get present SKUs
+exports.getPresentSKUs = async (req,res) =>{
+ 
+    await product.find({},'SKU')
+    .then((response)=>{
+        if(response !== null)
+        {
+            res.send(response);
+        }
+        else
+        {
+            res.status(203).send({message : 'Please Add Some Products First !!!'})
+        }
+    })
+    .catch((err)=>{
+       //  console.log(err)
+       res.status(203).send({message : 'Some error occurred !!!'})
+    })
+   
+}
+
+
   // ================================================= Apis for Products Ends =======================================================
   

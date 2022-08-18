@@ -1,13 +1,17 @@
 const { default: mongoose } = require("mongoose");
 
 const order = mongoose.Schema({
-   order_id : {type : String},
+   OID : {type : String},
+   products : {type : Array},
    order_time : {type : Date , default : Date.now},
+   status : {type : String},
+   paid_amount : {type : Number}, 
+   total_amount : {type : Number},
+   CID : {type : String},
+   customer_name : {type : String},
    customer_email : {type : String},
-   order_address : {type : String},
-   payment_method : {type : String},
-   order_amount : {type : Number},
-   order_status : {type : String},
+   shipping_address : {type : String},
+   
 })
 
 module.exports = mongoose.model('order',order);

@@ -64,7 +64,7 @@ exports.getListMergeProduct = async(req,res)=>{
 
 exports.getLastMergeProduct = async(req,res)=>{
  
- await merge.find()
+ await merge.find({},'SKU')
  .sort({_id:-1})
  .limit(1)
  .then((response)=>{
@@ -147,5 +147,7 @@ exports.updateBulk = async (req,res)=>{
     })
         
 }
-  // ================================================= Apis for merges Ends =======================================================
+
+
+// ================================================= Apis for merges Ends =======================================================
   
