@@ -6,6 +6,7 @@ const multer = require('multer')
 
 // CONTROLLER
 const user = require("./controller/user");
+const customer = require("./controller/customer");
 const categories = require("./controller/categories");
 const products = require("./controller/product");
 const mergeProduct = require("./controller/mergeProduct");
@@ -54,7 +55,7 @@ const upload = multer({
         fileSize: 1024 * 1024 * 5
     },
     fileFilter: fileFilter
-}).fields([{ name: "product_image" }, { name: "featured_image" }, { name: "category_image" }, { name: 'banner_image' }, { name: 'specification_image' },  { name: 'fabric_image' } ,  { name: 'textile_image' } ,  { name: 'primaryMaterial_image' } ]);
+}).fields([{ name: "product_image" }, { name: "featured_image" }, { name: "category_image" }, { name: 'banner_image' }, { name: 'specification_image' },  { name: 'fabric_image' } ,  { name: 'textile_image' } ,  { name: 'primaryMaterial_image' } , {name : 'profile_image'} ]);
 
 
 // middleware for encryption
@@ -465,6 +466,23 @@ route.delete("/deleteTextile", AuthJwt, textile.deleteTextile);
 
 // change category status 
 route.patch("/changeTextileStatus", upload, AuthJwt, textile.changeTextileStatus);
+
+// =============== Customer routes =======================
+
+// addCategory route
+route.post("/addCustomer",AuthJwt, upload, customer.addCustomer);
+
+// get list of the customer
+route.get("/listCustomer", AuthJwt, customer.listCustomer);
+
+// get delete of the customer
+route.delete("/deleteCustomer", AuthJwt, customer.deleteCustomer);
+
+// edit Customer
+route.patch("/updateCustomer", AuthJwt, upload, customer.updateCustomer);
+
+// delete category 
+route.delete("/deleteCustomer", AuthJwt, customer.deleteCustomer);
 
 
 module.exports = route;
