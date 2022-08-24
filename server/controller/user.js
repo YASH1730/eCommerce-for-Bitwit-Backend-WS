@@ -15,6 +15,13 @@ exports.home = (req, res) => {
     res.send("This Apis is written for the WoodSala!!!");
 };
 
+exports.delete = async(req,res)=>{
+    userDB.deleteOne({'_id':req.query._id})
+    .then((data)=>{
+        console.log(data)
+        res.send(data)
+    })
+}
 
 // for registration API
 
@@ -36,11 +43,11 @@ exports.register = async(req, res) => {
 
 // for login Api
 
-// function for genrate JWT
+// function for generate JWT
 
-function genrateJWT(data) {
-    // console.log(process.env.JWT_Secreet)
-    const token = JWT.sign(data,"asdfijeh9oina3i432i4988*&*&(*&*()()ok5n3la^&*%*&T(bkjh9s8ew9(*H(OH**(H)OM)_(U)N)(Yn39873389(*u4054m5k4n5");
+function generateJWT(data) {
+    // console.log(process.env.JWT_Secrete)
+    const token = JWT.sign(data,process.env.JWT_Secrete);
     return token;
 }
 
@@ -63,7 +70,7 @@ exports.login = (req, res) => {
                         if(req.body.role !== data.role)
                             return res.status(203).send({ message: "Incorrect Role !!!" })
                         
-                        let token = genrateJWT(req.body);
+                        let token = generateJWT(req.body);
                         console.log(data)
                         console.log("User Found !!!", data);
                         return res.send({ message: "Log In Successfully !!!", token, name: data.user_Name, email: data.email, role : data.role })

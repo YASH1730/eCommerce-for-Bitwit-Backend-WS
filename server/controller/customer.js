@@ -25,7 +25,7 @@ exports.addCustomer = async(req,res) => {
     req.body.password = crypt.encrypt(req.body.password);
 
     console.log(req.body);
-
+    // mongodb+srv://woodsala:woodsala2022@woodsala.unthc.mongodb.net/woodSala?retryWrites=true&w=majority
     const data = customer(req.body);
     await data.save(req.body)
     .then((response)=>{
