@@ -223,8 +223,13 @@ route.get('/listOrders', AuthJwt, order.listOrder);
 route.post('/changeOrderStatus', AuthJwt,upload, order.changeOrderStatus);
 
 // Search Order
-
 route.get('/searchOrder', order.searchOrder);
+
+// getLastOrder
+route.get('/getLastOrder', order.getLastOrder);
+
+// get customer catalog 
+route.get('/customerCatalog', order.customerCatalog);
 
 // ================== sub categories Routes =============================
 

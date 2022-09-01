@@ -7,8 +7,8 @@ const crypt = new Crypt('asdf465f4s2d1f65e4s32d1f6534361e65##$#$#$#23$#5er135##4
 // ================================================= Apis for banner ======================================================= 
 //==============================================================================================================================
 
-const localURL = "http://localhost:8000/api";
-const official = "http://157.245.102.136/api";
+const localURL = "http://localhost:8000";
+const official = "http://157.245.102.136";
 
 
 // place an customer 
@@ -32,7 +32,8 @@ exports.addCustomer = async(req,res) => {
        return res.status(200).send({message : 'Customer added successfully !!!'});
     })
     .catch((err)=>{
-       return res.status(406).send({message : 'Duplicate entries are not allowed !!!'})
+      console.log(err)
+       return res.status(400).send({message : 'Duplicate entries are not allowed !!!'})
     })
 }
 
@@ -42,7 +43,7 @@ exports.listCustomer = async(req,res) => {
 
     await customer.find({$sort: { register_time : -1 }})
     .then((response)=>{
-      console.log(response)
+      // console.log(response)
        return res.status(200).send(response);
     })
     .catch((err)=>{
@@ -80,7 +81,7 @@ exports.searchCustomer = async(req,res) => {
 // for Changing the Status of the Customer
 
 exports.changeCustomerStatus = async(req,res) =>{
-   console.log(req.body)
+  //  console.log(req.body)
    await customer.findByIdAndUpdate({_id : req.body._id},{status : req.body.status})
    .then((data)=>{
        console.log(data)

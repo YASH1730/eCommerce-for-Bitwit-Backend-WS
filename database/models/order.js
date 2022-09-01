@@ -10,7 +10,7 @@ const order = mongoose.Schema({
    CID : {type : String},
    customer_name : {type : String},
    customer_email : {type : String},
-   shipping_address : {type : String},
+   shipping : {type : String},
    
 })
 
