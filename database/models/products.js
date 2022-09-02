@@ -82,6 +82,8 @@ const product = mongoose.Schema({
     returnable : {type : Boolean},
     drawer: {type : String},
     drawer_count: {type : Number},
+    show_on_mobile : {type : Boolean},
+    range : {type : String}
 })
 
 module.exports = mongoose.model('products',product);

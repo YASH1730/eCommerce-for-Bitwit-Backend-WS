@@ -118,6 +118,7 @@ exports.updateProduct = async (req,res)=>{
 
         await product.findOneAndUpdate({ _id: req.body._id }, req.body)
             .then((data) => {
+                console.log(data)
             if (data)
                 return res.status(200).send({ message: 'Product is updated successfully.' })
             else
