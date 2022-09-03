@@ -9,7 +9,7 @@ const subCategories = require("../../database/models/subCategories");
 // add categories ======================
 
 const localBaseUrl = 'http://localhost:8000'
-const official  = 'http://157.245.102.136'
+const official  = 'https://woodshala.in'
 
 exports.addCatagories = async (req, res) => {
 

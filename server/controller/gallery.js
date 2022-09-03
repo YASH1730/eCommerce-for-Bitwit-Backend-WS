@@ -3,7 +3,7 @@ const { parse } = require("dotenv")
 const product = require("../../database/models/products")
 
 const localhost = 'http://localhost:8000'
-const official  = 'http://157.245.102.136'
+const official  = 'https://woodshala.in'
 // ================================================= Apis for Gallery  ======================================================= 
 //==============================================================================================================================
 

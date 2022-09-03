@@ -2,7 +2,7 @@
 const banner = require("../../database/models/banner");
 
 const localBaseUrl = 'http://localhost:8000'
-const official  = 'http://157.245.102.136'
+const official  = 'https://woodshala.in'
 
 
 

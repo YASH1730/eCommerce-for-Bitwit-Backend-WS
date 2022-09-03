@@ -2,7 +2,7 @@ const blogDB = require("../../database/models/blog");
 const image = require("../../database/models/image");
 
 const uuid = require("uuid");
-const official  = 'http://157.245.102.136'
+const official  = 'https://woodshala.in'
 // Api for card creation
 
 exports.createBlog = async (req, res) => {

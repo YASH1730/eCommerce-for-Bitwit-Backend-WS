@@ -8,7 +8,7 @@ const crypt = new Crypt('asdf465f4s2d1f65e4s32d1f6534361e65##$#$#$#23$#5er135##4
 //==============================================================================================================================
 
 const localURL = "http://localhost:8000";
-const official = "http://157.245.102.136";
+const official = "https://woodshala.in";
 
 
 // place an customer 

@@ -106,7 +106,7 @@ exports.getLastOrder = async(req,res)=>{
 
 exports.searchOrder = async(req,res) => {   
     
-    await order.deleteOne(req.query)
+    await order.find()
     .then((response)=>{
        return res.status(200).send(response);
     })

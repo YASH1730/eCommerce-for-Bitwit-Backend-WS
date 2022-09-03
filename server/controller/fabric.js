@@ -8,7 +8,7 @@ const fabric = require("../../database/models/fabric");
 // add categoier ======================
 
 const localBaseUrl = 'http://localhost:8000'
-const official  = 'http://157.245.102.136'
+const official  = 'https://woodshala.in'
 
 exports.addFabric = async (req, res) => {
 
