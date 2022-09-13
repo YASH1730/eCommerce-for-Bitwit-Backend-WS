@@ -28,6 +28,7 @@ const review = require("./controller/review");
 const draft = require("./controller/draft");
 const fabric = require("./controller/fabric");
 const textile = require("./controller/textile");
+const stock = require("./controller/stock");
 
 // middleware for the multer setup
 
@@ -489,5 +490,21 @@ route.patch("/updateCustomer", AuthJwt, upload, customer.updateCustomer);
 // delete category 
 route.delete("/deleteCustomer", AuthJwt, customer.deleteCustomer);
 
+// =================== Stock route =========================
+
+// add to stock
+route.post('/addStock',AuthJwt,upload,stock.addStock);
+
+// list stock
+route.get('/listStock',AuthJwt,stock.listStock);
+
+// delete stock
+route.delete('/deleteStock',AuthJwt,stock.deleteStock);
+
+// update stock
+route.patch('/updateStock',AuthJwt ,upload ,stock.updateStock);
+
+// product preview 
+route.get('/preview',AuthJwt  ,stock.preview);
 
 module.exports = route;
