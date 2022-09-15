@@ -9,58 +9,22 @@ const { v4: uuidv4 } = require('uuid');
 
 exports.placeOrder = async(req,res) => {
 
-    req.body.products = req.body.products.split(',');
+   console.log(req.body)
 
-    console.log(req.body)
+   if(req.body.CID === null) req.body.CID = 'Not Registered';
 
-   if(req.body.searchCustomer)
-   {
-      customer.findOne({mobile : req.body.searchCustomer})
-      .then(async (data)=>{ 
-         if(data !== null)
-         {
-            req.body.CID = data.CID 
-            req.body.customer_name = data.username 
-            req.body.customer_email = data.email 
-            req.body.mobile = data.mobile 
-            req.body.city = data.city 
-            req.body.state = data.state 
-            req.body.shipping = data.shipping
+   const data = order(req.body);
 
-            const setdata = order(req.body);
-            await setdata.save(req.body)
-            .then((response)=>{
-               return res.status(200).send({message : 'Order Placed !!!'});
-            })
-            .catch((err)=>{
-               console.log(err)
-               return res.status(500).send()
-            })
-         }
-         else{
-            return res.status(203).send({message : 'No Customer Found !!!'})
-         }
-      })
-      .catch((err)=>{
-         console.log(err)
-         return res.status(404).send('Something Went Wrong !!!')
-      })
-   }
-   else{
-
-      req.body.CID = 'Customer not registered !!!'
-
-    const data = order(req.body);
-    await data.save(req.body)
-    .then((response)=>{
-       return res.status(200).send({message : 'Order Placed !!!'});
-    })
-    .catch((err)=>{
+   data.save()
+   .then((response)=>{
+      console.log(response)
+      res.send({message : 'Order Added !!!'})
+   })
+   .catch((err)=>{
       console.log(err)
-       return res.status(500).send()
-    })
-
-   }
+      res.status(404).send({message : 'Something Went Wrong !!!'})
+   })
+   
 }
 
 // list order
@@ -139,7 +103,7 @@ exports.changeOrderStatus = async(req,res) =>{
 
 exports.customerCatalog = async (req,res)=>{
 
-   customer.find({},{_id:0,mobile  : 1, username : 1})
+   customer.find({},{_id:0,mobile  : 1, username : 1, email : 1,shipping : 1, city : 1, state : 1, CID : 1})
    .then((data)=>{
       if (data !== null)
       {
@@ -153,4 +117,11 @@ exports.customerCatalog = async (req,res)=>{
    })
 
 
+}
+
+exports.deleteOrder = async (req,res)=>{
+   order.deleteOne(req.query)
+   .then((response)=>{
+      res.send(response)
+   })
 }

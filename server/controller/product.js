@@ -159,7 +159,19 @@ exports.updateBulk = async (req,res)=>{
 // get present SKUs
 exports.getPresentSKUs = async (req,res) =>{
  
-    await product.find({},'SKU')
+    await product.find({},{
+        _id : 0,
+        SKU : 1,
+        product_title : 1,
+        featured_image : 1,
+        length_main : 1,
+        breadth : 1,
+        height : 1,
+        MRP : 1,
+        selling_price : 1,
+        discount_limit : 1,
+        range : 1,
+    })
     .then((response)=>{
         if(response !== null)
         {

@@ -70,8 +70,8 @@ exports.deleteStock = async (req,res)=>{
 exports.preview = async (req,res)=>{
 
     product.findOne(req.query,{
+           _id : 0,
             SKU : 1,
-            _id : 0,
             product_title : 1,
             category_name : 1,
             seo_title : 1,
