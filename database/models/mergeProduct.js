@@ -36,6 +36,7 @@ const mergeproducts = mongoose.Schema({
     dispatch_time : {required : true, type : String},
     status : {required : true, type : Boolean},
     returnDays : {type : Number},
+    warehouse : { type : String},
     COD : {type : Boolean},
     returnable : {type : Boolean},
 })

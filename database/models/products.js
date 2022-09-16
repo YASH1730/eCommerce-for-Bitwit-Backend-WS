@@ -16,7 +16,7 @@ const product = mongoose.Schema({
     featured_image : {required : true, type : String},
     specification_image : {required : true, type : String},
     primary_material : {required : true, type : String},
-    warehouse : {required : true, type : String},
+    warehouse : {type : String},
     primary_material_name : {required : true, type : String},
     length_main : { type : Number},
     breadth : { type : Number},
