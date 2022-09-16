@@ -23,7 +23,7 @@ req.body.primaryMaterial_image = `${official}/${req.files['primaryMaterial_image
 
   await data.save()
     .then(() => {
-      res.send({message : 'Primary Material Added Successfully !!!'})
+      res.send({message : 'Material Added Successfully !!!'})
     })
     .catch((error) => {
       console.log(error)
@@ -63,7 +63,7 @@ req.body.primaryMaterial_image = `${official}/${req.files['primaryMaterial_image
   await primaryMaterial.findOneAndUpdate({ _id: req.body._id }, req.body)
       .then((data) => {
         if (data)
-          return res.status(200).send({ message: 'Primary Material is updated successfully.' })
+          return res.status(200).send({ message: 'Material is updated successfully.' })
         else
           return res.status(203).send({ message: 'No entries found' })
       })

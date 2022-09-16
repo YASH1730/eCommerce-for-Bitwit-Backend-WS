@@ -16,6 +16,7 @@ const order = mongoose.Schema({
    paid : {type : Number}, 
    total : {type : Number}, 
    discount : {type : Number}, 
+   note : {type : String}
    
 })
 

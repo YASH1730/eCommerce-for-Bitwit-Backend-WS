@@ -19,8 +19,7 @@ console.log(req.body)
     })
     .catch((error) => {
       console.log(error)
-      res.status(203);
-      res.send({message : 'Duplicate Door !!!'})
+      res.status(203).send({message : 'Duplicate Door !!!'})
     })
 
 }
