@@ -232,6 +232,13 @@ route.get('/getLastOrder', order.getLastOrder);
 // get customer catalog 
 route.get('/customerCatalog', order.customerCatalog);
 
+// add Custom product
+route.post('/addCustomProduct', AuthJwt,upload, order.addCustomProduct);
+
+// get last Custom product
+route.get('/getLastCp', AuthJwt,order.getLastCp);
+
+
 // ================== sub categories Routes =============================
 
 
@@ -416,16 +423,12 @@ route.patch("/updateBlog", AuthJwt, upload, blog.updateBlog)
 
 // ====================== For like Blog =========================
 
-
 // post like
 route.post("/like", AuthJwt, upload, like.like)
 
 // get like
 
 route.get("/getLike", AuthJwt, upload, like.like)
-
-// ====================== For review Blog =========================
-
 
 // post comment
 

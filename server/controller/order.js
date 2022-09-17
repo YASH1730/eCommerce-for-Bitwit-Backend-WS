@@ -1,5 +1,6 @@
 const order = require("../../database/models/order");
 const customer = require("../../database/models/customer");
+const cp = require("../../database/models/customProduct");
 const { v4: uuidv4 } = require('uuid');
 
 // ================================================= Apis for order ======================================================= 
@@ -45,7 +46,7 @@ exports.listOrder = async(req,res) => {
 
 exports.getLastOrder = async(req,res)=>{
  
-   await order.find({},'OID')
+   await order.find({},{_id : 0, OID : 1})
    .sort({_id:-1})
    .limit(1)
    .then((response)=>{
@@ -59,7 +60,7 @@ exports.getLastOrder = async(req,res)=>{
        }
    })
    .catch((err)=>{
-      //  console.log(err)
+       console.log(err)
       res.status(404).send({message : 'Some error occurred !!!'})
    })
   
@@ -125,3 +126,50 @@ exports.deleteOrder = async (req,res)=>{
       res.send(response)
    })
 }
+
+// custom order apis
+exports.addCustomProduct = async (req,res)=>{
+
+   console.log(req.files)
+   if (req.files['product_image'] !== undefined)
+   {
+      req.body.product_image = req.files['product_image'].map((val)=>{
+               return `${process.env.official}/${val.path}`
+       })
+   }
+
+   console.log(req.body)
+   const data =  cp(req.body)
+   data.save()
+   .then((response)=>{
+     return  res.send('Custom Product added !!!')
+   })
+   .catch((err)=>{
+      console.log(err);
+      return res.status(404).send('Something Went Wrong')
+   })
+}
+
+// get last cp 
+
+exports.getLastCp = async(req,res)=>{
+ 
+   await cp.find({},{_id : 0, CUS : 1})
+   .sort({_id:-1})
+   .limit(1)
+   .then((response)=>{
+       if(response !== null)
+       {
+           res.send(response);
+       }
+       else{
+           res.status(203).send('CUS-01001')
+       }
+   })
+   .catch((err)=>{
+      //  console.log(err)
+      res.status(404).send({message : 'Some error occurred !!!'})
+   })
+  
+  }
+  

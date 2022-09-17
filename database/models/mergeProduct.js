@@ -33,7 +33,6 @@ const mergeproducts = mongoose.Schema({
     selling_price : {required : true, type : Number},
     showroom_price : {required : true, type : Number},
     discount_limit : {required : true, type : Number},
-    dispatch_time : {required : true, type : String},
     status : {required : true, type : Boolean},
     returnDays : {type : Number},
     warehouse : { type : String},
