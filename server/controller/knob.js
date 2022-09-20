@@ -9,7 +9,7 @@ const knob = require("../../database/models/knob");
 
 exports.addKnob = async (req, res) => {
 
-console.log(req.body)
+//console.log(req.body)
 
   const data = knob(req.body)
 
@@ -18,7 +18,7 @@ console.log(req.body)
       res.send({message : 'Knob Added successfully !!!'})
     })
     .catch((error) => {
-      console.log(error)
+      //console.log(error)
       res.status(203);
       res.send({message : 'Duplicate knob !!!'})
     })
@@ -58,6 +58,7 @@ exports.editKnob = async (req, res) => {
           return res.status(203).send({ message: 'No entries found' })
       })
       .catch((error) => {
+        console.log(error)
         return res.status(203).send(error)
       })
 
@@ -67,10 +68,10 @@ exports.editKnob = async (req, res) => {
 
 // exports.deleteCategory = async (req,res) =>{
 
-//   // console.log(req.query)
+//   // //console.log(req.query)
 
 //    await categories.deleteOne({_id : req.query.ID}).then((data)=>{
-//     // console.log(data)
+//     // //console.log(data)
 //     res.send({massage : 'Category deleted !!!'})
 //   })
 
@@ -80,15 +81,15 @@ exports.editKnob = async (req, res) => {
 // for Changing the Status of the category
 
 exports.changeKnobStatus = async(req,res) =>{
-  console.log(req.body)
+  //console.log(req.body)
   await knob.findByIdAndUpdate({_id : req.body._id},req.body)
   .then((data)=>{
-      console.log(data)
+      //console.log(data)
       res.send('all okay')
   })
 
   .catch((err)=>{
-      console.log(err)
+      //console.log(err)
       res.status(203).send('Something went Wrong !!!')
   })
 }

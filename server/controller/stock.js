@@ -5,32 +5,32 @@ const product = require("../../database/models/products");
 
 exports.addStock = async(req,res)=>{
 
-    console.log(req.body);
+    //console.log(req.body);
 
     // this will check the row is exist or if yes then update it or insert it on not  
     await stock.findOneAndUpdate({product_id : req.body.product_id, warehouse : req.body.warehouse  },req.body,{upsert : true})
     .then((response)=>{
-        console.log(response)
+        //console.log(response)
       return  res.send({message : 'Stock Added !!!'})
     })
     .catch((err)=>{
-        console.log(err)
+        //console.log(err)
        return res.status(404).send('Something Went Wrong !!!')
     })
 
 }
 exports.updateStock = async(req,res)=>{
 
-    console.log(req.body);
+    //console.log(req.body);
 
     // this will check the row is exist or if yes then update it or insert it on not  
     await stock.findOneAndUpdate({product_id : req.body.product_id, warehouse : req.body.warehouse  },req.body,{upsert : true})
     .then((response)=>{
-        console.log(response)
+        //console.log(response)
       return  res.send({message : 'Stock Updated Successfully !!!'})
     })
     .catch((err)=>{
-        console.log(err)
+        //console.log(err)
        return res.status(404).send('Something Went Wrong !!!')
     })
 
@@ -52,7 +52,7 @@ exports.deleteStock = async (req,res)=>{
 
         await stock.deleteOne(req.query)
         .then((response)=>{
-            console.log(response)
+            //console.log(response)
             if (response.deletedCount > 0)
                 return res.send({message : 'Stock Deleted !!!'})
             else 
@@ -90,14 +90,14 @@ exports.preview = async (req,res)=>{
             range : 1,
     })
     .then((response)=>{
-        console.log(response)
+        //console.log(response)
         if (response)
         return res.send(response);
 
         return res.send({message : 'No product found !!!'})
     })
     .catch((err)=>{
-        console.log(err);
+        //console.log(err);
         res.status(500).send('Something Went Wrong !!!')
     })
 

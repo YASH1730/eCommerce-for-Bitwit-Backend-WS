@@ -10,7 +10,7 @@ const { v4: uuidv4 } = require('uuid');
 
 exports.placeOrder = async(req,res) => {
 
-   console.log(req.body)
+   //console.log(req.body)
 
    if(req.body.CID === null) req.body.CID = 'Not Registered';
 
@@ -18,11 +18,11 @@ exports.placeOrder = async(req,res) => {
 
    data.save()
    .then((response)=>{
-      console.log(response)
+      //console.log(response)
       res.send({message : 'Order Added !!!'})
    })
    .catch((err)=>{
-      console.log(err)
+      //console.log(err)
       res.status(404).send({message : 'Something Went Wrong !!!'})
    })
    
@@ -52,7 +52,7 @@ exports.getLastOrder = async(req,res)=>{
    .then((response)=>{
        if(response !== null)
        {
-         //   console.log(response);
+         //   //console.log(response);
            res.send(response);
        }
        else{
@@ -60,7 +60,7 @@ exports.getLastOrder = async(req,res)=>{
        }
    })
    .catch((err)=>{
-       console.log(err)
+       //console.log(err)
       res.status(404).send({message : 'Some error occurred !!!'})
    })
   
@@ -84,15 +84,15 @@ exports.searchOrder = async(req,res) => {
 // for Changing the Status of the Order
 
 exports.changeOrderStatus = async(req,res) =>{
-   console.log(req.body)
+   //console.log(req.body)
    await order.findByIdAndUpdate({_id : req.body._id},{status : req.body.status})
    .then((data)=>{
-       console.log(data)
+       //console.log(data)
        res.send('all okay')
    })
  
    .catch((err)=>{
-       console.log(err)
+       //console.log(err)
        res.status(203).send('Something went wrong !!!')
    })
  }
@@ -113,7 +113,7 @@ exports.customerCatalog = async (req,res)=>{
       return res.status(203).send([])
    })
    .catch((err)=>{
-      console.log(err)
+      //console.log(err)
       res.status(404).send({message : 'Something Went Wrong !!!'})
    })
 
@@ -130,7 +130,7 @@ exports.deleteOrder = async (req,res)=>{
 // custom order apis
 exports.addCustomProduct = async (req,res)=>{
 
-   console.log(req.files)
+   //console.log(req.files)
    if (req.files['product_image'] !== undefined)
    {
       req.body.product_image = req.files['product_image'].map((val)=>{
@@ -138,14 +138,14 @@ exports.addCustomProduct = async (req,res)=>{
        })
    }
 
-   console.log(req.body)
+   //console.log(req.body)
    const data =  cp(req.body)
    data.save()
    .then((response)=>{
      return  res.send('Custom Product added !!!')
    })
    .catch((err)=>{
-      console.log(err);
+      //console.log(err);
       return res.status(404).send('Something Went Wrong')
    })
 }
@@ -158,7 +158,8 @@ exports.getLastCp = async(req,res)=>{
    .sort({_id:-1})
    .limit(1)
    .then((response)=>{
-       if(response !== null)
+      //console.log(response) 
+      if(response !== null)
        {
            res.send(response);
        }
@@ -167,7 +168,7 @@ exports.getLastCp = async(req,res)=>{
        }
    })
    .catch((err)=>{
-      //  console.log(err)
+       //console.log(err)
       res.status(404).send({message : 'Some error occurred !!!'})
    })
   

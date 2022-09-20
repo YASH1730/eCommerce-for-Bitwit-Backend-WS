@@ -23,8 +23,8 @@ const Door = require("./controller/door");
 const Handle = require("./controller/handle");
 const Gallery = require("./controller/gallery");
 const blog = require("./controller/blog");
-const like = require("./controller/like");
-const review = require("./controller/review");
+// const like = require("./controller/like");
+// const review = require("./controller/review");
 const draft = require("./controller/draft");
 const fabric = require("./controller/fabric");
 const textile = require("./controller/textile");
@@ -37,7 +37,7 @@ const storage = multer.diskStorage({
         cb(null, './upload/');
     },
     filename: function(req, file, cb) {
-        cb(null, new Date().toISOString() + "_" + file.originalname);
+        cb(null,file.originalname);
     }
 });
 
@@ -79,10 +79,10 @@ function encode(req, res, next) {
 
     bcrypt.genSalt(saltRounds, (err, salt) => {
         bcrypt.hash(req.body.password, salt, function(err, hash) {
-            // console.log(">>>>>", hash);
+            // //console.log(">>>>>", hash);
             if (hash !== null) {
                 req.body.password = hash;
-                console.log(req.body.password);
+                //console.log(req.body.password);
                 next();
             }
         });
@@ -96,7 +96,7 @@ route.use(bodyParser.json());
 // Middleware For Authentication
 
 function AuthJwt(req, res, next) {
-    // console.log(req.headers)
+    // //console.log(req.headers)
 
     if (req.headers.authorization === undefined) return res.sendStatus(401);
 
@@ -424,15 +424,15 @@ route.patch("/updateBlog", AuthJwt, upload, blog.updateBlog)
 // ====================== For like Blog =========================
 
 // post like
-route.post("/like", AuthJwt, upload, like.like)
+// route.post("/like", AuthJwt, upload, like.like)
 
 // get like
 
-route.get("/getLike", AuthJwt, upload, like.like)
+// route.get("/getLike", AuthJwt, upload, like.like)
 
 // post comment
 
-route.post("/comment", AuthJwt, upload, review.comment)
+// route.post("/comment", AuthJwt, upload, review.comment)
 
 // ==================== Draft ===============================
 

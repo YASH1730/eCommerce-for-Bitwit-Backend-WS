@@ -12,7 +12,7 @@ const official  = 'https://woodshala.in'
 
 exports.addFabric = async (req, res) => {
 
-  console.log(req.files['fabric_image'])
+  //console.log(req.files['fabric_image'])
 
   if (req.files['fabric_image'] === undefined) return res.status(203).send({message : 'Fabric Image Is Required !!!'})
   req.body.fabric_image = `${official}/${req.files['fabric_image'][0].path}` 
@@ -24,7 +24,7 @@ exports.addFabric = async (req, res) => {
     res.send({message : 'Fabric Added successfully !!!'})
   })
   .catch((error) => {
-    console.log(error)
+    //console.log(error)
     res.status(203);
     res.send({message : 'Duplicate Fabric !!!'})
   })
@@ -54,8 +54,8 @@ exports.getFabric = async (req, res) => {
 
 exports.editFabric = async (req, res) => {
 
-  console.log(req.body);
-  console.log(req.files['fabric_image'])
+  //console.log(req.body);
+  //console.log(req.files['fabric_image'])
 
   if (req.files['fabric_image'] !== undefined) 
       req.body.fabric_image = `${official}/${req.files['fabric_image'][0].path}` 
@@ -70,7 +70,7 @@ exports.editFabric = async (req, res) => {
           return res.status(203).send({ message: 'No entries found' })
       })
       .catch((error) => {
-        console.log(error)
+        //console.log(error)
         return res.status(203).send({message : 'Something went wrong !!!'})
       })
 
@@ -80,7 +80,7 @@ exports.editFabric = async (req, res) => {
 
 exports.deleteFabric = async (req,res) =>{
 
-  // console.log(req.query)
+  // //console.log(req.query)
 
    await fabric.deleteOne({_id : req.query.ID}).then((data)=>{
     
@@ -93,15 +93,15 @@ exports.deleteFabric = async (req,res) =>{
 // for Changing the Status of the fabric
 
 exports.changeFabricStatus = async(req,res) =>{
-  console.log(req.body)
+  //console.log(req.body)
   await fabric.findByIdAndUpdate({_id : req.body._id},{fabric_status : req.body.fabric_status})
   .then((data)=>{
-      console.log(data)
+      //console.log(data)
       res.send('all okay')
   })
 
   .catch((err)=>{
-      console.log(err)
+      //console.log(err)
       res.status(203).send('Something went wrong !!!')
   })
 }

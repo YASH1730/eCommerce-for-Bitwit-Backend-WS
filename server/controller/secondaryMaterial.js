@@ -11,7 +11,7 @@ const loacalBaseUrl = 'http://localhost:8000'
 
 exports.addSecondaryMaterial = async (req, res) => {
 
-console.log(req.body)
+//console.log(req.body)
 
   const data = secondaryMaterial(req.body)
 
@@ -20,7 +20,7 @@ console.log(req.body)
       res.send({message : 'Secondary Material Added successfully !!!'})
     })
     .catch((error) => {
-      console.log(error)
+      //console.log(error)
       res.status(203);
       res.send({message : 'Duplicate Category !!!'})
     })
@@ -50,7 +50,7 @@ exports.getSecondaryMaterial = async (req, res) => {
 
 exports.editSecondaryMaterial = async (req, res) => {
 
-  console.log(req.body);
+  //console.log(req.body);
   
 
   await secondaryMaterial.findOneAndUpdate({ _id: req.body._id }, req.body)
@@ -70,10 +70,10 @@ exports.editSecondaryMaterial = async (req, res) => {
 
 exports.deleteCategory = async (req,res) =>{
 
-  // console.log(req.query)
+  // //console.log(req.query)
 
    await categories.deleteOne({_id : req.query.ID}).then((data)=>{
-    // console.log(data)
+    // //console.log(data)
     res.send({massage : 'Category deleted !!!'})
   })
 
@@ -83,15 +83,15 @@ exports.deleteCategory = async (req,res) =>{
 // for Changing the Status of the category
 
 exports.changeSecondaryMaterialStatus = async(req,res) =>{
-  console.log(req.body)
+  //console.log(req.body)
   await secondaryMaterial.findByIdAndUpdate({_id : req.body._id},{secondaryMaterial_status : req.body.secondaryMaterial_status})
   .then((data)=>{
-      console.log(data)
+      //console.log(data)
       res.send('all okay')
   })
 
   .catch((err)=>{
-      console.log(err)
+      //console.log(err)
       res.status(203).send('Something went wrong !!!')
   })
 }

@@ -8,9 +8,9 @@ const official = 'https://woodshala.in'
 // Add Products 
 
 exports.addProduct = async (req, res) => {
-    console.log(req.files);
+    //console.log(req.files);
 
-    // console.log(req.files['product_image'])
+    // //console.log(req.files['product_image'])
 
     if (req.files['specification_image'] === undefined || req.files['featured_image'] === undefined || req.files['product_image'] === undefined) return res.status(203).send({ message: 'Please Provide the required images !!!' })
 
@@ -30,17 +30,17 @@ exports.addProduct = async (req, res) => {
     req.body.specification_image = `${official}/${req.files['specification_image'][0].path}`;
 
 
-    console.log(req.body);
+    //console.log(req.body);
 
     const data = product(req.body);
 
     await data.save()
         .then((response) => {
-            console.log(response)
+            //console.log(response)
             res.send({ message: 'Product added successfully !!!' })
         })
         .catch((err) => {
-            console.log(err)
+            //console.log(err)
             res.status(203).send({ message: 'Some error occurred !!!' })
 
         })
@@ -53,11 +53,11 @@ exports.addProduct = async (req, res) => {
 exports.getListProduct = async (req, res) => {
     await product.find()
         .then((response) => {
-            //   console.log(response)
+            //   //console.log(response)
             res.send(response)
         })
         .catch((err) => {
-            // console.log(err)
+            // //console.log(err)
             res.send("Not Done !!!")
         })
 }
@@ -72,7 +72,7 @@ exports.getLastProduct = async (req, res) => {
         .limit(1)
         .then((response) => {
             if (response !== null) {
-                //  console.log(response);
+                //  //console.log(response);
                 res.send(response);
             }
             else {
@@ -80,7 +80,7 @@ exports.getLastProduct = async (req, res) => {
             }
         })
         .catch((err) => {
-            //  console.log(err)
+            //  //console.log(err)
             res.status(203).send({ message: 'Some error occurred !!!' })
         })
 
@@ -102,8 +102,8 @@ exports.deleteProduct = async (req, res) => {
 // update products 
 
 exports.updateProduct = async (req, res) => {
-    console.log(req.body);
-    console.log(req.files);
+    //console.log(req.body);
+    //console.log(req.files);
 
     if (req.files['featured_image'] !== undefined)
         req.body.featured_image = `${official}/${req.files['featured_image'][0].path}`;
@@ -116,14 +116,14 @@ exports.updateProduct = async (req, res) => {
 
     await product.findOneAndUpdate({ _id: req.body._id }, req.body)
         .then((data) => {
-            console.log(data)
+            //console.log(data)
             if (data)
                 return res.status(200).send({ message: 'Product is updated successfully.' })
             else
                 return res.status(203).send({ message: 'No entries found' })
         })
         .catch((error) => {
-            console.log(error)
+            //console.log(error)
             return res.status(203).send('Something Went Wrong')
         })
 }
@@ -145,7 +145,7 @@ exports.updateBulk = async (req, res) => {
             res.status(200).send({ message: 'Product is updated successfully.' })
         })
         .catch((error) => {
-            console.log(error)
+            //console.log(error)
             res.status(203).send('Something Went Wrong')
 
         })
@@ -179,7 +179,7 @@ exports.getPresentSKUs = async (req, res) => {
             }
         })
         .catch((err) => {
-            //  console.log(err)
+            //  //console.log(err)
             res.status(203).send({ message: 'Some error occurred !!!' })
         })
 

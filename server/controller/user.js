@@ -18,7 +18,7 @@ exports.home = (req, res) => {
 exports.delete = async(req,res)=>{
     userDB.deleteOne({'_id':req.query._id})
     .then((data)=>{
-        console.log(data)
+        //console.log(data)
         res.send(data)
     })
 }
@@ -36,7 +36,7 @@ exports.register = async(req, res) => {
             return res.status(200).send(req.body);
         })
         .catch((err) => {
-            console.log({ err });
+            //console.log({ err });
             return res.status(203).send({ massage: "User Not Added !!!" });
         });
 };
@@ -46,7 +46,7 @@ exports.register = async(req, res) => {
 // function for generate JWT
 
 function generateJWT(data) {
-    // console.log(process.env.JWT_Secrete)
+    // //console.log(process.env.JWT_Secrete)
     const token = JWT.sign(data,process.env.JWT_Secrete);
     return token;
 }
@@ -54,16 +54,16 @@ function generateJWT(data) {
 
 exports.login = (req, res) => {
 
-    console.log(req.body)
+    //console.log(req.body)
     if (req.body.email === undefined || req.body.password === undefined) return res.status(203).send('Please provides the vaild data')
 
     userDB
         .findOne({ email: req.body.email })
         .then((data) => {
-            console.log(data)
+            //console.log(data)
             if (data != null) {
                 bcrypt.compare(req.body.password, data.password, function(err, result) {
-                    console.log(req.body.role,data.role)
+                    //console.log(req.body.role,data.role)
 
                     if (result === true) {
                         
@@ -71,8 +71,8 @@ exports.login = (req, res) => {
                             return res.status(203).send({ message: "Incorrect Role !!!" })
                         
                         let token = generateJWT(req.body);
-                        console.log(data)
-                        console.log("User Found !!!", data);
+                        //console.log(data)
+                        //console.log("User Found !!!", data);
                         return res.send({ message: "Log In Successfully !!!", token, name: data.user_Name, email: data.email, role : data.role })
 
                     } else
@@ -83,7 +83,7 @@ exports.login = (req, res) => {
             }
         })
         .catch((err) => {
-            console.log({ message: "User Not Found !!!", err });
+            //console.log({ message: "User Not Found !!!", err });
             return res.status(203).send({ message: "User Not Found !!!", err })
         })
 

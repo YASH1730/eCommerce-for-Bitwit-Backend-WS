@@ -9,7 +9,7 @@ const fitting = require("../../database/models/fitting");
 
 exports.addFitting = async (req, res) => {
 
-console.log(req.body)
+//console.log(req.body)
 
   const data = fitting(req.body)
 
@@ -18,7 +18,7 @@ console.log(req.body)
       res.send({message : 'Fitting Added successfully !!!'})
     })
     .catch((error) => {
-      console.log(error)
+      //console.log(error)
       res.status(203);
       res.send({message : 'Duplicate Fitting !!!'})
     })
@@ -48,7 +48,7 @@ exports.getFitting = async (req, res) => {
 
 exports.editFitting = async (req, res) => {
 
-  console.log(req.body);
+  //console.log(req.body);
 
   await fitting.findOneAndUpdate({ _id: req.body._id }, req.body)
       .then((data) => {
@@ -67,10 +67,10 @@ exports.editFitting = async (req, res) => {
 
 // exports.deleteCategory = async (req,res) =>{
 
-//   // console.log(req.query)
+//   // //console.log(req.query)
 
 //    await categories.deleteOne({_id : req.query.ID}).then((data)=>{
-//     // console.log(data)
+//     // //console.log(data)
 //     res.send({massage : 'Category deleted !!!'})
 //   })
 
@@ -80,15 +80,15 @@ exports.editFitting = async (req, res) => {
 // for Changing the Status of the category
 
 exports.changeFittingStatus = async(req,res) =>{
-  console.log(req.body)
+  //console.log(req.body)
   await fitting.findByIdAndUpdate({_id : req.body._id},req.body)
   .then((data)=>{
-      console.log(data)
+      //console.log(data)
       res.send('all okay')
   })
 
   .catch((err)=>{
-      console.log(err)
+      //console.log(err)
       res.send('Something went wrong !!!')
   })
 }

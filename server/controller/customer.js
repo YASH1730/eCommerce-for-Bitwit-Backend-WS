@@ -16,7 +16,7 @@ const official = "https://woodshala.in";
 exports.addCustomer = async(req,res) => {   
     req.body.CID = `CID-${uuidv4()}`
 
-    console.log(req.files)
+    //console.log(req.files)
 
   if (req.files['profile_image'] !== undefined) 
   req.body.profile_image = `${official}/${req.files['profile_image'][0].path}` 
@@ -24,7 +24,7 @@ exports.addCustomer = async(req,res) => {
 
     req.body.password = crypt.encrypt(req.body.password);
 
-    console.log(req.body);
+    //console.log(req.body);
     // mongodb+srv://woodsala:woodsala2022@woodsala.unthc.mongodb.net/woodSala?retryWrites=true&w=majority
     const data = customer(req.body);
     await data.save(req.body)
@@ -32,7 +32,7 @@ exports.addCustomer = async(req,res) => {
        return res.status(200).send({message : 'Customer added successfully !!!'});
     })
     .catch((err)=>{
-      console.log(err)
+      //console.log(err)
        return res.status(400).send({message : 'Duplicate entries are not allowed !!!'})
     })
 }
@@ -43,7 +43,7 @@ exports.listCustomer = async(req,res) => {
 
     await customer.find({$sort: { register_time : -1 }})
     .then((response)=>{
-      // console.log(response)
+      // //console.log(response)
        return res.status(200).send(response);
     })
     .catch((err)=>{
@@ -54,7 +54,7 @@ exports.listCustomer = async(req,res) => {
 // get delete customer
 
 exports.deleteCustomer = async(req,res) => {   
-    console.log(req.query)
+    //console.log(req.query)
     await customer.deleteOne(req.query)
     .then((response)=>{
        return res.status(200).send(response);
@@ -81,15 +81,15 @@ exports.searchCustomer = async(req,res) => {
 // for Changing the Status of the Customer
 
 exports.changeCustomerStatus = async(req,res) =>{
-  //  console.log(req.body)
+  //  //console.log(req.body)
    await customer.findByIdAndUpdate({_id : req.body._id},{status : req.body.status})
    .then((data)=>{
-       console.log(data)
+       //console.log(data)
        res.send('all okay')
    })
  
    .catch((err)=>{
-       console.log(err)
+       //console.log(err)
        res.status(203).send('Something went wrong !!!')
    })
  }
@@ -100,8 +100,8 @@ exports.changeCustomerStatus = async(req,res) =>{
 
 exports.updateCustomer = async (req, res) => {
 
-   console.log(req.body);
-   console.log(req.files['profile_image'])
+   //console.log(req.body);
+   //console.log(req.files['profile_image'])
  
    if (req.files['profile_image'] !== undefined) 
        req.body.profile_image = `${official}/${req.files['profile_image'][0].path}` 
@@ -115,7 +115,7 @@ exports.updateCustomer = async (req, res) => {
            return res.status(203).send({ message: 'No entries found' })
        })
        .catch((error) => {
-         console.log(error)
+         //console.log(error)
          return res.status(203).send({message : 'Something went wrong !!!'})
        })
  

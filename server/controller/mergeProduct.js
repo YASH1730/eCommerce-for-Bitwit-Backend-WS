@@ -8,9 +8,9 @@ const official = 'https://woodshala.in'
 // Add merges 
 
 exports.addMergeProduct = async (req, res) => {
-    console.log(req.files);
+    //console.log(req.files);
 
-    // console.log(req.files['merge_image'])
+    // //console.log(req.files['merge_image'])
 
     if (req.files['specification_image'] === undefined || req.files['featured_image'] === undefined || req.files['product_image'] === undefined) return res.status(203).send({ message: 'Please Provide the required images !!!' })
 
@@ -29,17 +29,17 @@ exports.addMergeProduct = async (req, res) => {
 
     req.body.specification_image = `${official}/${req.files['specification_image'][0].path}`;
 
-    console.log(req.body);
+    //console.log(req.body);
 
     const data = merge(req.body);
 
     await data.save()
         .then((response) => {
-            console.log(response)
+            //console.log(response)
             res.send({ message: 'Merge added successfully !!!' })
         })
         .catch((err) => {
-            console.log(err)
+            //console.log(err)
             res.status(203).send({ message: 'Some error occurred !!!' })
         })
 }
@@ -49,11 +49,11 @@ exports.addMergeProduct = async (req, res) => {
 exports.getListMergeProduct = async (req, res) => {
     await merge.find()
         .then((response) => {
-            //   console.log(response)
+            //   //console.log(response)
             res.send(response)
         })
         .catch((err) => {
-            // console.log(err)
+            // //console.log(err)
             res.send("Not Done !!!")
         })
 }
@@ -75,7 +75,7 @@ exports.getLastMergeProduct = async (req, res) => {
             }
         })
         .catch((err) => {
-            //  console.log(err)
+            //  //console.log(err)
             res.status(203).send({ message: 'Some error occurred !!!' })
         })
 
@@ -97,8 +97,8 @@ exports.deleteMergeProduct = async (req, res) => {
 // update merges 
 
 exports.updateMergeProduct = async (req, res) => {
-    console.log(req.body);
-    console.log(req.files);
+    //console.log(req.body);
+    //console.log(req.files);
 
     if (req.files['featured_image'] !== undefined)
         req.body.featured_image = `${official}/${req.files['featured_image'][0].path}`;
@@ -117,7 +117,7 @@ exports.updateMergeProduct = async (req, res) => {
                 return res.status(203).send({ message: 'No entries found' })
         })
         .catch((error) => {
-            console.log(error)
+            //console.log(error)
             return res.status(203).send('Something Went Wrong')
         })
 }
@@ -139,7 +139,7 @@ exports.updateBulk = async (req, res) => {
             res.status(200).send({ message: 'Merge Product is updated successfully.' })
         })
         .catch((error) => {
-            console.log(error)
+            //console.log(error)
             res.status(203).send('Something Went Wrong')
 
         })

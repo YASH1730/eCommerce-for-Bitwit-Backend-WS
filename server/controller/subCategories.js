@@ -12,7 +12,7 @@ const LocalBaseUrl = 'http://localhost:8000'
 
 exports.addSubCatagories = async (req, res) => {
 
-console.log(req.body)
+//console.log(req.body)
 
   const data = subCategories(req.body)
 
@@ -25,7 +25,7 @@ console.log(req.body)
           res.send({message : 'Sub Categories Added successfully !!!'})
         })
         .catch((error) => {
-          console.log(error)
+          //console.log(error)
           res.status(203);
           res.send({message : 'Duplicate Sub Category !!!'})
         })
@@ -37,7 +37,7 @@ console.log(req.body)
 
   })
   .catch((error) => {
-    console.log(error)
+    //console.log(error)
     res.status(203);
     res.send({message : 'Something went wrong'})
   })
@@ -68,8 +68,6 @@ exports.getSubCatagories = async (req, res) => {
 exports.editSubCatagories = async (req, res) => {
 
   console.log(req.body);
-  
-
   await subCategories.findOneAndUpdate({ _id: req.body._id }, req.body)
       .then((data) => {
         if (data)
@@ -87,10 +85,10 @@ exports.editSubCatagories = async (req, res) => {
 
 exports.deleteCategory = async (req,res) =>{
 
-  // console.log(req.query)
+  // //console.log(req.query)
 
    await categories.deleteOne({_id : req.query.ID}).then((data)=>{
-    // console.log(data)
+    // //console.log(data)
     res.send({massage : 'Category deleted !!!'})
   })
 
@@ -100,15 +98,15 @@ exports.deleteCategory = async (req,res) =>{
 // for Changing the Status of the category
 
 exports.changeSubStatus = async(req,res) =>{
-  console.log(req.body)
+  //console.log(req.body)
   await subCategories.findByIdAndUpdate({_id : req.body._id},{sub_category_status : req.body.sub_category_status})
   .then((data)=>{
-      console.log(data)
+      //console.log(data)
       res.send('all okay')
   })
 
   .catch((err)=>{
-      console.log(err)
+      //console.log(err)
       res.status(203).send('Something went wrong !!!')
   })
 }

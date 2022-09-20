@@ -9,7 +9,7 @@ const Door = require("../../database/models/door");
 
 exports.addDoor = async (req, res) => {
 
-console.log(req.body)
+//console.log(req.body)
 
   const data = Door(req.body)
 
@@ -18,7 +18,7 @@ console.log(req.body)
       res.send({message : 'Door Added successfully !!!'})
     })
     .catch((error) => {
-      console.log(error)
+      //console.log(error)
       res.status(203).send({message : 'Duplicate Door !!!'})
     })
 
@@ -47,7 +47,7 @@ exports.getDoor = async (req, res) => {
 
 exports.editDoor = async (req, res) => {
 
-  console.log(req.body);
+  //console.log(req.body);
 
   await Door.findOneAndUpdate({ _id: req.body._id }, req.body)
       .then((data) => {
@@ -66,10 +66,10 @@ exports.editDoor = async (req, res) => {
 
 // exports.deleteCategory = async (req,res) =>{
 
-//   // console.log(req.query)
+//   // //console.log(req.query)
 
 //    await categories.deleteOne({_id : req.query.ID}).then((data)=>{
-//     // console.log(data)
+//     // //console.log(data)
 //     res.send({massage : 'Category deleted !!!'})
 //   })
 
@@ -79,15 +79,15 @@ exports.editDoor = async (req, res) => {
 // for Changing the Status of the category
 
 exports.changeDoorStatus = async(req,res) =>{
-  console.log(req.body)
+  //console.log(req.body)
   await Door.findByIdAndUpdate({_id : req.body._id},req.body)
   .then((data)=>{
-      console.log(data)
+      //console.log(data)
       res.send('all okay')
   })
 
   .catch((err)=>{
-      console.log(err)
+      //console.log(err)
       res.send('Something went wrong !!!')
   })
 }

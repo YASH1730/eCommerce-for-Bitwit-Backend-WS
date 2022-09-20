@@ -9,7 +9,7 @@ const polish = require("../../database/models/polish");
 
 exports.addPolish = async (req, res) => {
 
-console.log(req.body)
+//console.log(req.body)
 
   const data = polish(req.body)
 
@@ -18,7 +18,7 @@ console.log(req.body)
       res.send({message : 'Polish Added successfully !!!'})
     })
     .catch((error) => {
-      console.log(error)
+      //console.log(error)
       res.status(203);
       res.send({message : 'Duplicate Polish !!!'})
     })
@@ -67,10 +67,10 @@ exports.editPolish = async (req, res) => {
 
 // exports.deleteCategory = async (req,res) =>{
 
-//   // console.log(req.query)
+//   // //console.log(req.query)
 
 //    await categories.deleteOne({_id : req.query.ID}).then((data)=>{
-//     // console.log(data)
+//     // //console.log(data)
 //     res.send({massage : 'Category deleted !!!'})
 //   })
 
@@ -80,15 +80,15 @@ exports.editPolish = async (req, res) => {
 // for Changing the Status of the category
 
 exports.changePolishStatus = async(req,res) =>{
-  console.log(req.body)
+  //console.log(req.body)
   await polish.findByIdAndUpdate({_id : req.body._id},{polish_status : req.body.polish_status})
   .then((data)=>{
-      console.log(data)
+      //console.log(data)
       res.send('all okay')
   })
 
   .catch((err)=>{
-      console.log(err)
+      //console.log(err)
       res.status(203).send('Something went Wrong !!!')
   })
 }

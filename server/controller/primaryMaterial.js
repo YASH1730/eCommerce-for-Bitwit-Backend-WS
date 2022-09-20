@@ -12,8 +12,8 @@ const official = 'https://woodshala.in'
 
 exports.addPrimaryMaterial = async (req, res) => {
 
-console.log(req.body,req.file)
-console.log(req.files['primaryMaterial_image'])
+//console.log(req.body,req.file)
+//console.log(req.files['primaryMaterial_image'])
 
 if (req.files['primaryMaterial_image'] !== undefined) 
 req.body.primaryMaterial_image = `${official}/${req.files['primaryMaterial_image'][0].path}` 
@@ -26,7 +26,7 @@ req.body.primaryMaterial_image = `${official}/${req.files['primaryMaterial_image
       res.send({message : 'Material Added Successfully !!!'})
     })
     .catch((error) => {
-      console.log(error)
+      //console.log(error)
       res.status(203);
       res.send({message : 'Duplicate Value Found !!!'})
     })
@@ -77,10 +77,10 @@ req.body.primaryMaterial_image = `${official}/${req.files['primaryMaterial_image
 
 exports.deleteCategory = async (req,res) =>{
 
-  // console.log(req.query)
+  // //console.log(req.query)
 
    await categories.deleteOne({_id : req.query.ID}).then((data)=>{
-    // console.log(data)
+    // //console.log(data)
     res.send({massage : 'Material deleted !!!'})
   })
 
@@ -90,15 +90,15 @@ exports.deleteCategory = async (req,res) =>{
 // for Changing the Status of the category
 
 exports.changePrimaryMaterialStatus = async(req,res) =>{
-  console.log(req.body)
+  //console.log(req.body)
   await primaryMaterial.findByIdAndUpdate({_id : req.body._id},{primaryMaterial_status : req.body.primaryMaterial_status})
   .then((data)=>{
-      console.log(data)
+      //console.log(data)
       res.send('all okay')
   })
 
   .catch((err)=>{
-      console.log(err)
+      //console.log(err)
       res.send('Something went Wrong !!!')
   })
 }

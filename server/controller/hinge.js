@@ -9,7 +9,7 @@ const hinge = require("../../database/models/hinge");
 
 exports.addHinge = async (req, res) => {
 
-console.log(req.body)
+//console.log(req.body)
 
   const data = hinge(req.body)
 
@@ -18,7 +18,7 @@ console.log(req.body)
       res.send({message : 'Hinge Added successfully !!!'})
     })
     .catch((error) => {
-      console.log(error)
+      //console.log(error)
       res.status(203);
       res.send({message : 'Duplicate Polish !!!'})
     })
@@ -48,7 +48,7 @@ exports.getHinge = async (req, res) => {
 
 exports.editHinge = async (req, res) => {
 
-  console.log(req.body);
+  //console.log(req.body);
 
   await hinge.findOneAndUpdate({ _id: req.body._id }, req.body)
       .then((data) => {
@@ -67,10 +67,10 @@ exports.editHinge = async (req, res) => {
 
 // exports.deleteCategory = async (req,res) =>{
 
-//   // console.log(req.query)
+//   // //console.log(req.query)
 
 //    await categories.deleteOne({_id : req.query.ID}).then((data)=>{
-//     // console.log(data)
+//     // //console.log(data)
 //     res.send({massage : 'Category deleted !!!'})
 //   })
 
@@ -80,15 +80,15 @@ exports.editHinge = async (req, res) => {
 // for Changing the Status of the category
 
 exports.changeHingeStatus = async(req,res) =>{
-  console.log(req.body)
+  //console.log(req.body)
   await hinge.findByIdAndUpdate({_id : req.body._id},req.body)
   .then((data)=>{
-      console.log(data)
+      //console.log(data)
       res.send('all okay')
   })
 
   .catch((err)=>{
-      console.log(err)
+      //console.log(err)
       res.status(203).send('Something went wrong !!!')
   })
 }

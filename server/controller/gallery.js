@@ -11,13 +11,13 @@ const official  = 'https://woodshala.in'
 
 exports.getGallery = async (req, res) => {
 
-    console.log(req.query)
+    //console.log(req.query)
   await product.find({SKU : req.query.SKU})
     .then((data) => {
 
     
       if (data){
-        console.log(data)
+        //console.log(data)
         res.send(data[0].product_image)}
       else
         res.status(203).send('no entries found')
@@ -35,7 +35,7 @@ exports.getGallery = async (req, res) => {
 
 exports.deleteImage = async (req,res) => {
   
-  console.log(req.query)
+  //console.log(req.query)
   
   await product.findOne({SKU :`WS-${req.query.SKU}`})
 
@@ -50,7 +50,7 @@ exports.deleteImage = async (req,res) => {
 
     await product.findOneAndUpdate({SKU :`WS-${req.query.SKU}`},{product_image : newAarry})
     .then((data)=>{
-      console.log(data);
+      //console.log(data);
       return res.send(req.query.SKU)
     })
 
@@ -60,8 +60,8 @@ exports.deleteImage = async (req,res) => {
 
 exports.updateImage = async (req,res) => {
   
-  console.log(req.files)
-  console.log(req.body)
+  //console.log(req.files)
+  //console.log(req.body)
   
   await product.findOne({SKU :`WS-${req.body.SKU}`})
 
@@ -79,7 +79,7 @@ exports.updateImage = async (req,res) => {
     await product.findOneAndUpdate({SKU :`WS-${req.body.SKU}`},{product_image : newAarry})
 
     .then((data)=>{
-      console.log(data);
+      //console.log(data);
       return res.send({message : 'Image Updated Successfully !!!'})
     })
     .catch((error)=>{
@@ -98,8 +98,8 @@ exports.updateImage = async (req,res) => {
 
 exports.addImage = async (req,res) => {
   
-  console.log(req.files)
-  console.log(req.body)
+  //console.log(req.files)
+  //console.log(req.body)
 
   let image_urls = []
 
@@ -124,23 +124,23 @@ exports.addImage = async (req,res) => {
 
     data.product_image = data.product_image.concat(image_urls)
 
-    console.log(">>>>",data.product_image)
+    //console.log(">>>>",data.product_image)
 
     await product.findOneAndUpdate({SKU :`WS-${req.body.SKU}`},{product_image : data.product_image})
 
     .then((data)=>{
-      console.log(data);
+      //console.log(data);
       return res.send({message : 'Image Added Successfully !!!'})
     })
     .catch((error)=>{
-      console.log(error)
+      //console.log(error)
       return res.status(203).send({message : 'Something Went Wrong'})
       
     })
     
   })
   .catch((error)=>{
-    console.log(error)
+    //console.log(error)
     return res.status(203).send({message : 'Something Went Wrong'})
   })
 }

@@ -4,9 +4,9 @@ const reviewDB = require('../../database/models/review')
 exports.comment = (req,res)=>{
         
     req.body.email = req.user.email;
-    console.log(req.body)
+    //console.log(req.body)
   
-    reviewDB.findOneAndUpdate({uuid : req.body.uuid},{ $push: {review : req.body } }, {upsert: true}).then((res)=>{console.log(res)});
+    reviewDB.findOneAndUpdate({uuid : req.body.uuid},{ $push: {review : req.body } }, {upsert: true}).then((res)=>{//console.log(res)});
 
     res.send({message : 'all okay'})
     
