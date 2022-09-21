@@ -14,8 +14,8 @@ exports.addHinge = async (req, res) => {
   const data = hinge(req.body)
 
   await data.save()
-    .then(() => {
-      res.send({message : 'Hinge Added successfully !!!'})
+    .then((response) => {
+      res.send({message : 'Hinge Added successfully !!!',response})
     })
     .catch((error) => {
       //console.log(error)

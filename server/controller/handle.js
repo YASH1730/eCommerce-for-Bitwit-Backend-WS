@@ -14,8 +14,8 @@ exports.addHandle = async (req, res) => {
   const data = Handle(req.body)
 
   await data.save()
-    .then(() => {
-      res.send({message : 'Handle Added successfully !!!'})
+    .then((response) => {
+      res.send({message : 'Handle Added successfully !!!',response})
     })
     .catch((error) => {
       //console.log(error)

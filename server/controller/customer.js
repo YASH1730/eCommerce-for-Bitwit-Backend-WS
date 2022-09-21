@@ -29,7 +29,7 @@ exports.addCustomer = async(req,res) => {
     const data = customer(req.body);
     await data.save(req.body)
     .then((response)=>{
-       return res.status(200).send({message : 'Customer added successfully !!!'});
+       return res.status(200).send({message : 'Customer added successfully !!!',response});
     })
     .catch((err)=>{
       //console.log(err)

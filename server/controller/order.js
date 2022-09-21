@@ -19,7 +19,7 @@ exports.placeOrder = async(req,res) => {
    data.save()
    .then((response)=>{
       //console.log(response)
-      res.send({message : 'Order Added !!!'})
+      res.send({message : 'Order Added !!!',response})
    })
    .catch((err)=>{
       //console.log(err)

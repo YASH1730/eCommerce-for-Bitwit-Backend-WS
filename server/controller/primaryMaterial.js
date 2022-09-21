@@ -22,8 +22,8 @@ req.body.primaryMaterial_image = `${official}/${req.files['primaryMaterial_image
   const data = primaryMaterial(req.body)
 
   await data.save()
-    .then(() => {
-      res.send({message : 'Material Added Successfully !!!'})
+    .then((response) => {
+      res.send({message : 'Material Added Successfully !!!',response})
     })
     .catch((error) => {
       //console.log(error)

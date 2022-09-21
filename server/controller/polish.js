@@ -14,8 +14,8 @@ exports.addPolish = async (req, res) => {
   const data = polish(req.body)
 
   await data.save()
-    .then(() => {
-      res.send({message : 'Polish Added successfully !!!'})
+    .then((response) => {
+      res.send({message : 'Polish Added successfully !!!',response})
     })
     .catch((error) => {
       //console.log(error)

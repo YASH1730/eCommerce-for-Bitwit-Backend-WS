@@ -21,8 +21,8 @@ exports.addSubCatagories = async (req, res) => {
     if(result === null)
     {
       await data.save()
-        .then(() => {
-          res.send({message : 'Sub Categories Added successfully !!!'})
+        .then((response) => {
+          res.send({message : 'Sub Categories Added successfully !!!',response})
         })
         .catch((error) => {
           //console.log(error)

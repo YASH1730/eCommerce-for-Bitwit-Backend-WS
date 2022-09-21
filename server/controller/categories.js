@@ -13,7 +13,7 @@ const official  = 'https://woodshala.in'
 
 exports.addCatagories = async (req, res) => {
 
-  console.log(req.files['category_image'])
+  //console.log(req.files['category_image'])
 
   if (req.files['category_image'] !== undefined) 
   req.body.category_image = `${official}/${req.files['category_image'][0].path}` 
@@ -25,8 +25,9 @@ exports.addCatagories = async (req, res) => {
     if(result === null)
     {
       await data.save()
-        .then(() => {
-          res.send({message : 'Sub Categories Added successfully !!!'})
+        .then((response) => {
+          //console.log(response)
+          res.send({message : 'Sub Categories Added successfully !!!',response})
         })
         .catch((error) => {
           //console.log(error)
@@ -53,6 +54,7 @@ exports.addCatagories = async (req, res) => {
 exports.getCatagories = async (req, res) => {
 
   await categories.find()
+  .sort({ category_name : 1 })
     .then((data) => {
 
       if (data)

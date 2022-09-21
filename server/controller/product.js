@@ -37,10 +37,10 @@ exports.addProduct = async (req, res) => {
     await data.save()
         .then((response) => {
             //console.log(response)
-            res.send({ message: 'Product added successfully !!!' })
+            res.send({ message: 'Product added successfully !!!',response })
         })
         .catch((err) => {
-            //console.log(err)
+            console.log(err)
             res.status(203).send({ message: 'Some error occurred !!!' })
 
         })

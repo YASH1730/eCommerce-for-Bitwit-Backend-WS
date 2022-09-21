@@ -2,10 +2,15 @@ const { default: mongoose } = require("mongoose");
 const { stringify } = require("nodemon/lib/utils");
 
 const mergeproducts = mongoose.Schema({
+    MS : {required : true, type : String, unique: true},
     SKU : {required : true, type : String, unique: true},
     product_array : {required : true, type : String},
     product_title : {required : true, type : String},
     category_name : { type : String},
+    bangalore_stock : { type : Number},
+    polish_time : { type : Number},
+    jodhpur_stock : { type : Number},
+    manufacturing_time: {required : true, type : String},
     category_id : { type : String},
     sub_category_name : { type : String},
     sub_category_id : {type : String},

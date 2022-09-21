@@ -14,8 +14,8 @@ exports.addDoor = async (req, res) => {
   const data = Door(req.body)
 
   await data.save()
-    .then(() => {
-      res.send({message : 'Door Added successfully !!!'})
+    .then((response) => {
+      res.send({message : 'Door Added successfully !!!',response})
     })
     .catch((error) => {
       //console.log(error)

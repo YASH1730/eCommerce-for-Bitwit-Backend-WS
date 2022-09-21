@@ -11,7 +11,7 @@ exports.addStock = async(req,res)=>{
     await stock.findOneAndUpdate({product_id : req.body.product_id, warehouse : req.body.warehouse  },req.body,{upsert : true})
     .then((response)=>{
         //console.log(response)
-      return  res.send({message : 'Stock Added !!!'})
+      return  res.send({message : 'Stock Added !!!',response})
     })
     .catch((err)=>{
         //console.log(err)

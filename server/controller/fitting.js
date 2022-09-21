@@ -14,8 +14,8 @@ exports.addFitting = async (req, res) => {
   const data = fitting(req.body)
 
   await data.save()
-    .then(() => {
-      res.send({message : 'Fitting Added successfully !!!'})
+    .then((response) => {
+      res.send({message : 'Fitting Added successfully !!!',response})
     })
     .catch((error) => {
       //console.log(error)

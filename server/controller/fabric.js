@@ -20,8 +20,8 @@ exports.addFabric = async (req, res) => {
   const data = fabric(req.body)
 
   await data.save()
-  .then(() => {
-    res.send({message : 'Fabric Added successfully !!!'})
+  .then((response) => {
+    res.send({message : 'Fabric Added successfully !!!',response})
   })
   .catch((error) => {
     //console.log(error)

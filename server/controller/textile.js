@@ -84,7 +84,7 @@ exports.deleteTextile = async (req,res) =>{
   console.log(req.query)
 
    await textile.deleteOne(req.query).then((data)=>{
-    console.log(data)
+    console.log(data)   
     res.send({massage : 'Textile deleted !!!'})
   })
 
