@@ -19,9 +19,9 @@ exports.createBlog = async (req, res) => {
 
   // saving data to db
   await SaveToDb.save()
-    .then((data) => {
+    .then((response) => {
       //console.log("Blog Added Successfully !!!");
-      return res.send({ message: "Blog Added Successfully !!!" });
+      return res.send({ message: "Blog Added Successfully !!!",response});
     })
     .catch((err) => {
       //console.log({ massage: "Blog Not Added !!!", err });
@@ -114,13 +114,13 @@ exports.getBlog = async(req,res) =>{
 // delete specific blog by uuid
 
 exports.deleteBLog = async(req,res) =>{
-  //console.log(req.query)
+  console.log(req.query)
   await blogDB.deleteOne({_id : req.query._id})
   .then((data)=>{
-    res.send({message : 'Blog Deleted Successfully !!!'})
+    return res.send({message : 'Blog Deleted Successfully !!!'})
   })
   .catch((err) => {
-    //console.log(err)
+    // console.log(err)
     return res.status("203").send({ message: "Something Went Wrong !!!" });
   });
 }
