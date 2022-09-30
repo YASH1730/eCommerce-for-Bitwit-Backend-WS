@@ -14,6 +14,7 @@ const product = mongoose.Schema({
     seo_keyword : { type : String},
     product_image : {required : true, type : Array},
     featured_image : {required : true, type : String},
+    mannequin_image : {required : true, type : String},
     specification_image : {required : true, type : String},
     primary_material : {required : true, type : String},
     warehouse : {type : String},

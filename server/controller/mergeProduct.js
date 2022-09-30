@@ -12,7 +12,7 @@ exports.addMergeProduct = async (req, res) => {
 
     // //console.log(req.files['merge_image'])
 
-    if (req.files['specification_image'] === undefined || req.files['featured_image'] === undefined || req.files['product_image'] === undefined) return res.status(203).send({ message: 'Please Provide the required images !!!' })
+    if (req.files['specification_image'] === undefined || req.files['featured_image'] === undefined || req.files['mannequin_image'] === undefined || req.files['product_image'] === undefined) return res.status(203).send({ message: 'Please Provide the required images !!!' })
 
 
     let image_urls = []
@@ -28,6 +28,8 @@ exports.addMergeProduct = async (req, res) => {
     req.body.featured_image = `${official}/${req.files['featured_image'][0].path}`;
 
     req.body.specification_image = `${official}/${req.files['specification_image'][0].path}`;
+
+    req.body.mannequin_image = `${official}/${req.files['mannequin_image'][0].path}`;
 
     console.log(req.body);
 
@@ -102,12 +104,14 @@ exports.deleteMergeProduct = async (req, res) => {
 
 exports.updateMergeProduct = async (req, res) => {
     //console.log(req.body);
-    //console.log(req.files);
+    console.log(req.files);
 
     if (req.files['featured_image'] !== undefined)
         req.body.featured_image = `${official}/${req.files['featured_image'][0].path}`;
     if (req.files['specification_image'] !== undefined)
         req.body.specification_image = `${official}/${req.files['specification_image'][0].path}`;
+    if (req.files['mannequin_image'] !== undefined)
+        req.body.mannequin_image = `${official}/${req.files['mannequin_image'][0].path}`;
 
 
 

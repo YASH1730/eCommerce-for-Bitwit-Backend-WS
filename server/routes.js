@@ -56,7 +56,7 @@ const upload = multer({
         fileSize: 1024 * 1024 * 5
     },
     fileFilter: fileFilter
-}).fields([{ name: "product_image" }, { name: "featured_image" }, { name: "category_image" }, { name: 'banner_image' }, { name: 'specification_image' },  { name: 'fabric_image' } ,  { name: 'textile_image' } ,  { name: 'primaryMaterial_image' } , {name : 'profile_image'} ]);
+}).fields([{ name: "product_image" }, { name: "featured_image" }, { name: "category_image" }, { name: 'banner_image' }, { name: 'specification_image' },  { name: 'fabric_image' } ,  { name: 'textile_image' } ,  { name: 'primaryMaterial_image' } , {name : 'profile_image'}, {name : 'mannequin_image'} ]);
 
 
 // middleware for encryption
