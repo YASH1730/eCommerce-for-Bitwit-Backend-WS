@@ -1,7 +1,7 @@
 const { default: mongoose } = require("mongoose");
 const { stringify } = require("nodemon/lib/utils");
 
-const product = mongoose.Schema({
+const draft = mongoose.Schema({
     SKU : {required : true, type : String, unique: true},
     product_title : {required : true, type : String},
     category_name : { type : String},
@@ -97,4 +97,4 @@ const product = mongoose.Schema({
     ceramic_tiles : {type : Boolean}
 })
 
-module.exports = mongoose.model('products',product);
+module.exports = mongoose.model('draft',draft);
