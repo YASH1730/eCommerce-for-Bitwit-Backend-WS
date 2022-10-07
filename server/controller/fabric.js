@@ -1,21 +1,16 @@
-
+require('dotenv').config();
 const fabric = require("../../database/models/fabric");
 
 
 // ================================================= Apis for fabric ======================================================= 
 //==============================================================================================================================
 
-// add categoier ======================
-
-const localBaseUrl = 'http://localhost:8000'
-const official  = 'https://woodshala.in'
-
 exports.addFabric = async (req, res) => {
 
   //console.log(req.files['fabric_image'])
 
   if (req.files['fabric_image'] === undefined) return res.status(203).send({message : 'Fabric Image Is Required !!!'})
-  req.body.fabric_image = `${official}/${req.files['fabric_image'][0].path}` 
+  req.body.fabric_image = `${process.env.Official}/${req.files['fabric_image'][0].path}` 
  
   const data = fabric(req.body)
 
@@ -58,7 +53,7 @@ exports.editFabric = async (req, res) => {
   //console.log(req.files['fabric_image'])
 
   if (req.files['fabric_image'] !== undefined) 
-      req.body.fabric_image = `${official}/${req.files['fabric_image'][0].path}` 
+      req.body.fabric_image = `${process.env.Official}/${req.files['fabric_image'][0].path}` 
 
   
 

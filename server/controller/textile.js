@@ -1,3 +1,4 @@
+require('dotenv').config();
 
 const textile = require("../../database/models/textile");
 
@@ -5,17 +6,13 @@ const textile = require("../../database/models/textile");
 // ================================================= Apis for textile ======================================================= 
 //==============================================================================================================================
 
-// add categoier ======================
-
-const localBaseUrl = 'http://localhost:8000'
-const official  = 'https://woodshala.in'
 
 exports.addTextile = async (req, res) => {
 
   //console.log(req.files['textile_image'])
 
   if (req.files['textile_image'] === undefined) return res.status(203).send({message : 'Textile Image Is Required !!!'})
-  req.body.textile_image = `${official}/${req.files['textile_image'][0].path}` 
+  req.body.textile_image = `${process.env.Official}/${req.files['textile_image'][0].path}` 
  
   const data = textile(req.body)
 
@@ -59,7 +56,7 @@ exports.editTextile = async (req, res) => {
   //console.log(req.files['textile_image'])
 
   if (req.files['textile_image'] !== undefined) 
-      req.body.textile_image = `${official}/${req.files['textile_image'][0].path}` 
+      req.body.textile_image = `${process.env.Official}/${req.files['textile_image'][0].path}` 
 
   
 

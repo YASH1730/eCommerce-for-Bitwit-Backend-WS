@@ -1,10 +1,5 @@
-
+require('dotenv').config();
 const banner = require("../../database/models/banner");
-
-const localBaseUrl = 'http://localhost:8000'
-const official  = 'https://woodshala.in'
-
-
 
 // ================================================= Apis for banner ======================================================= 
 //==============================================================================================================================
@@ -13,7 +8,7 @@ exports.addBanner = async(req,res) => {
 
 
 if(req.files !== undefined)
-    req.body.banner_URL = `${official}/${req.files['banner_image'].path}`;
+    req.body.banner_URL = `${process.env.Official}/${req.files['banner_image'].path}`;
 else 
     return res.status(203);
 

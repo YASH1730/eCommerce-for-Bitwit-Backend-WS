@@ -1,3 +1,4 @@
+require('dotenv').config();
 
 const primaryMaterial = require("../../database/models/primaryMaterial");
 
@@ -7,8 +8,8 @@ const primaryMaterial = require("../../database/models/primaryMaterial");
 
 // add material ======================
 
-const localBaseUrl = 'http://localhost:8000'
-const official = 'https://woodshala.in'
+
+
 
 exports.addPrimaryMaterial = async (req, res) => {
 
@@ -16,7 +17,7 @@ exports.addPrimaryMaterial = async (req, res) => {
 //console.log(req.files['primaryMaterial_image'])
 
 if (req.files['primaryMaterial_image'] !== undefined) 
-req.body.primaryMaterial_image = `${official}/${req.files['primaryMaterial_image'][0].path}` 
+req.body.primaryMaterial_image = `${process.env.Official}/${req.files['primaryMaterial_image'][0].path}` 
 
 
   const data = primaryMaterial(req.body)
@@ -57,7 +58,7 @@ exports.getPrimaryMaterial = async (req, res) => {
 exports.editPrimaryMaterial = async (req, res) => {
 
   if (req.files['primaryMaterial_image'] !== undefined) 
-req.body.primaryMaterial_image = `${official}/${req.files['primaryMaterial_image'][0].path}` 
+req.body.primaryMaterial_image = `${process.env.Official}/${req.files['primaryMaterial_image'][0].path}` 
 
 
   await primaryMaterial.findOneAndUpdate({ _id: req.body._id }, req.body)

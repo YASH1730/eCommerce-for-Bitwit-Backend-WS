@@ -1,8 +1,8 @@
 
-const { response } = require('express')
+require('dotenv').config();
 const product = require('../../database/models/products')
-const localhost = 'http://localhost:8000'
-const official  = 'https://woodshala.in'
+const draft = require('../../database/models/draft')
+
 // ================================================= Apis for Products ======================================================= 
 //==============================================================================================================================
 
@@ -21,15 +21,15 @@ exports.addProduct = async (req,res) =>{
     if (req.files['product_image'] !== null)
     {
         req.files['product_image'].map((val)=>{
-                image_urls.push(`${official}/${val.path}`)
+                image_urls.push(`${process.env.Official}/${val.path}`)
         })
     }
 
     req.body.product_image = image_urls;
     
-    req.body.featured_image = `${official}/${req.files['featured_image'][0].path}`;
+    req.body.featured_image = `${process.env.Official}/${req.files['featured_image'][0].path}`;
 
-   req.body.specification_image = `${official}/${req.files['specification_image'][0].path}`;
+   req.body.specification_image = `${process.env.Official}/${req.files['specification_image'][0].path}`;
 
     
     //console.log(req.body);
@@ -52,8 +52,31 @@ exports.addProduct = async (req,res) =>{
  
 // Get Product List 
 
-exports.getDraftProduct = async(req,res)=>{
+exports.getProduct = async(req,res)=>{
     await product.find()
+    .then((response)=>{
+      let disabled = [];
+      let enabled = [];
+        response.map((data,index)=>{
+          if(data.status === false)
+          disabled.push(data);
+          else 
+          enabled.push(data);
+      })
+    //   disabled.concat(enabled)
+    //   //console.log(disabled,enabled)
+      res.send(disabled.concat(enabled))
+    })
+    .catch((err)=>{
+        // //console.log(err)
+        res.send("Not Done !!!")
+    })
+}
+ 
+// Get draft Product List 
+
+exports.getDraftProduct = async(req,res)=>{
+    await draft.find()
     .then((response)=>{
       let disabled = [];
       let enabled = [];
@@ -94,9 +117,9 @@ exports.updateProduct = async (req,res)=>{
    //console.log(req.files);
 
    if (req.files['featured_image'] !== undefined)
-    req.body.featured_image = `${official}/${req.files['featured_image'][0].path}`;
+    req.body.featured_image = `${process.env.Official}/${req.files['featured_image'][0].path}`;
    if (req.files['specification_image'] !== undefined)
-    req.body.specification_image = `${official}/${req.files['specification_image'][0].path}`;
+    req.body.specification_image = `${process.env.Official}/${req.files['specification_image'][0].path}`;
 
 
 

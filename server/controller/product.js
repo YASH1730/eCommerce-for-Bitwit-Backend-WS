@@ -1,7 +1,7 @@
-
+require('dotenv').config();
 const product = require('../../database/models/products')
-const localhost = 'http://localhost:8000'
-const official = 'https://woodshala.in'
+const draft = require('../../database/models/draft')
+
 // ================================================= Apis for Products ======================================================= 
 //==============================================================================================================================
 
@@ -19,22 +19,22 @@ exports.addProduct = async (req, res) => {
 
     if (req.files['product_image'] !== null) {
         req.files['product_image'].map((val) => {
-            image_urls.push(`${official}/${val.path}`)
+            image_urls.push(`${process.env.Official}/${val.path}`)
         })
     }
 
     req.body.product_image = image_urls;
 
-    req.body.featured_image = `${official}/${req.files['featured_image'][0].path}`;
+    req.body.featured_image = `${process.env.Official}/${req.files['featured_image'][0].path}`;
 
-    req.body.specification_image = `${official}/${req.files['specification_image'][0].path}`;
+    req.body.specification_image = `${process.env.Official}/${req.files['specification_image'][0].path}`;
 
-    req.body.mannequin_image = `${official}/${req.files['mannequin_image'][0].path}`;
+    req.body.mannequin_image = `${process.env.Official}/${req.files['mannequin_image'][0].path}`;
 
 
     //console.log(req.body);
 
-    const data = product(req.body);
+    const data = draft(req.body);
 
     await data.save()
         .then((response) => {
@@ -53,7 +53,7 @@ exports.addProduct = async (req, res) => {
 // Get Product List 
 
 exports.getListProduct = async (req, res) => {
-    await product.find()
+    await draft.find()
         .then((response) => {
             //   //console.log(response)
             res.send(response)
@@ -64,12 +64,11 @@ exports.getListProduct = async (req, res) => {
         })
 }
 
-
 //   Get last product
 
 exports.getLastProduct = async (req, res) => {
 
-    await product.find({},{_id:0,SKU : 1})
+    await draft.find({},{_id:0,SKU : 1})
         .sort({ _id: -1 })
         .limit(1)
         .then((response) => {
@@ -105,20 +104,20 @@ exports.deleteProduct = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
     //console.log(req.body);
-    console.log(req.files);
+    // console.log(req.files);
 
     if (req.files['featured_image'] !== undefined)
-        req.body.featured_image = `${official}/${req.files['featured_image'][0].path}`;
+        req.body.featured_image = `${process.env.Official}/${req.files['featured_image'][0].path}`;
     if (req.files['specification_image'] !== undefined)
-        req.body.specification_image = `${official}/${req.files['specification_image'][0].path}`;
+        req.body.specification_image = `${process.env.Official}/${req.files['specification_image'][0].path}`;
     if (req.files['mannequin_image'] !== undefined)
-        req.body.mannequin_image = `${official}/${req.files['mannequin_image'][0].path}`;
+        req.body.mannequin_image = `${process.env.Official}/${req.files['mannequin_image'][0].path}`;
 
 
 
     if (req.body._id === undefined) return res.status(204).send('Payload is absent.')
 
-    await product.findOneAndUpdate({ _id: req.body._id }, req.body)
+    await draft.findOneAndUpdate({ _id: req.body._id }, req.body)
         .then((data) => {
             //console.log(data)
             if (data)
@@ -144,7 +143,7 @@ exports.updateBulk = async (req, res) => {
     })
 
 
-    await product.updateMany({ $or: arr }, req.body)
+    await draft.updateMany({ $or: arr }, req.body)
         .then((data) => {
             res.status(200).send({ message: 'Product is updated successfully.' })
         })

@@ -1,3 +1,4 @@
+require('dotenv').config();
 
 const categories = require("../../database/models/categories");
 const subCategories = require("../../database/models/subCategories");
@@ -8,15 +9,12 @@ const subCategories = require("../../database/models/subCategories");
 
 // add categories ======================
 
-const localBaseUrl = 'http://localhost:8000'
-const official  = 'https://woodshala.in'
-
 exports.addCatagories = async (req, res) => {
 
   //console.log(req.files['category_image'])
 
   if (req.files['category_image'] !== undefined) 
-  req.body.category_image = `${official}/${req.files['category_image'][0].path}` 
+  req.body.category_image = `${process.env.Official}/${req.files['category_image'][0].path}` 
  
   const data = categories(req.body)
 
@@ -77,7 +75,7 @@ exports.editCatagories = async (req, res) => {
   //console.log(req.files['category_image'])
 
   if (req.files['category_image'] !== undefined) 
-      req.body.category_image = `${official}/${req.files['category_image'][0].path}` 
+      req.body.category_image = `${process.env.Official}/${req.files['category_image'][0].path}` 
 
   
 

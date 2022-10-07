@@ -1,7 +1,6 @@
-
+require('dotenv').config();
 const merge = require('../../database/models/mergeProduct')
-const localhost = 'http://localhost:8000'
-const official = 'https://woodshala.in'
+
 // ================================================= Apis for merges ======================================================= 
 //==============================================================================================================================
 
@@ -19,17 +18,17 @@ exports.addMergeProduct = async (req, res) => {
 
     if (req.files['product_image'] !== null) {
         req.files['product_image'].map((val) => {
-            image_urls.push(`${official}/${val.path}`)
+            image_urls.push(`${process.env.Official}/${val.path}`)
         })
     }
 
     req.body.product_image = image_urls;
 
-    req.body.featured_image = `${official}/${req.files['featured_image'][0].path}`;
+    req.body.featured_image = `${process.env.Official}/${req.files['featured_image'][0].path}`;
 
-    req.body.specification_image = `${official}/${req.files['specification_image'][0].path}`;
+    req.body.specification_image = `${process.env.Official}/${req.files['specification_image'][0].path}`;
 
-    req.body.mannequin_image = `${official}/${req.files['mannequin_image'][0].path}`;
+    req.body.mannequin_image = `${process.env.Official}/${req.files['mannequin_image'][0].path}`;
 
     console.log(req.body);
 
@@ -107,11 +106,11 @@ exports.updateMergeProduct = async (req, res) => {
     console.log(req.files);
 
     if (req.files['featured_image'] !== undefined)
-        req.body.featured_image = `${official}/${req.files['featured_image'][0].path}`;
+        req.body.featured_image = `${process.env.Official}/${req.files['featured_image'][0].path}`;
     if (req.files['specification_image'] !== undefined)
-        req.body.specification_image = `${official}/${req.files['specification_image'][0].path}`;
+        req.body.specification_image = `${process.env.Official}/${req.files['specification_image'][0].path}`;
     if (req.files['mannequin_image'] !== undefined)
-        req.body.mannequin_image = `${official}/${req.files['mannequin_image'][0].path}`;
+        req.body.mannequin_image = `${process.env.Official}/${req.files['mannequin_image'][0].path}`;
 
 
 

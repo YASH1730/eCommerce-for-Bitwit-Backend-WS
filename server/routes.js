@@ -436,7 +436,8 @@ route.patch("/updateBlog", AuthJwt, upload, blog.updateBlog)
 
 // ==================== Draft ===============================
 
-route.get("/getDraft", AuthJwt, draft.getDraftProduct)
+route.get("/getDraft", AuthJwt, draft.getDraftProduct);
+route.get("/getProduct", AuthJwt, draft.getProduct);
 
 route.patch("/changeProductStatus", AuthJwt, upload, draft.changeProductStatus)
 

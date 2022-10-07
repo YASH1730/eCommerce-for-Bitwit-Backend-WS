@@ -1,8 +1,11 @@
+require('dotenv').config();
+
+
 const blogDB = require("../../database/models/blog");
 const image = require("../../database/models/image");
 
 const uuid = require("uuid");
-const official  = 'https://woodshala.in'
+
 // Api for card creation
 
 exports.createBlog = async (req, res) => {
@@ -13,7 +16,7 @@ exports.createBlog = async (req, res) => {
 
   if (req.files["banner_image"] === undefined)
     return res.status(203).send({ message: "Image Is Required !!!" });
-  req.body.card_image = `${official}/${req.files["banner_image"][0].path}`;
+  req.body.card_image = `${process.env.Official}/${req.files["banner_image"][0].path}`;
 
   let SaveToDb = new blogDB(req.body);
 
@@ -39,7 +42,7 @@ exports.updateBlog = async (req, res) => {
   // req.body.uuid = uuid.v4();
 
   if (req.files["banner_image"] !== undefined)
-    req.body.card_image = `${official}/${req.files["banner_image"][0].path}`;
+    req.body.card_image = `${process.env.Official}/${req.files["banner_image"][0].path}`;
 
   await blogDB.findOneAndUpdate({_id: req.body._id},req.body)
     .then((data) => {
@@ -77,7 +80,7 @@ exports.uploadImage = async (req, res) => {
 
   if (req.files["banner_image"] === undefined)
     return res.status(203).send({ message: "Image Is Required !!!" });
-  req.body.image_url = `${official}/${req.files["banner_image"][0].path}`;
+  req.body.image_url = `${process.env.Official}/${req.files["banner_image"][0].path}`;
 
   const data = image(req.body);
 

@@ -1,3 +1,4 @@
+require('dotenv').config();
 const order = require("../../database/models/order");
 const customer = require("../../database/models/customer");
 const cp = require("../../database/models/customProduct");
@@ -134,7 +135,7 @@ exports.addCustomProduct = async (req,res)=>{
    if (req.files['product_image'] !== undefined)
    {
       req.body.product_image = req.files['product_image'].map((val)=>{
-               return `${process.env.official}/${val.path}`
+               return `${process.env.Official}/${val.path}`
        })
    }
 

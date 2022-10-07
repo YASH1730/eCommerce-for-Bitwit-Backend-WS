@@ -1,9 +1,7 @@
-
-const { parse } = require("dotenv")
+require('dotenv').config();
 const product = require("../../database/models/products")
 
-const localhost = 'http://localhost:8000'
-const official  = 'https://woodshala.in'
+
 // ================================================= Apis for Gallery  ======================================================= 
 //==============================================================================================================================
 
@@ -73,7 +71,7 @@ exports.updateImage = async (req,res) => {
       if(i !== index)
         newAarry.push(item);
       else 
-        newAarry.push(`${official}/${req.files['category_image'][0].path}`);
+        newAarry.push(`${process.env.Official}/${req.files['category_image'][0].path}`);
     })
 
     await product.findOneAndUpdate({SKU :`WS-${req.body.SKU}`},{product_image : newAarry})
@@ -106,7 +104,7 @@ exports.addImage = async (req,res) => {
   if (req.files['product_image'] !== null)
   {
       req.files['product_image'].map((val)=>{
-              image_urls.push(`${official}/${val.path}`)
+              image_urls.push(`${process.env.Official}/${val.path}`)
       })
   }
   else {

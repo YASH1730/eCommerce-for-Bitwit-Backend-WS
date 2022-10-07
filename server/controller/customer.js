@@ -1,3 +1,4 @@
+require('dotenv').config();
 const customer = require("../../database/models/customer");
 const { v4: uuidv4 } = require('uuid');
 const Crypt = require('cryptr');
@@ -7,10 +8,6 @@ const crypt = new Crypt('asdf465f4s2d1f65e4s32d1f6534361e65##$#$#$#23$#5er135##4
 // ================================================= Apis for banner ======================================================= 
 //==============================================================================================================================
 
-const localURL = "http://localhost:8000";
-const official = "https://woodshala.in";
-
-
 // place an customer 
 
 exports.addCustomer = async(req,res) => {   
@@ -19,7 +16,7 @@ exports.addCustomer = async(req,res) => {
     //console.log(req.files)
 
   if (req.files['profile_image'] !== undefined) 
-  req.body.profile_image = `${official}/${req.files['profile_image'][0].path}` 
+  req.body.profile_image = `${process.env.Official}/${req.files['profile_image'][0].path}` 
  
 
     req.body.password = crypt.encrypt(req.body.password);
@@ -104,7 +101,7 @@ exports.updateCustomer = async (req, res) => {
    //console.log(req.files['profile_image'])
  
    if (req.files['profile_image'] !== undefined) 
-       req.body.profile_image = `${official}/${req.files['profile_image'][0].path}` 
+       req.body.profile_image = `${process.env.Official}/${req.files['profile_image'][0].path}` 
  
  
    await customer.findOneAndUpdate({ CID: req.body.CID }, req.body)
