@@ -34,7 +34,7 @@ exports.addProduct = async (req, res) => {
 
     //console.log(req.body);
 
-    const data = draft(req.body);
+    const data = product(req.body);
 
     await data.save()
         .then((response) => {
@@ -53,9 +53,9 @@ exports.addProduct = async (req, res) => {
 // Get Product List 
 
 exports.getListProduct = async (req, res) => {
-    await draft.find()
+    await product.find()
         .then((response) => {
-            //   //console.log(response)
+              console.log(response)
             res.send(response)
         })
         .catch((err) => {
@@ -68,7 +68,7 @@ exports.getListProduct = async (req, res) => {
 
 exports.getLastProduct = async (req, res) => {
 
-    await draft.find({},{_id:0,SKU : 1})
+    await product.find({},{_id:0,SKU : 1})
         .sort({ _id: -1 })
         .limit(1)
         .then((response) => {
@@ -117,7 +117,7 @@ exports.updateProduct = async (req, res) => {
 
     if (req.body._id === undefined) return res.status(204).send('Payload is absent.')
 
-    await draft.findOneAndUpdate({ _id: req.body._id }, req.body)
+    await product.findOneAndUpdate({ _id: req.body._id }, req.body)
         .then((data) => {
             //console.log(data)
             if (data)
@@ -143,7 +143,7 @@ exports.updateBulk = async (req, res) => {
     })
 
 
-    await draft.updateMany({ $or: arr }, req.body)
+    await product.updateMany({ $or: arr }, req.body)
         .then((data) => {
             res.status(200).send({ message: 'Product is updated successfully.' })
         })

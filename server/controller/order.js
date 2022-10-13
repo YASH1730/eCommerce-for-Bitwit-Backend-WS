@@ -105,7 +105,7 @@ exports.changeOrderStatus = async(req,res) =>{
 
 exports.customerCatalog = async (req,res)=>{
 
-   customer.find({},{_id:0,mobile  : 1, username : 1, email : 1,shipping : 1, city : 1, state : 1, CID : 1})
+   customer.find({},{_id:0,mobile  : 1, username : 1, email : 1,address : 1, city : 1, state : 1, CID : 1})
    .then((data)=>{
       if (data !== null)
       {

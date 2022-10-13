@@ -23,6 +23,7 @@ const Door = require("./controller/door");
 const Handle = require("./controller/handle");
 const Gallery = require("./controller/gallery");
 const blog = require("./controller/blog");
+const hardware = require("./controller/hardware");
 // const like = require("./controller/like");
 // const review = require("./controller/review");
 const draft = require("./controller/draft");
@@ -56,7 +57,7 @@ const upload = multer({
         fileSize: 1024 * 1024 * 5
     },
     fileFilter: fileFilter
-}).fields([{ name: "product_image" }, { name: "featured_image" }, { name: "category_image" }, { name: 'banner_image' }, { name: 'specification_image' },  { name: 'fabric_image' } ,  { name: 'textile_image' } ,  { name: 'primaryMaterial_image' } , {name : 'profile_image'}, {name : 'mannequin_image'} ]);
+}).fields([{ name: "product_image" }, { name: "featured_image" }, { name: "category_image" }, { name: 'banner_image' }, { name: 'specification_image' },  { name: 'fabric_image' } ,  { name: 'textile_image' } ,  { name: 'primaryMaterial_image' } , {name : 'profile_image'}, {name : 'mannequin_image'} , {name : 'hardware_image'} ]);
 
 
 // middleware for encryption
@@ -510,5 +511,26 @@ route.patch('/updateStock',AuthJwt ,upload ,stock.updateStock);
 
 // product preview 
 route.get('/preview',AuthJwt  ,stock.preview);
+
+// =============== Hardware routes =======================
+
+// addCategory route
+route.post("/addHardware", AuthJwt, upload, hardware.addHardware);
+
+// get list of the hardware
+route.get("/getHardware", AuthJwt, hardware.getHardware);
+
+// get last of the hardware
+route.get("/getLastHardware", AuthJwt, hardware.getLastHardware);
+
+// edit list of the hardware
+route.patch("/editHardware", AuthJwt, upload, hardware.editHardware);
+
+// delete category 
+route.delete("/deleteHardware", AuthJwt, hardware.deleteHardware);
+
+// change category status 
+route.patch("/changeHardwareStatus", upload, AuthJwt, hardware.changeHardwareStatus);
+
 
 module.exports = route;

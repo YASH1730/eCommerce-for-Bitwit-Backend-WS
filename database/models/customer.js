@@ -8,9 +8,7 @@ const customer = mongoose.Schema({
    mobile : {type : Number, unique : true},
    email : {type : String, unique : true},
    password : {type : String},
-   city : {type : String},
-   state : {type : String},
-   shipping : {type : String},
+   address : {type : Array},
 })
 
 module.exports = mongoose.model('customer',customer);

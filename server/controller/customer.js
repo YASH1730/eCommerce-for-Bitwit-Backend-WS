@@ -13,23 +13,22 @@ const crypt = new Crypt('asdf465f4s2d1f65e4s32d1f6534361e65##$#$#$#23$#5er135##4
 exports.addCustomer = async(req,res) => {   
     req.body.CID = `CID-${uuidv4()}`
 
-    //console.log(req.files)
-
   if (req.files['profile_image'] !== undefined) 
   req.body.profile_image = `${process.env.Official}/${req.files['profile_image'][0].path}` 
  
 
     req.body.password = crypt.encrypt(req.body.password);
 
-    //console.log(req.body);
-    // mongodb+srv://woodsala:woodsala2022@woodsala.unthc.mongodb.net/woodSala?retryWrites=true&w=majority
+    req.body.address = JSON.parse(req.body.shipping) 
     const data = customer(req.body);
     await data.save(req.body)
     .then((response)=>{
+    console.log(response);
+
        return res.status(200).send({message : 'Customer added successfully !!!',response});
     })
     .catch((err)=>{
-      //console.log(err)
+      console.log(err)
        return res.status(400).send({message : 'Duplicate entries are not allowed !!!'})
     })
 }
@@ -40,7 +39,7 @@ exports.listCustomer = async(req,res) => {
 
     await customer.find({$sort: { register_time : -1 }})
     .then((response)=>{
-      // //console.log(response)
+      console.log(response)
        return res.status(200).send(response);
     })
     .catch((err)=>{

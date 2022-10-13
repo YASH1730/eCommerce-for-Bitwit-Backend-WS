@@ -11,6 +11,7 @@ const order = mongoose.Schema({
    city : {type : String},
    state : {type : String},
    shipping : {type : String},
+   billing : {type : String},
    quantity : {type : Object},
    discount : {type : Number},
    paid : {type : Number}, 
