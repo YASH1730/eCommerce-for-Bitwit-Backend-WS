@@ -20,8 +20,10 @@ const hardware = mongoose.Schema({
     package_length : {type : Number},
     package_height : {type : Number},
     package_breadth : {type : Number},
-    unit : {type : String}
-
+    unit : {type : String},
+    selling_price : { type : Number},
+    showroom_price : { type : Number},
+    polish_time: { type : Number},
 })
 
 module.exports = mongoose.model('hardware',hardware);

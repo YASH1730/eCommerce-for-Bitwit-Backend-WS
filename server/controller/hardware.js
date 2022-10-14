@@ -9,6 +9,7 @@ exports.addHardware = async (req, res) => {
 
   //console.log(req.files['fabric_image'])
 
+  // hardware.collection.drop('hardware')
   if (req.files['hardware_image'] === undefined) return res.status(203).send({message : 'Hardware Image Is Required !!!'})
   
   let image_urls = []
@@ -58,13 +59,8 @@ exports.getHardware = async (req, res) => {
 
 exports.editHardware = async (req, res) => {
 
-  //console.log(req.body);
+  // console.log(req.body);
   //console.log(req.files['hardware_image'])
-
-  if (req.files['hardware_image'] !== undefined) 
-      req.body.hardware_image = `${process.env.Official}/${req.files['hardware_image'][0].path}` 
-
-  
 
   await hardware.findOneAndUpdate({ _id: req.body._id }, req.body)
       .then((data) => {
@@ -74,7 +70,7 @@ exports.editHardware = async (req, res) => {
           return res.status(203).send({ message: 'No entries found' })
       })
       .catch((error) => {
-        //console.log(error)
+        console.log(error)
         return res.status(203).send({message : 'Something went wrong !!!'})
       })
 
@@ -84,11 +80,11 @@ exports.editHardware = async (req, res) => {
 
 exports.deleteHardware = async (req,res) =>{
 
-  // //console.log(req.query)
+  console.log(req.query)
 
-   await hardware.deleteOne({_id : req.query.ID}).then((data)=>{
+   await hardware.deleteOne(req.query).then((data)=>{
     
-    res.send({massage : 'hardware deleted !!!'})
+    res.send({massage : 'Hardware deleted !!!'})
   })
 
 }
@@ -97,10 +93,10 @@ exports.deleteHardware = async (req,res) =>{
 // for Changing the Status of the hardware
 
 exports.changeHardwareStatus = async(req,res) =>{
-  //console.log(req.body)
+  console.log(req.body)
   await hardware.findByIdAndUpdate({_id : req.body._id},{status : req.body.status})
   .then((data)=>{
-      //console.log(data)
+      console.log(data)
       res.send('all okay')
   })
 

@@ -38,11 +38,11 @@ exports.addProduct = async (req,res) =>{
 
     await data.save()
     .then((response)=>{
-        console.log(response)
+        // console.log(response)
         res.send({message:'Product added successfully !!!',response})
     })
     .catch((err)=>{
-        console.log(err)
+        // console.log(err)
         res.status(203).send({message:'Some error occurred !!!'})
 
     })
@@ -145,7 +145,7 @@ exports.changeProductStatus = async(req,res) =>{
     //console.log(req.body)
     await product.findByIdAndUpdate({_id : req.body._id},req.body,{_id: 1,status:1})
     .then((response)=>{
-        console.log(response)
+        // console.log(response)
         res.send({message : 'Product Status Updated',response})
     })
   
