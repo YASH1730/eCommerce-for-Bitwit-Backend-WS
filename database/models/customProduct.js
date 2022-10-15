@@ -10,7 +10,8 @@ const customProduct = mongoose.Schema({
    selling_price : {type : Number} ,
    MRP : {type : Number} ,
    discount : {type : Number},
-   polish_time  :  {type : String}
+   polish_time  :  {type : String},
+   note  :  {type : String}
    
 })
 

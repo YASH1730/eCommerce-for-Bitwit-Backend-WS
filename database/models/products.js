@@ -40,7 +40,7 @@ const product = mongoose.Schema({
     door_name  : { type : String},
     fitting : { type : String},
     fitting_name : { type : String},
-    selling_points : { type : String},
+    selling_points : { type : Array},
     top_size : {type : Number},
     dial_size : { type : Number},
     seating_size_width : { type : Number},
@@ -94,7 +94,9 @@ const product = mongoose.Schema({
     package_height : {type : Number},
     package_breadth : {type : Number},
     ceramic_drawers : {type : Boolean},
-    ceramic_tiles : {type : Boolean}
+    ceramic_tiles : {type : Boolean},
+    quantity : {type : Number},
+    unit : {type : String},
 })
 
 module.exports = mongoose.model('products',product);

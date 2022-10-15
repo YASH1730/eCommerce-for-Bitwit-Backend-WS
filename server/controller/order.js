@@ -32,7 +32,6 @@ exports.placeOrder = async(req,res) => {
 // list order
 
 exports.listOrder = async(req,res) => {   
-    req.body.OID = `OID-${uuidv4()}`
 
     await order.find({$sort: { order_time : -1 }})
     .then((response)=>{
@@ -57,7 +56,7 @@ exports.getLastOrder = async(req,res)=>{
            res.send(response);
        }
        else{
-           res.status(203).send('OID-01001')
+           res.status(203).send('O-01001')
        }
    })
    .catch((err)=>{
@@ -132,6 +131,7 @@ exports.deleteOrder = async (req,res)=>{
 exports.addCustomProduct = async (req,res)=>{
 
    //console.log(req.files)
+   // cp.collection.drop('customProduct')
    if (req.files['product_image'] !== undefined)
    {
       req.body.product_image = req.files['product_image'].map((val)=>{
@@ -139,7 +139,7 @@ exports.addCustomProduct = async (req,res)=>{
        })
    }
 
-   //console.log(req.body)
+   console.log(req.body)
    const data =  cp(req.body)
    data.save()
    .then((response)=>{
@@ -156,10 +156,9 @@ exports.addCustomProduct = async (req,res)=>{
 exports.getLastCp = async(req,res)=>{
  
    await cp.find({},{_id : 0, CUS : 1})
-   .sort({_id:-1})
-   .limit(1)
+
    .then((response)=>{
-      //console.log(response) 
+      // console.log(response) 
       if(response !== null)
        {
            res.send(response);
@@ -174,4 +173,15 @@ exports.getLastCp = async(req,res)=>{
    })
   
   }
-  
+
+// get custom order list
+exports.customOrderList = async(req,res) => {   
+   // order.collection.drop('order')
+   await order.find({$sort: { order_time : -1 }, custom_order : true})
+   .then((response)=>{
+      return res.status(200).send(response);
+   })
+   .catch((err)=>{
+      return res.status(500)
+   })
+}

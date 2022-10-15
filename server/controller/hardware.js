@@ -59,7 +59,7 @@ exports.getHardware = async (req, res) => {
 
 exports.editHardware = async (req, res) => {
 
-  // console.log(req.body);
+  console.log(req.body);
   //console.log(req.files['hardware_image'])
 
   await hardware.findOneAndUpdate({ _id: req.body._id }, req.body)

@@ -31,8 +31,10 @@ exports.addProduct = async (req, res) => {
 
     req.body.mannequin_image = `${process.env.Official}/${req.files['mannequin_image'][0].path}`;
 
+    req.body.selling_points = JSON.parse(req.body.selling_points)
 
-    //console.log(req.body);
+
+    console.log(req.body);
 
     const data = product(req.body);
 
@@ -53,9 +55,10 @@ exports.addProduct = async (req, res) => {
 // Get Product List 
 
 exports.getListProduct = async (req, res) => {
+    // product.collection.drop();
     await product.find()
         .then((response) => {
-              console.log(response)
+            //   console.log(response)
             res.send(response)
         })
         .catch((err) => {
@@ -116,6 +119,9 @@ exports.updateProduct = async (req, res) => {
 
 
     if (req.body._id === undefined) return res.status(204).send('Payload is absent.')
+
+    req.body.selling_points = JSON.parse(req.body.selling_points)
+
 
     await product.findOneAndUpdate({ _id: req.body._id }, req.body)
         .then((data) => {

@@ -239,6 +239,12 @@ route.post('/addCustomProduct', AuthJwt,upload, order.addCustomProduct);
 // get last Custom product
 route.get('/getLastCp', AuthJwt,order.getLastCp);
 
+// get delete order
+route.delete('/deleteOrder', AuthJwt,order.deleteOrder);
+
+// get  Custom order
+route.get('/customOrderList', AuthJwt,order.customOrderList);
+
 
 // ================== sub categories Routes =============================
 
