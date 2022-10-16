@@ -168,6 +168,10 @@ route.post('/updateBulk', AuthJwt,upload, products.updateBulk);
 
 route.get('/getPresentSKUs',AuthJwt,upload, products.getPresentSKUs);
 
+// Get getProductDetails
+
+route.get('/getProductDetails',AuthJwt,upload, products.getProductDetails);
+
 
 // =============== Merge Product routes =======================
 

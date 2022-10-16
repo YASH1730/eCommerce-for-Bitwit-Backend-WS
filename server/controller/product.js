@@ -194,6 +194,19 @@ exports.getPresentSKUs = async (req, res) => {
 
 }
 
+// for product detail to show 
+exports.getProductDetails = async (req,res)=>{
+    
+    if (req.query === {}) return res.status(404).send({message : 'Please Provide the product id.'})
+    await product.findOne(req.query)
+    .then((data)=>{
+          
+        return res.send(data)
+    })
+    .catch((err)=> {return res.send({message : 'Something went wrang !!!'})})
+
+}
+
 
   // ================================================= Apis for Products Ends =======================================================
 
