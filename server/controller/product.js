@@ -8,16 +8,17 @@ const draft = require('../../database/models/draft')
 // Add Products 
 
 exports.addProduct = async (req, res) => {
-    //console.log(req.files);
+    console.log(req.files);
+    console.log(req.body);
 
     // //console.log(req.files['product_image'])
 
-    if (req.files['specification_image'] === undefined || req.files['featured_image'] === undefined || req.files['mannequin_image'] === undefined || req.files['product_image'] === undefined) return res.status(203).send({ message: 'Please Provide the required images !!!' })
+    // if (req.files['specification_image'] === undefined || req.files['featured_image'] === undefined || req.files['mannequin_image'] === undefined || req.files['product_image'] === undefined) return res.status(203).send({ message: 'Please Provide the required images !!!' })
 
 
     let image_urls = []
 
-    if (req.files['product_image'] !== null) {
+    if (req.files['product_image'] !== undefined) {
         req.files['product_image'].map((val) => {
             image_urls.push(`${process.env.Official}/${val.path}`)
         })
@@ -25,11 +26,11 @@ exports.addProduct = async (req, res) => {
 
     req.body.product_image = image_urls;
 
-    req.body.featured_image = `${process.env.Official}/${req.files['featured_image'][0].path}`;
+    req.body.featured_image = req.files['product_image'] ? `${process.env.Official}/${req.files['featured_image'][0].path}` : '';
 
-    req.body.specification_image = `${process.env.Official}/${req.files['specification_image'][0].path}`;
+    req.body.specification_image = req.files['specification_image'] ? `${process.env.Official}/${req.files['specification_image'][0].path}` : '';
 
-    req.body.mannequin_image = `${process.env.Official}/${req.files['mannequin_image'][0].path}`;
+    req.body.mannequin_image = req.files['mannequin_image'] ? `${process.env.Official}/${req.files['mannequin_image'][0].path}` : '';
 
     req.body.selling_points = JSON.parse(req.body.selling_points)
 
@@ -62,7 +63,7 @@ exports.getListProduct = async (req, res) => {
             res.send(response)
         })
         .catch((err) => {
-            // //console.log(err)
+            //console.log(err)
             res.send("Not Done !!!")
         })
 }
@@ -106,8 +107,8 @@ exports.deleteProduct = async (req, res) => {
 // update products 
 
 exports.updateProduct = async (req, res) => {
-    //console.log(req.body);
-    // console.log(req.files);
+    console.log(req.body);
+    console.log(req.files);
 
     if (req.files['featured_image'] !== undefined)
         req.body.featured_image = `${process.env.Official}/${req.files['featured_image'][0].path}`;
@@ -132,7 +133,7 @@ exports.updateProduct = async (req, res) => {
                 return res.status(203).send({ message: 'No entries found' })
         })
         .catch((error) => {
-            //console.log(error)
+            console.log(error)
             return res.status(203).send('Something Went Wrong')
         })
 }

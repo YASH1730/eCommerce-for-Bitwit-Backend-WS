@@ -36,7 +36,7 @@ exports.addMergeProduct = async (req, res) => {
 
     await data.save()
         .then((response) => {
-            console.log(response)
+            // //console
             res.send({ message: 'Merge added successfully !!!' ,response})
         })
         .catch((err) => {
@@ -51,7 +51,7 @@ exports.addMergeProduct = async (req, res) => {
 exports.getListMergeProduct = async (req, res) => {
     await merge.find()
         .then((response) => {
-              console.log(response)
+            //   //console
             res.send(response)
         })
         .catch((err) => {
@@ -69,7 +69,7 @@ exports.getLastMergeProduct = async (req, res) => {
         .sort({ _id: -1 })
         .limit(1)
         .then((response) => {
-            console.log(response)
+            //console
             if (response !== null) {
                 res.send(response);
             }
