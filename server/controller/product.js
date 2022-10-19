@@ -208,6 +208,56 @@ exports.getProductDetails = async (req,res)=>{
 
 }
 
+// add variation 
+
+exports.variation = async (req, res) => {
+    console.log(req.files);
+
+    req.body.parentArray = JSON.parse(req.body.parentArray)
+
+    let image_urls = []
+
+    if (req.files['product_image'] !== undefined) {
+        req.files['product_image'].map((val) => {
+            image_urls.push(`${process.env.Official}/${val.path}`)
+        })
+    }
+
+    req.body.product_image = image_urls.length > 0 ? image_urls : req.body.product_image.split(',');
+
+    req.body.featured_image = req.files['product_image'] ? `${process.env.Official}/${req.files['featured_image'][0].path}` : req.body.featured_image;
+
+    req.body.specification_image = req.files['specification_image'] ? `${process.env.Official}/${req.files['specification_image'][0].path}` : req.body.specification_image;
+
+    req.body.mannequin_image = req.files['mannequin_image'] ? `${process.env.Official}/${req.files['mannequin_image'][0].path}` : req.body.mannequin_image;
+
+    req.body.selling_points = JSON.parse(req.body.selling_points)
+
+
+    console.log(req.body);
+
+    const data = product(req.body);
+
+    await data.save()
+        .then((response) => {
+            product.findOneAndUpdate({SKU : req.body.parentProduct}, {variation_array : req.body.parentArray})
+            .then((result)=>{
+                console.log(result);
+                res.send({ message: 'Variation added successfully !!!',response })
+            })
+            .catch((err)=>{
+                console.log(err)
+                res.status(203).send({ message: 'Some error occurred !!!' })
+            })
+        })
+        .catch((err) => {
+            console.log(err)
+            res.status(203).send({ message: 'Some error occurred !!!' })
+        })
+
+
+}
+
 
   // ================================================= Apis for Products Ends =======================================================
 

@@ -97,6 +97,7 @@ const product = mongoose.Schema({
     ceramic_tiles : {type : Boolean},
     quantity : {type : Number, default : 0},
     unit : {type : String},
+    variation_array: {type : Array, default : []}
 })
 
 module.exports = mongoose.model('products',product);

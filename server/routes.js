@@ -174,6 +174,10 @@ route.get('/getPresentSKUs',AuthJwt,upload, products.getPresentSKUs);
 
 route.get('/getProductDetails',AuthJwt,upload, products.getProductDetails);
 
+// add variation
+
+route.post('/variation',AuthJwt,upload, products.variation);
+
 
 // =============== Merge Product routes =======================
 

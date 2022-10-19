@@ -90,7 +90,7 @@ exports.preview = async (req,res)=>{
             range : 1,
     })
     .then((response)=>{
-        //console.log(response)
+        console.log(response)
         if (response)
         return res.send(response);
 
