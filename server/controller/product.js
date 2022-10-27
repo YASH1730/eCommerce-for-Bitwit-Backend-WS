@@ -108,8 +108,26 @@ exports.deleteProduct = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
     console.log(req.body);
-    console.log(req.files);
 
+    
+
+    // check for product images 
+    let image_urls = []
+
+    if (req.files['product_image'] !== undefined) {
+        req.files['product_image'].map((val) => {
+            image_urls.push(`${process.env.Official}/${val.path}`)
+        })
+    }
+
+    // check for previously saved image 
+    let previousImages = JSON.parse(req.body.savedImages) 
+
+    if(previousImages.length > 0) image_urls.push(...previousImages)
+
+    req.body.product_image = image_urls;
+
+    // check for Images 
     if (req.files['featured_image'] !== undefined)
         req.body.featured_image = `${process.env.Official}/${req.files['featured_image'][0].path}`;
     if (req.files['specification_image'] !== undefined)
@@ -117,24 +135,27 @@ exports.updateProduct = async (req, res) => {
     if (req.files['mannequin_image'] !== undefined)
         req.body.mannequin_image = `${process.env.Official}/${req.files['mannequin_image'][0].path}`;
 
-
-
+    // check for product ID 
     if (req.body._id === undefined) return res.status(204).send('Payload is absent.')
 
-    req.body.selling_points = JSON.parse(req.body.selling_points)
+    // selling points conversation in array
+    req.body.selling_points = JSON.parse(req.body.selling_points);
 
+    console.log(req.body);
+    
+    // res.send('ALl OKay')
 
     await product.findOneAndUpdate({ _id: req.body._id }, req.body)
         .then((data) => {
             //console.log(data)
             if (data)
-                return res.status(200).send({ message: 'Product is updated successfully.' })
+                return res.status(200).send({ message: 'Product is updated successfully.',image : image_urls })
             else
                 return res.status(203).send({ message: 'No entries found' })
         })
         .catch((error) => {
             console.log(error)
-            return res.status(203).send('Something Went Wrong')
+            return res.status(203).send('Something Went Wrong !!!')
         })
 }
 
@@ -161,8 +182,6 @@ exports.updateBulk = async (req, res) => {
         })
 
 }
-
-
 
 // get present SKUs
 exports.getPresentSKUs = async (req, res) => {

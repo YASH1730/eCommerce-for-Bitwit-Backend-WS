@@ -12,12 +12,12 @@ const product = mongoose.Schema({
     seo_title : { type : String},
     seo_description : { type : String},
     seo_keyword : { type : String},
-    product_image : { type : Array},
+    product_image : { type : Array, default : []},
     featured_image : { type : String},
     mannequin_image : { type : String},
     specification_image : { type : String},
     primary_material : { type : String},
-    warehouse : {type : String},
+    warehouse : {type : Array, default : []},
     primary_material_name : { type : String},
     length_main : { type : Number, default : 0, default : 0},
     breadth : { type : Number, default : 0, default : 0},
@@ -87,7 +87,8 @@ const product = mongoose.Schema({
     returnable : {type : Boolean},
     drawer: {type : String},
     drawer_count: {type : Number, default : 0},
-    show_on_mobile : {type : Boolean},
+    mobile_store : {type : Boolean, default : true},
+    online_store : {type : Boolean, default : true},
     range : {type : String},
     back_style : {type : String},
     package_length : {type : Number, default : 0},
@@ -97,7 +98,9 @@ const product = mongoose.Schema({
     ceramic_tiles : {type : Boolean},
     quantity : {type : Number, default : 0},
     unit : {type : String},
-    variation_array: {type : Array, default : []}
+    variation_array: {type : Array, default : []},
+    assembly_level : {type : String},
+    warehouse_name : {type : String}
 })
 
 module.exports = mongoose.model('products',product);

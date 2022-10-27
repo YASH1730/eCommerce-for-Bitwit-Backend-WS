@@ -1,7 +1,7 @@
 const { default: mongoose } = require("mongoose");
 
 const order = mongoose.Schema({
-   OID : {type : String},
+   O : {type : String},
    order_time : {type : Date , default : Date.now},
    status : {type : String},
    CID : {type : String},
@@ -18,7 +18,8 @@ const order = mongoose.Schema({
    total : {type : Number}, 
    discount : {type : Number}, 
    note : {type : String},
-   custom_order : {type : Boolean, default : false}
+   custom_order : {type : Boolean, default : false},
+   sale_channel : {type : String, default : 'Online'}
    
 })
 

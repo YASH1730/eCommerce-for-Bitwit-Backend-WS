@@ -32,6 +32,7 @@ exports.placeOrder = async(req,res) => {
 // list order
 
 exports.listOrder = async(req,res) => {   
+   //  order.collection.drop();
 
     await order.find({$sort: { order_time : -1 }})
     .then((response)=>{
