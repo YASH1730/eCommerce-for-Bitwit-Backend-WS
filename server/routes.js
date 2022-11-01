@@ -45,6 +45,7 @@ const storage = multer.diskStorage({
 const fileFilter = (req, file, cb) => {
     // for removing the space between the image file name to save it properly for URL
     file.originalname = file.originalname.replace(/ /g, '')
+    console.log(file)
     // reject a file
     if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/svg' || file.mimetype === 'image/jpg' ) {
         cb(null, true);

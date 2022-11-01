@@ -8,8 +8,8 @@ const draft = require('../../database/models/draft')
 // Add Products 
 
 exports.addProduct = async (req, res) => {
-    console.log(req.files);
-    console.log(req.body);
+    console.log('files>>>',req.files);
+    // console.log(req.body);
 
     // //console.log(req.files['product_image'])
 
@@ -26,7 +26,7 @@ exports.addProduct = async (req, res) => {
 
     req.body.product_image = image_urls;
 
-    req.body.featured_image = req.files['product_image'] ? `${process.env.Official}/${req.files['featured_image'][0].path}` : '';
+    req.body.featured_image = req.files['featured_image'] ? `${process.env.Official}/${req.files['featured_image'][0].path}` : '';
 
     req.body.specification_image = req.files['specification_image'] ? `${process.env.Official}/${req.files['specification_image'][0].path}` : '';
 
@@ -35,7 +35,9 @@ exports.addProduct = async (req, res) => {
     req.body.selling_points = JSON.parse(req.body.selling_points)
 
 
-    console.log(req.body);
+    console.log('Complete>>>',req.body);
+
+    // return res.send('all okay')
 
     const data = product(req.body);
 
@@ -107,9 +109,7 @@ exports.deleteProduct = async (req, res) => {
 // update products 
 
 exports.updateProduct = async (req, res) => {
-    console.log(req.body);
-
-    
+    console.log("Files >>>>> ",req.files);    
 
     // check for product images 
     let image_urls = []
@@ -141,9 +141,9 @@ exports.updateProduct = async (req, res) => {
     // selling points conversation in array
     req.body.selling_points = JSON.parse(req.body.selling_points);
 
-    console.log(req.body);
+    console.log("Complete >>>> ",req.body);
     
-    // res.send('ALl OKay')
+    // return res.send('ALl OKay')
 
     await product.findOneAndUpdate({ _id: req.body._id }, req.body)
         .then((data) => {
@@ -230,10 +230,9 @@ exports.getProductDetails = async (req,res)=>{
 // add variation 
 
 exports.variation = async (req, res) => {
-    console.log(req.files);
+    console.log("Files >>>>> ",req.files);    
 
-    req.body.parentArray = JSON.parse(req.body.parentArray)
-
+    // check for product images 
     let image_urls = []
 
     if (req.files['product_image'] !== undefined) {
@@ -241,6 +240,13 @@ exports.variation = async (req, res) => {
             image_urls.push(`${process.env.Official}/${val.path}`)
         })
     }
+
+    // check for previously saved image 
+    let previousImages = JSON.parse(req.body.savedImages) 
+
+    if(previousImages.length > 0) image_urls.push(...previousImages)
+
+    req.body.product_image = image_urls;
 
     req.body.product_image = image_urls.length > 0 ? image_urls : req.body.product_image.split(',');
 
@@ -254,6 +260,8 @@ exports.variation = async (req, res) => {
 
 
     console.log(req.body);
+
+    // return res.send('all okay')
 
     const data = product(req.body);
 

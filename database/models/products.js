@@ -100,7 +100,8 @@ const product = mongoose.Schema({
     unit : {type : String},
     variation_array: {type : Array, default : []},
     assembly_level : {type : String},
-    warehouse_name : {type : String}
+    warehouse_name : {type : String},
+    continue_selling : {type : Boolean, default : true}
 })
 
 module.exports = mongoose.model('products',product);
