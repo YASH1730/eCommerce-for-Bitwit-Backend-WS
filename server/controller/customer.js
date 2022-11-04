@@ -91,9 +91,6 @@ exports.changeCustomerStatus = async(req,res) =>{
  }
 
 
-// edit categories ======================
-
-
 exports.updateCustomer = async (req, res) => {
 
    //console.log(req.body);
@@ -101,6 +98,8 @@ exports.updateCustomer = async (req, res) => {
  
    if (req.files['profile_image'] !== undefined) 
        req.body.profile_image = `${process.env.Official}/${req.files['profile_image'][0].path}` 
+       
+    if (req.body.address) req.body.address = JSON.parse(req.body.address);
  
  
    await customer.findOneAndUpdate({ CID: req.body.CID }, req.body)

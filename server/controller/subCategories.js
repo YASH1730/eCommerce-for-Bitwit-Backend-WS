@@ -13,7 +13,7 @@ require('dotenv').config();
 
 exports.addSubCatagories = async (req, res) => {
 
-//console.log(req.body)
+console.log(req.body)
 
   const data = subCategories(req.body)
 
@@ -32,6 +32,7 @@ exports.addSubCatagories = async (req, res) => {
         })
     }
     else {
+      console.log(result)
       res.status(203);
       res.send({message : 'Sub Category Name is already exist in category!!!'})  
     }

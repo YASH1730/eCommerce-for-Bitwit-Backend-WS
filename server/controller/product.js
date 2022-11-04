@@ -1,5 +1,6 @@
 require('dotenv').config();
 const product = require('../../database/models/products')
+const hardware = require('../../database/models/hardware')
 const draft = require('../../database/models/draft')
 
 // ================================================= Apis for Products ======================================================= 
@@ -8,10 +9,10 @@ const draft = require('../../database/models/draft')
 // Add Products 
 
 exports.addProduct = async (req, res) => {
-    console.log('files>>>',req.files);
-    // console.log(req.body);
+    //console.log('files>>>',req.files);
+    // //console.log(req.body);
 
-    // //console.log(req.files['product_image'])
+    // ////console.log(req.files['product_image'])
 
     // if (req.files['specification_image'] === undefined || req.files['featured_image'] === undefined || req.files['mannequin_image'] === undefined || req.files['product_image'] === undefined) return res.status(203).send({ message: 'Please Provide the required images !!!' })
 
@@ -35,7 +36,7 @@ exports.addProduct = async (req, res) => {
     req.body.selling_points = JSON.parse(req.body.selling_points)
 
 
-    console.log('Complete>>>',req.body);
+    //console.log('Complete>>>',req.body);
 
     // return res.send('all okay')
 
@@ -43,11 +44,11 @@ exports.addProduct = async (req, res) => {
 
     await data.save()
         .then((response) => {
-            //console.log(response)
+            ////console.log(response)
             res.send({ message: 'Product added successfully !!!',response })
         })
         .catch((err) => {
-            console.log(err)
+            //console.log(err)
             res.status(203).send({ message: 'Some error occurred !!!' })
 
         })
@@ -61,11 +62,11 @@ exports.getListProduct = async (req, res) => {
     // product.collection.drop();
     await product.find()
         .then((response) => {
-            //   console.log(response)
+            //   //console.log(response)
             res.send(response)
         })
         .catch((err) => {
-            //console.log(err)
+            ////console.log(err)
             res.send("Not Done !!!")
         })
 }
@@ -79,7 +80,7 @@ exports.getLastProduct = async (req, res) => {
         .limit(1)
         .then((response) => {
             if (response !== null) {
-                //  //console.log(response);
+                //  ////console.log(response);
                 res.send(response);
             }
             else {
@@ -87,7 +88,7 @@ exports.getLastProduct = async (req, res) => {
             }
         })
         .catch((err) => {
-            //  //console.log(err)
+            //  ////console.log(err)
             res.status(203).send({ message: 'Some error occurred !!!' })
         })
 
@@ -109,7 +110,7 @@ exports.deleteProduct = async (req, res) => {
 // update products 
 
 exports.updateProduct = async (req, res) => {
-    console.log("Files >>>>> ",req.files);    
+    //console.log("Files >>>>> ",req.files);    
 
     // check for product images 
     let image_urls = []
@@ -141,20 +142,20 @@ exports.updateProduct = async (req, res) => {
     // selling points conversation in array
     req.body.selling_points = JSON.parse(req.body.selling_points);
 
-    console.log("Complete >>>> ",req.body);
+    //console.log("Complete >>>> ",req.body);
     
     // return res.send('ALl OKay')
 
     await product.findOneAndUpdate({ _id: req.body._id }, req.body)
         .then((data) => {
-            //console.log(data)
+            ////console.log(data)
             if (data)
                 return res.status(200).send({ message: 'Product is updated successfully.',image : image_urls })
             else
                 return res.status(203).send({ message: 'No entries found' })
         })
         .catch((error) => {
-            console.log(error)
+            //console.log(error)
             return res.status(203).send('Something Went Wrong !!!')
         })
 }
@@ -176,7 +177,7 @@ exports.updateBulk = async (req, res) => {
             res.status(200).send({ message: 'Product is updated successfully.' })
         })
         .catch((error) => {
-            //console.log(error)
+            ////console.log(error)
             res.status(203).send('Something Went Wrong')
 
         })
@@ -208,7 +209,7 @@ exports.getPresentSKUs = async (req, res) => {
             }
         })
         .catch((err) => {
-            //  //console.log(err)
+            //  ////console.log(err)
             res.status(203).send({ message: 'Some error occurred !!!' })
         })
 
@@ -230,7 +231,8 @@ exports.getProductDetails = async (req,res)=>{
 // add variation 
 
 exports.variation = async (req, res) => {
-    console.log("Files >>>>> ",req.files);    
+    //console.log("Files >>>>> ",req.files);    
+    //console.log("Complete >>>> ",req.body);
 
     // check for product images 
     let image_urls = []
@@ -248,18 +250,19 @@ exports.variation = async (req, res) => {
 
     req.body.product_image = image_urls;
 
-    req.body.product_image = image_urls.length > 0 ? image_urls : req.body.product_image.split(',');
-
-    req.body.featured_image = req.files['product_image'] ? `${process.env.Official}/${req.files['featured_image'][0].path}` : req.body.featured_image;
-
-    req.body.specification_image = req.files['specification_image'] ? `${process.env.Official}/${req.files['specification_image'][0].path}` : req.body.specification_image;
-
-    req.body.mannequin_image = req.files['mannequin_image'] ? `${process.env.Official}/${req.files['mannequin_image'][0].path}` : req.body.mannequin_image;
-
-    req.body.selling_points = JSON.parse(req.body.selling_points)
+    // check for Images 
+    if (req.files['featured_image'] !== undefined)
+        req.body.featured_image = `${process.env.Official}/${req.files['featured_image'][0].path}`;
+    if (req.files['specification_image'] !== undefined)
+        req.body.specification_image = `${process.env.Official}/${req.files['specification_image'][0].path}`;
+    if (req.files['mannequin_image'] !== undefined)
+        req.body.mannequin_image = `${process.env.Official}/${req.files['mannequin_image'][0].path}`;
 
 
-    console.log(req.body);
+    // selling points conversation in array
+    req.body.selling_points = JSON.parse(req.body.selling_points);
+
+    //console.log("Complete >>>> ",req.body);
 
     // return res.send('all okay')
 
@@ -269,20 +272,62 @@ exports.variation = async (req, res) => {
         .then((response) => {
             product.findOneAndUpdate({SKU : req.body.parentProduct}, {variation_array : req.body.parentArray})
             .then((result)=>{
-                console.log(result);
+                //console.log(result);
                 res.send({ message: 'Variation added successfully !!!',response })
             })
             .catch((err)=>{
-                console.log(err)
+                //console.log(err)
                 res.status(203).send({ message: 'Some error occurred !!!' })
             })
         })
         .catch((err) => {
-            console.log(err)
+            //console.log(err)
             res.status(203).send({ message: 'Some error occurred !!!' })
         })
 
 
+}
+
+// APIS for Hardware 
+
+exports.getHardwareDropdown = async (req,res)=>{
+    hardware.find({},{
+        _id : 0,
+        SKU: 1,
+        title: 1,
+        sub_category_name: 1,
+        status : 1
+    })
+    .then((response)=>{
+
+        //  hinge knob door handle fitting polish handle_material fabric textile
+        const data = {
+            hinge : [],
+            knob : [],
+            door : [],
+            fitting : [],
+            polish : [],
+            handle : [],
+            fabric : [],
+            textile : []
+        }
+
+        data.hinge = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'hinge'}); 
+        data.knob = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'knob'}); 
+        data.door = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'door'}); 
+        data.handle = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'handle'}); 
+        data.fitting = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'fitting'}); 
+        data.polish = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'polish'}); 
+        data.fabric = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'fabric'}); 
+        data.textile = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'textile'});
+        
+        // //console.log(data);
+        return res.send(data)
+    })
+    .catch((err)=>{
+        //console.log(err);
+        return res.sendStatus(500).send('Something went wrong !!!')
+    })
 }
 
 

@@ -179,6 +179,10 @@ route.get('/getProductDetails',AuthJwt,upload, products.getProductDetails);
 
 route.post('/variation',AuthJwt,upload, products.variation);
 
+// get  hardware item for dropdown
+
+route.get('/getHardwareDropdown',AuthJwt, products.getHardwareDropdown);
+
 
 // =============== Merge Product routes =======================
 
