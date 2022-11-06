@@ -48,7 +48,7 @@ exports.addProduct = async (req, res) => {
             res.send({ message: 'Product added successfully !!!',response })
         })
         .catch((err) => {
-            //console.log(err)
+            console.log(err)
             res.status(203).send({ message: 'Some error occurred !!!' })
 
         })
@@ -59,6 +59,8 @@ exports.addProduct = async (req, res) => {
 // Get Product List 
 
 exports.getListProduct = async (req, res) => {
+
+    // await product.deleteOne({SKU : 'P-01057'})
     // product.collection.drop();
     await product.find()
         .then((response) => {
@@ -311,7 +313,7 @@ exports.getHardwareDropdown = async (req,res)=>{
             fabric : [],
             textile : []
         }
-
+        // console.log(response)
         data.hinge = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'hinge'}); 
         data.knob = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'knob'}); 
         data.door = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'door'}); 

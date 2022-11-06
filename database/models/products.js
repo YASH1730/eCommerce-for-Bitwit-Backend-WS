@@ -25,7 +25,7 @@ const product = mongoose.Schema({
     bangalore_stock : { type : Number, default : 0, default : 0},
     jodhpur_stock : { type : Number, default : 0, default : 0},
     weight : { type : String},
-    polish : { type : String},
+    polish : { type : Array,default : []},
     polish_name  : { type : String},
     hinge : { type : String},
     hinge_name  : { type : String},
