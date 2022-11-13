@@ -47,7 +47,7 @@ exports.listOrder = async(req,res) => {
 
 exports.getLastOrder = async(req,res)=>{
  
-   await order.find({},{_id : 0, OID : 1})
+   await order.find({},{_id : 0, O : 1})
    .sort({_id:-1})
    .limit(1)
    .then((response)=>{

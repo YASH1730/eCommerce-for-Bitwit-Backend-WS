@@ -175,6 +175,8 @@ route.get('/getPresentSKUs',AuthJwt,upload, products.getPresentSKUs);
 
 route.get('/getProductDetails',AuthJwt,upload, products.getProductDetails);
 
+// route.get('/updateProducts', products.updateProducts);
+
 // add variation
 
 route.post('/variation',AuthJwt,upload, products.variation);

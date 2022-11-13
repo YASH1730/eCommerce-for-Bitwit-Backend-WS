@@ -335,3 +335,46 @@ exports.getHardwareDropdown = async (req,res)=>{
 
   // ================================================= Apis for Products Ends =======================================================
 
+
+
+//   exports.updateProducts = async (req, res) => {
+//     product.find({},{SKU : 1, 
+//         featured_image : 1,
+//         mannequin_image : 1,
+//         specification_image : 1, _id : 0})
+//     .then(async (response)=>{
+//         // return res.send('okay')
+//         let newResponse = response.map((row)=>{
+//             row.featured_image = row.featured_image.replace('admin.admin.woodshala.in','admin.woodshala.in')
+//             row.mannequin_image = row.mannequin_image.replace('admin.admin.woodshala.in','admin.woodshala.in')
+//             row.specification_image = row.specification_image.replace('admin.admin.woodshala.in','admin.woodshala.in')
+//             return row
+//         })
+
+        
+//         // console.log(response)
+        
+//     //   return   res.send(newResponse)
+//         Promise.all(newResponse.map(async(row)=>{
+//             console.log(row)
+//            return  await product.findOneAndUpdate({SKU : row.SKU},{
+//             featured_image : row.featured_image,
+//             mannequin_image : row.mannequin_image,
+//             specification_image : row.specification_image
+//            })
+//         }))
+//         .then((res1)=>{
+//             return res.send(res1)
+//         })
+//         .catch((err)=>{
+//             console.log(err)
+//             return res.sendStatus(500).send('Something Wrong')
+//         })
+
+
+//     })
+//     .catch((err)=>{
+//         console.log(err)
+//         return res.send(err)
+//     })
+// }
