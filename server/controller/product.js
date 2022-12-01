@@ -1,10 +1,11 @@
 require('dotenv').config();
 const product = require('../../database/models/products')
-const hardware = require('../../database/models/hardware')
-const draft = require('../../database/models/draft')
+const hardware = require('../../database/models/hardware');
+const { match } = require('assert');
 
 // ================================================= Apis for Products ======================================================= 
 //==============================================================================================================================
+
 
 // Add Products 
 
@@ -59,19 +60,33 @@ exports.addProduct = async (req, res) => {
 // Get Product List 
 
 exports.getListProduct = async (req, res) => {
+    // console.log(req.query)
+    const params = {
+        page : parseInt(req.query.page) || 1,
+        limit : parseInt(req.query.limit) || 50,
+    } 
+    const total = await product.estimatedDocumentCount()
 
-    // await product.deleteOne({SKU : 'P-01057'})
-    // product.collection.drop();
-    await product.find()
-        .then((response) => {
-            //   //console.log(response)
-            res.send(response)
-        })
-        .catch((err) => {
-            ////console.log(err)
-            res.send("Not Done !!!")
-        })
-}
+    // console.log(total);
+    await product.aggregate([
+        {'$match' : {}},
+        {'$skip' : params.page > 0 ? (params.page - 1) * params.limit : 0},
+        {'$limit' : params.limit}
+    ])
+    .then((response)=>{
+        // console.log(response)
+        if(response)
+        {
+            return res.send({data : response, total : total})
+        }
+    })
+    .catch((err)=>{
+        console.log(err);
+        return res.sendStatus(500).send({message : 'Something went wrong !!!'})
+    })
+
+,{ allowDiskUse : true }}
+
 
 //   Get last product
 
@@ -99,7 +114,7 @@ exports.getLastProduct = async (req, res) => {
 // delete products 
 
 exports.deleteProduct = async (req, res) => {
-    product.deleteOne({ _id: req.query.ID })
+    product.deleteOne({ SKU: req.query.ID })
         .then((data) => {
             res.send({ message: "Product deleted successfully !!!" })
         })
@@ -223,7 +238,7 @@ exports.getProductDetails = async (req,res)=>{
     if (req.query === {}) return res.status(404).send({message : 'Please Provide the product id.'})
     await product.findOne(req.query)
     .then((data)=>{
-          
+          console.log(data)
         return res.send(data)
     })
     .catch((err)=> {return res.send({message : 'Something went wrang !!!'})})

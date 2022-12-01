@@ -1,159 +1,235 @@
-
 require('dotenv').config();
-const product = require('../../database/models/products')
 const draft = require('../../database/models/draft')
+const product = require('../../database/models/products')
 
-// ================================================= Apis for Products ======================================================= 
+// Schema({
+//     DID : {type: String, unique : true},
+//     AID : {type : String},
+//     type : {type : String},
+//     payload : {type : String}
+//  },{timestamps: {
+//      createdAt: 'created_at', 
+//      updatedAt: 'updated_at' 
+//    }})
+
+// ================================================= Apis for Draft Products ======================================================= 
 //==============================================================================================================================
 
-// Add Products 
-     
-exports.addProduct = async (req,res) =>{
-    //console.log(req.files);
+// Add Draft 
 
-    // //console.log(req.files['product_image'])
+exports.addDraft = async (req, res) => {
 
-    if (req.files['specification_image'] === undefined || req.files['featured_image'] === undefined || req.files['product_image'] === undefined) return res.status(203).send({message : 'Please Provide the required images !!!'})
-    
+    let data = {
+        DID: req.body.DID,
+        AID: req.body.AID,
+        type: req.body.type,
+        operation: req.body.operation,
+    }
+    // console.log(req.files);
+    console.log(req.body);
 
-    let image_urls = []
+    switch (req.body.operation) {
+        case 'insertProduct':
 
-    if (req.files['product_image'] !== null)
-    {
-        req.files['product_image'].map((val)=>{
-                image_urls.push(`${process.env.Official}/${val.path}`)
-        })
+            let Product_image_urls = []
+
+            if (req.files['product_image'] !== undefined) {
+                req.files['product_image'].map((val) => {
+                    Product_image_urls.push(`${process.env.Official}/${val.path}`)
+                })
+            }
+
+            req.body.product_image = image_urls;
+
+            req.body.featured_image = req.files['featured_image'] ? `${process.env.Official}/${req.files['featured_image'][0].path}` : '';
+
+            req.body.specification_image = req.files['specification_image'] ? `${process.env.Official}/${req.files['specification_image'][0].path}` : '';
+
+            req.body.mannequin_image = req.files['mannequin_image'] ? `${process.env.Official}/${req.files['mannequin_image'][0].path}` : '';
+
+            req.body.selling_points = JSON.parse(req.body.selling_points)
+
+            data.message = "Alert : New Product adding request.";
+
+            data.payload = JSON.stringify(req.body);
+
+            break;
+        case 'updateProduct':
+            let image_urls = []
+
+            if (req.files['product_image'] !== undefined) {
+                req.files['product_image'].map((val) => {
+                    image_urls.push(`${process.env.Official}/${val.path}`)
+                })
+            }
+
+            // check for previously saved image 
+            let previousImages = JSON.parse(req.body.savedImages)
+
+            if (previousImages.length > 0) image_urls.push(...previousImages)
+
+            req.body.product_image = image_urls;
+
+            // check for Images 
+            if (req.files['featured_image'] !== undefined)
+                req.body.featured_image = `${process.env.Official}/${req.files['featured_image'][0].path}`;
+            if (req.files['specification_image'] !== undefined)
+                req.body.specification_image = `${process.env.Official}/${req.files['specification_image'][0].path}`;
+            if (req.files['mannequin_image'] !== undefined)
+                req.body.mannequin_image = `${process.env.Official}/${req.files['mannequin_image'][0].path}`;
+
+            // check for product ID 
+            if (req.body._id === undefined) return res.status(204).send('Payload is absent.')
+
+            // selling points conversation in array
+            req.body.selling_points = JSON.parse(req.body.selling_points);
+
+            data.message = `Alert : Product ${req.body.SKU} updating request.`;
+
+            data.payload = JSON.stringify(req.body);
+            break;
+        default:
+            return res.sendStatus('406').send('Type not found.');
     }
 
-    req.body.product_image = image_urls;
-    
-    req.body.featured_image = `${process.env.Official}/${req.files['featured_image'][0].path}`;
 
-   req.body.specification_image = `${process.env.Official}/${req.files['specification_image'][0].path}`;
+    console.log(data);
 
-    
-    //console.log(req.body);
-
-    const data = product(req.body);
-
-    await data.save()
-    .then((response)=>{
-        // console.log(response)
-        res.send({message:'Product added successfully !!!',response})
-    })
-    .catch((err)=>{
-        // console.log(err)
-        res.status(203).send({message:'Some error occurred !!!'})
-
-    })
+    // return res.send('All okay')
 
 
-  }
- 
-// Get Product List 
+    const insert = draft(data);
 
-exports.getProduct = async(req,res)=>{
-    await product.find()
-    .then((response)=>{
-      let disabled = [];
-      let enabled = [];
-        response.map((data,index)=>{
-          if(data.status === false)
-          disabled.push(data);
-          else 
-          enabled.push(data);
-      })
-    //   disabled.concat(enabled)
-    //   //console.log(disabled,enabled)
-      res.send(disabled.concat(enabled))
-    })
-    .catch((err)=>{
-        // //console.log(err)
-        res.send("Not Done !!!")
-    })
-}
- 
-// Get draft Product List 
+    await insert.save()
+        .then((response) => {
+            res.send({ message: 'Draft Added !!!' })
+        })
+        .catch((err) => {
+            res.status(203).send({ message: 'Some error occurred !!!' })
 
-exports.getDraftProduct = async(req,res)=>{
-    await draft.find()
-    .then((response)=>{
-      let disabled = [];
-      let enabled = [];
-        response.map((data,index)=>{
-          if(data.status === false)
-          disabled.push(data);
-          else 
-          enabled.push(data);
-      })
-    //   disabled.concat(enabled)
-    //   //console.log(disabled,enabled)
-      res.send(disabled.concat(enabled))
-    })
-    .catch((err)=>{
-        // //console.log(err)
-        res.send("Not Done !!!")
-    })
+        })
 }
 
+// Apis for Drop the Data into related table
+exports.dropDraft = async (req, res) => {
+    // console.log(req.files);
+    console.log(req.body);
+
+    // return res.send('All okay ')
+    switch (req.body.operation) {
+        case 'insertProduct':
+            let data = product(req.body)
+            data.save()
+                .then(() => {
+                    console.log(req.body.operation)
+                    draft.updateOne({ DID: req.body.DID }, { draftStatus: req.body.draftStatus })
+                        .then(() => { return res.send({ message: 'Draft Resolved !!!' }) })
+                        .catch((err) => { console.log(err); return res.status(500).send({ message: 'Some Error Occurred !!!' }) })
+                })
+                .catch((err) => { console.log(err); return res.status(500).send({ message: 'Some Error Occurred !!!' }) })
+            break;
+        case 'updateProduct':
+            product.findOneAndUpdate({ SKU: req.body.AID }, req.body)
+                .then(() => {
+                    console.log(req.body.operation)
+                    draft.updateOne({ DID: req.body.DID }, { draftStatus: req.body.draftStatus })
+                        .then(() => { return res.send({ message: 'Draft Resolved !!!' }) })
+                        .catch((err) => { console.log(err); return res.status(500).send({ message: 'Some Error Occurred !!!' }) })
+                })
+                .catch((err) => { console.log(err); return res.status(500).send({ message: 'Some Error Occurred !!!' }) })
+            break;
+        default:
+            return res.sendStatus('406').send('Type not found.');
+    }
+
+}
+
+// Get Draft Id
+
+exports.getDraftID = async (req, res) => {
+
+
+    await draft.find({}, { _id: 0, DID: 1 })
+        .sort({ _id: -1 })
+        .limit(1)
+        .then((response) => {
+            if (response !== null) {
+                res.send(response);
+            }
+            else {
+                res.status(203).send('D-01001')
+            }
+        })
+        .catch((err) => {
+            console.log(err)
+            res.status(203).send({ message: 'Some error occurred !!!' })
+        })
+
+}
+
+// draft getting
+exports.getDraft = async (req, res) => {
+    // draft.collection.drop();
+    draft.find()
+        .then((response) => {
+            // console.log(response)
+            return res.send(response)
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.sendStatus(500).send('Something Went Wrong !!!')
+        })
+}
 
 // delete products 
 
-exports.deleteProduct = async (req,res)=>{
-    product.deleteOne({_id: req.query.ID})
-    .then((data)=>{
-        res.send({message : "Product deleted successfully !!!"})
-    })
-    .catch((err)=>{
-        res.send({message : 'Some error occurred !!!'})
+exports.deleteDraft = async (req, res) => {
+    draft.deleteOne({ _id: req.query.ID })
+        .then((data) => {
+            res.send({ message: "Product deleted successfully !!!" })
+        })
+        .catch((err) => {
+            res.send({ message: 'Some error occurred !!!' })
 
-    })
+        })
 }
 
-// update products 
+// Analytics
+exports.getMetaDraft = async (req, res) => {
+    const data = {
+        total: 0,
+        pending: 0,
+        resolved: 0,
+    }
+    try {
+        const response = await draft.find({}, { _id: 1, draftStatus: 1 })
+        // console.log(typeof(response))
+        if (response) {
 
-exports.updateProduct = async (req,res)=>{
-   //console.log(req.body);
-   //console.log(req.files);
-
-   if (req.files['featured_image'] !== undefined)
-    req.body.featured_image = `${process.env.Official}/${req.files['featured_image'][0].path}`;
-   if (req.files['specification_image'] !== undefined)
-    req.body.specification_image = `${process.env.Official}/${req.files['specification_image'][0].path}`;
-
-
-
-        if (req.body._id === undefined) return res.status(204).send('Payload is absent.')
-
-        await product.findOneAndUpdate({ _id: req.body._id }, req.body)
-            .then((data) => {
-            if (data)
-                return res.status(200).send({ message: 'Product is updated successfully.' })
-            else
-                return res.status(203).send({ message: 'No entries found' })
+            response.map(row => {
+                switch (row.draftStatus) {
+                    case 'Approved':
+                        data.resolved += 1
+                        break;
+                    case 'Pending':
+                        data.pending += 1
+                        break;
+                    default:
+                        break;
+                }
             })
-            .catch((error) => {
-            //console.log(error)    
-            return res.status(203).send('Something Went Wrong')
-            })
+
+            data.total = response.length;
+        }
+
+
+        return res.send(data)
+    } catch (error) {
+        console.log(error)
+        res.sendStatus('500').send({message : 'Something Went Wrong !!!'})
+    }
+
+
 }
 
-
-// for Changing the Status of the category
-
-exports.changeProductStatus = async(req,res) =>{
-    //console.log(req.body)
-    await product.findByIdAndUpdate({_id : req.body._id},req.body,{_id: 1,status:1})
-    .then((response)=>{
-        // console.log(response)
-        res.send({message : 'Product Status Updated',response})
-    })
-  
-    .catch((err)=>{
-        //console.log(err)
-        res.status(203).send('Something went wrong !!!')
-    })
-  }
-  
   // ================================================= Apis for Products Ends =======================================================
-  

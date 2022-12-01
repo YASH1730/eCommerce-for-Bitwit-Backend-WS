@@ -149,11 +149,11 @@ route.post('/addProducts', AuthJwt, upload, products.addProduct);
 
 // Get the list product
 
-route.get('/getListProduct', AuthJwt, products.getListProduct);
+route.get('/getListProduct', products.getListProduct);
 
 // delete product
 
-route.delete('/deleteProduct', AuthJwt, products.deleteProduct);
+route.delete('/deleteProduct', products.deleteProduct);
 
 // update product
 
@@ -175,7 +175,6 @@ route.get('/getPresentSKUs',AuthJwt,upload, products.getPresentSKUs);
 
 route.get('/getProductDetails',AuthJwt,upload, products.getProductDetails);
 
-// route.get('/updateProducts', products.updateProducts);
 
 // add variation
 
@@ -460,10 +459,20 @@ route.patch("/updateBlog", AuthJwt, upload, blog.updateBlog)
 
 // ==================== Draft ===============================
 
-route.get("/getDraft", AuthJwt, draft.getDraftProduct);
-route.get("/getProduct", AuthJwt, draft.getProduct);
+route.post("/addDraft", AuthJwt,upload, draft.addDraft);
 
-route.patch("/changeProductStatus", AuthJwt, upload, draft.changeProductStatus)
+route.get("/getDraft",draft.getDraft);
+
+route.get("/getDraftID", AuthJwt, draft.getDraftID);
+
+route.delete("/deleteDraft", AuthJwt, draft.deleteDraft);
+
+route.post('/dropDraft',AuthJwt,upload, draft.dropDraft);
+
+route.get('/getMetaDraft', draft.getMetaDraft);
+
+
+// route.patch("/changeProductStatus", AuthJwt, upload, draft.changeProductStatus)
 
 
 // =============== Fabric routes =======================
