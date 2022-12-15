@@ -101,7 +101,7 @@ exports.getLastProduct = async (req, res) => {
                 res.send(response);
             }
             else {
-                res.status(203).send('WS-01001')
+                res.status(203).send('P-01001')
             }
         })
         .catch((err) => {
@@ -347,6 +347,38 @@ exports.getHardwareDropdown = async (req,res)=>{
     })
 }
 
+// get ArticlesId
+
+exports.getArticlesId = async (req,res)=>{
+    try {
+        // const H_SKU = await hardware.find({},{_id : 0,SKU : 1})
+        const P_SKU = await  product.aggregate(
+            [
+            {'$match' : {'SKU' : {'$regex' : req.query.search, '$options' : 'i' }}}, 
+
+            {'$group' : {'_id' : '$_id',
+                         'SKU': {'$first' : '$SKU'},
+            }}, 
+            {'$limit' : 10}]
+            )
+        const H_SKU = await  hardware.aggregate(
+            [
+            {'$match' : {'SKU' : {'$regex' : req.query.search, '$options' : 'i' }}}, 
+
+            {'$group' : {'_id' : '$_id',
+                         'SKU': {'$first' : '$SKU'},
+            }}, 
+            {'$limit' : 10}]
+            )
+        // console.log(P_SKU)
+    
+            res.send({P_SKU,H_SKU })
+        } catch (error) {
+            console.log(error)
+            res.sendStatus(500)
+    }
+   
+}
 
   // ================================================= Apis for Products Ends =======================================================
 

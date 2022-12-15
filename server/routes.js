@@ -19,7 +19,7 @@ const polish = require("./controller/polish");
 const hinge = require("./controller/hinge");
 const fitting = require("./controller/fitting");
 const knob = require("./controller/knob");
-const Door = require("./controller/door");
+const Supplier = require("./controller/supplier");
 const Handle = require("./controller/handle");
 const Gallery = require("./controller/gallery");
 const blog = require("./controller/blog");
@@ -184,6 +184,7 @@ route.post('/variation',AuthJwt,upload, products.variation);
 
 route.get('/getHardwareDropdown',AuthJwt, products.getHardwareDropdown);
 
+route.get('/getArticlesId',products.getArticlesId)
 
 // =============== Merge Product routes =======================
 
@@ -374,20 +375,24 @@ route.patch("/changeKnobStatus", AuthJwt, upload, knob.changeKnobStatus);
 // edit editKnob 
 route.patch("/editKnob", AuthJwt, upload, knob.editKnob);
 
-// ==================  Door  Routes =============================
+// ==================  Supplier  Routes =============================
 
 
-// addDoor route
-route.post("/addDoor", AuthJwt, upload, Door.addDoor);
+// addSupplier route
+route.post("/addSupplier", AuthJwt, upload, Supplier.addSupplier);
 
-// list getDoor route
-route.get("/getDoor", AuthJwt, Door.getDoor);
+// list getSupplier route
+route.get("/getSupplier", AuthJwt, Supplier.getSupplier);
 
-// change  status of changeDoorStatus route
-route.patch("/changeDoorStatus", AuthJwt, upload, Door.changeDoorStatus);
 
-// edit editDoor 
-route.patch("/editDoor", AuthJwt, upload, Door.editDoor);
+// edit editSupplier 
+route.patch("/editSupplier", AuthJwt, upload, Supplier.editSupplier);
+
+// edit getLastSupplier 
+route.get("/getLastSupplier", Supplier.getLastSupplier);
+
+// edit getLastSupplier 
+route.get("/getSupplierDropdown", Supplier.getSupplierDropdown);
 
 
 
@@ -469,7 +474,7 @@ route.delete("/deleteDraft", AuthJwt, draft.deleteDraft);
 
 route.post('/dropDraft',AuthJwt,upload, draft.dropDraft);
 
-route.get('/getMetaDraft', draft.getMetaDraft);
+route.get('/getMetaDraft',AuthJwt,draft.getMetaDraft);
 
 
 // route.patch("/changeProductStatus", AuthJwt, upload, draft.changeProductStatus)
@@ -529,20 +534,30 @@ route.delete("/deleteCustomer", AuthJwt, customer.deleteCustomer);
 
 // =================== Stock route =========================
 
-// add to stock
-route.post('/addStock',AuthJwt,upload,stock.addStock);
+// // add to stock
+// route.post('/addStock',AuthJwt,upload,stock.addStock);
 
-// list stock
-route.get('/listStock',AuthJwt,stock.listStock);
+// // list stock
+// route.get('/listStock',AuthJwt,stock.listStock);
 
-// delete stock
-route.delete('/deleteStock',AuthJwt,stock.deleteStock);
+// // delete stock
+// route.delete('/deleteStock',AuthJwt,stock.deleteStock);
 
-// update stock
-route.patch('/updateStock',AuthJwt ,upload ,stock.updateStock);
+// // update stock
+// route.patch('/updateStock',AuthJwt ,upload ,stock.updateStock);
 
-// product preview 
-route.get('/preview',AuthJwt  ,stock.preview);
+// // product preview 
+// route.get('/preview',AuthJwt  ,stock.preview);
+
+route.post('/addInward',AuthJwt,upload,stock.addInward);
+
+route.post('/addOutward',AuthJwt,upload,stock.addOutward);
+
+route.post('/addTransfer',AuthJwt,upload,stock.addTransfer);
+
+route.get('/listEntires',AuthJwt,stock.listEntires);
+
+route.get('/totalEntries',AuthJwt,stock.totalEntries);
 
 // =============== Hardware routes =======================
 
