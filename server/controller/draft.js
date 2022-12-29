@@ -39,7 +39,11 @@ exports.addDraft = async (req, res) => {
                 })
             }
 
-            req.body.product_image = image_urls;
+            req.body.primary_material = req.body.primary_material.split(',');
+            req.body.polish = req.body.polish.split(',');
+            req.body.warehouse = req.body.warehouse.split(',');
+
+            req.body.product_image = Product_image_urls;
 
             req.body.featured_image = req.files['featured_image'] ? `${process.env.Official}/${req.files['featured_image'][0].path}` : '';
 
@@ -51,7 +55,7 @@ exports.addDraft = async (req, res) => {
 
             data.message = "Alert : New Product adding request.";
 
-            data.payload = JSON.stringify(req.body);
+            data.payload = req.body;
 
             break;
         case 'updateProduct':
@@ -62,6 +66,10 @@ exports.addDraft = async (req, res) => {
                     image_urls.push(`${process.env.Official}/${val.path}`)
                 })
             }
+
+            req.body.primary_material = req.body.primary_material.split(',');
+            req.body.polish = req.body.polish.split(',');
+            req.body.warehouse = req.body.warehouse.split(',');
 
             // check for previously saved image 
             let previousImages = JSON.parse(req.body.savedImages)
@@ -86,16 +94,17 @@ exports.addDraft = async (req, res) => {
 
             data.message = `Alert : Product ${req.body.SKU} updating request.`;
 
-            data.payload = JSON.stringify(req.body);
+            data.payload = req.body;
             break;
         default:
             return res.sendStatus('406').send('Type not found.');
     }
+    console.log(data.payload);
 
 
-    console.log(data);
+    console.log('+++++++end ');
 
-    // return res.send('All okay')
+    // return res.status(300).send('All okay')
 
 
     const insert = draft(data);
@@ -105,6 +114,7 @@ exports.addDraft = async (req, res) => {
             res.send({ message: 'Draft Added !!!' })
         })
         .catch((err) => {
+            console.log(err)
             res.status(203).send({ message: 'Some error occurred !!!' })
 
         })
@@ -114,6 +124,7 @@ exports.addDraft = async (req, res) => {
 exports.dropDraft = async (req, res) => {
     // console.log(req.files);
     console.log(req.body);
+    // console.log(JSON.parse(req.body));
 
     // return res.send('All okay ')
     switch (req.body.operation) {
@@ -169,6 +180,7 @@ exports.getDraftID = async (req, res) => {
 
 // draft getting
 exports.getDraft = async (req, res) => {
+
     // draft.collection.drop();
     draft.find()
         .then((response) => {
@@ -226,7 +238,7 @@ exports.getMetaDraft = async (req, res) => {
         return res.send(data)
     } catch (error) {
         console.log(error)
-        res.sendStatus('500').send({message : 'Something Went Wrong !!!'})
+        res.sendStatus('500').send({ message: 'Something Went Wrong !!!' })
     }
 
 
