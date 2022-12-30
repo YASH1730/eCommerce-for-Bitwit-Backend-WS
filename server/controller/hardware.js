@@ -10,15 +10,17 @@ exports.addHardware = async (req, res) => {
   //console.log(req.files['fabric_image'])
 
   // hardware.collection.drop('hardware')
-  if (req.files['hardware_image'] === undefined) return res.status(203).send({ message: 'Hardware Image Is Required !!!' })
-
+  // if (req.files['hardware_image'] === undefined) return res.status(203).send({ message: 'Hardware Image Is Required !!!' })
   let image_urls = []
+  if (req.files['hardware_image'] !== undefined) {
 
-  if (req.files['hardware_image'] !== null) {
-    req.files['hardware_image'].map((val) => {
-      image_urls.push(`${process.env.Official}/${val.path}`)
-    })
+    if (req.files['hardware_image'] !== null) {
+      req.files['hardware_image'].map((val) => {
+        image_urls.push(`${process.env.Official}/${val.path}`)
+      })
+    }
   }
+
 
   req.body.hardware_image = image_urls;
   req.body.warehouse = req.body.warehouse.split(',');
