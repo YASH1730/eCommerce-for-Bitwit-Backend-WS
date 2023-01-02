@@ -13,11 +13,6 @@ exports.addProduct = async (req, res) => {
     //console.log('files>>>',req.files);
     // //console.log(req.body);
 
-    // ////console.log(req.files['product_image'])
-
-    // if (req.files['specification_image'] === undefined || req.files['featured_image'] === undefined || req.files['mannequin_image'] === undefined || req.files['product_image'] === undefined) return res.status(203).send({ message: 'Please Provide the required images !!!' })
-
-
     let image_urls = []
 
     if (req.files['product_image'] !== undefined) {
@@ -60,21 +55,54 @@ exports.addProduct = async (req, res) => {
 // Get Product List 
 
 exports.getListProduct = async (req, res) => {
-    // console.log(req.query)
-    const params = {
-        page : parseInt(req.query.page) || 1,
-        limit : parseInt(req.query.limit) || 50,
-    } 
-    const total = await product.estimatedDocumentCount()
+    
+    try {
+    //  console.log(req.query)
+    const params = JSON.parse(req.query.filter)
+    let total = await product.estimatedDocumentCount();
+   
+    // filter Section Starts
 
-    // console.log(total);
+    let query = {}
+    let filterArray = [];
+    
+
+    if(params.title !== '')
+    filterArray.push({ 'product_title': { '$regex': params.title, '$options': 'i' } })
+    
+    if(params.SKU)
+    filterArray.push({ 'SKU':  params.SKU })
+    
+    if(params.category)
+    filterArray.push({ 'category_name': { '$regex': params.category, '$options': 'i' } })
+    
+    if(params.subCategory)
+    filterArray.push({ 'sub_category_name': { '$regex': params.subCategory, '$options': 'i' } })
+    
+
+    // for checking the filter is free or not 
+    if(filterArray.length > 0)
+    {
+        query = {'$and': filterArray};
+
+        // this is for search document count 
+        let count = await product.aggregate([
+            {'$match' : query},
+            {'$count' : 'Count'}
+        ])
+        total = count.length > 0 ? count[0].Count : 0;
+    }
+
+    // filter ends 
+
+    // final operation center
+
     await product.aggregate([
-        {'$match' : {}},
+        {'$match' : query},
         {'$skip' : params.page > 0 ? (params.page - 1) * params.limit : 0},
         {'$limit' : params.limit}
     ])
     .then((response)=>{
-        // console.log(response)
         if(response)
         {
             return res.send({data : response, total : total})
@@ -85,7 +113,12 @@ exports.getListProduct = async (req, res) => {
         return res.sendStatus(500).send({message : 'Something went wrong !!!'})
     })
 
-,{ allowDiskUse : true }}
+    ,{ allowDiskUse : true };
+    } catch (err) {
+        console.log("Error>>>",err);
+        res.send(500);
+    }
+}
 
 
 //   Get last product
@@ -380,6 +413,8 @@ exports.getArticlesId = async (req,res)=>{
     }
    
 }
+
+
 
   // ================================================= Apis for Products Ends =======================================================
 

@@ -122,4 +122,5 @@ const product = mongoose.Schema({
 
 })
 
+// module.exports = mongoose.model('product', product);
 module.exports = mongoose.model('new_product', product);
