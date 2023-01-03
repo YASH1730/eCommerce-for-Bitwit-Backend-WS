@@ -34,11 +34,11 @@ const stock = require("./controller/stock");
 // middleware for the multer setup
 
 const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
+    destination: function (req, file, cb) {
         cb(null, './upload/');
     },
-    filename: function(req, file, cb) {
-        cb(null,file.originalname);
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
     }
 });
 
@@ -47,7 +47,7 @@ const fileFilter = (req, file, cb) => {
     file.originalname = file.originalname.replace(/ /g, '')
     console.log(file)
     // reject a file
-    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/svg' || file.mimetype === 'image/jpg' ) {
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/svg' || file.mimetype === 'image/jpg') {
         cb(null, true);
     } else {
         cb(null, false);
@@ -60,7 +60,7 @@ const upload = multer({
         fileSize: 1024 * 1024 * 5
     },
     fileFilter: fileFilter
-}).fields([{ name: "product_image" }, { name: "featured_image" }, { name: "category_image" }, { name: 'banner_image' }, { name: 'specification_image' },  { name: 'fabric_image' } ,  { name: 'textile_image' } ,  { name: 'primaryMaterial_image' } , {name : 'profile_image'}, {name : 'mannequin_image'} , {name : 'hardware_image'} ]);
+}).fields([{ name: "product_image" }, { name: "featured_image" }, { name: "category_image" }, { name: 'banner_image' }, { name: 'specification_image' }, { name: 'fabric_image' }, { name: 'textile_image' }, { name: 'primaryMaterial_image' }, { name: 'profile_image' }, { name: 'mannequin_image' }, { name: 'hardware_image' }]);
 
 
 // middleware for encryption
@@ -82,7 +82,7 @@ function encode(req, res, next) {
     // code to hash the password
 
     bcrypt.genSalt(saltRounds, (err, salt) => {
-        bcrypt.hash(req.body.password, salt, function(err, hash) {
+        bcrypt.hash(req.body.password, salt, function (err, hash) {
             // //console.log(">>>>>", hash);
             if (hash !== null) {
                 req.body.password = hash;
@@ -165,26 +165,26 @@ route.get('/getLastProduct', AuthJwt, products.getLastProduct);
 
 // Update Bulk
 
-route.post('/updateBulk', AuthJwt,upload, products.updateBulk);
+route.post('/updateBulk', AuthJwt, upload, products.updateBulk);
 
 // Get SKUs
 
-route.get('/getPresentSKUs',AuthJwt,upload, products.getPresentSKUs);
+route.get('/getPresentSKUs', AuthJwt, upload, products.getPresentSKUs);
 
 // Get getProductDetails
 
-route.get('/getProductDetails',AuthJwt,upload, products.getProductDetails);
+route.get('/getProductDetails', AuthJwt, upload, products.getProductDetails);
 
 
 // add variation
 
-route.post('/variation',AuthJwt,upload, products.variation);
+route.post('/variation', AuthJwt, upload, products.variation);
 
 // get  hardware item for dropdown
 
-route.get('/getHardwareDropdown',AuthJwt, products.getHardwareDropdown);
+route.get('/getHardwareDropdown', AuthJwt, products.getHardwareDropdown);
 
-route.get('/getArticlesId',products.getArticlesId)
+route.get('/getArticlesId', products.getArticlesId)
 
 // =============== Merge Product routes =======================
 
@@ -231,7 +231,7 @@ route.patch('changStatusBanner', upload, AuthJwt, banner.changeStatus);
 
 // Make Order
 
-route.post('/placeOrder',  upload, order.placeOrder);
+route.post('/placeOrder', upload, order.placeOrder);
 
 // List Order
 
@@ -239,7 +239,7 @@ route.get('/listOrders', AuthJwt, order.listOrder);
 
 // Change Status
 
-route.post('/changeOrderStatus', AuthJwt,upload, order.changeOrderStatus);
+route.post('/changeOrderStatus', AuthJwt, upload, order.changeOrderStatus);
 
 // Search Order
 route.get('/searchOrder', order.searchOrder);
@@ -251,16 +251,16 @@ route.get('/getLastOrder', order.getLastOrder);
 route.get('/customerCatalog', order.customerCatalog);
 
 // add Custom product
-route.post('/addCustomProduct', AuthJwt,upload, order.addCustomProduct);
+route.post('/addCustomProduct', AuthJwt, upload, order.addCustomProduct);
 
 // get last Custom product
-route.get('/getLastCp', AuthJwt,order.getLastCp);
+route.get('/getLastCp', AuthJwt, order.getLastCp);
 
 // get delete order
-route.delete('/deleteOrder', AuthJwt,order.deleteOrder);
+route.delete('/deleteOrder', AuthJwt, order.deleteOrder);
 
 // get  Custom order
-route.get('/customOrderList', AuthJwt,order.customOrderList);
+route.get('/customOrderList', AuthJwt, order.customOrderList);
 
 
 // ================== sub categories Routes =============================
@@ -292,6 +292,9 @@ route.patch("/changePrimaryMaterialStatus", AuthJwt, upload, primaryMaterial.cha
 
 // edit editPrimaryMaterial 
 route.patch("/editPrimaryMaterial", AuthJwt, upload, primaryMaterial.editPrimaryMaterial);
+
+// edit editPrimaryMaterial 
+route.delete("/deletePrimaryMaterial", AuthJwt, upload, primaryMaterial.deletePrimaryMaterial);
 
 
 // ==================  Secondary Material Routes =============================
@@ -464,17 +467,17 @@ route.patch("/updateBlog", AuthJwt, upload, blog.updateBlog)
 
 // ==================== Draft ===============================
 
-route.post("/addDraft", AuthJwt,upload, draft.addDraft);
+route.post("/addDraft", AuthJwt, upload, draft.addDraft);
 
-route.get("/getDraft",draft.getDraft);
+route.get("/getDraft", draft.getDraft);
 
 route.get("/getDraftID", AuthJwt, draft.getDraftID);
 
 route.delete("/deleteDraft", AuthJwt, draft.deleteDraft);
 
-route.post('/dropDraft',AuthJwt,upload, draft.dropDraft);
+route.post('/dropDraft', AuthJwt, upload, draft.dropDraft);
 
-route.get('/getMetaDraft',AuthJwt,draft.getMetaDraft);
+route.get('/getMetaDraft', AuthJwt, draft.getMetaDraft);
 
 
 // route.patch("/changeProductStatus", AuthJwt, upload, draft.changeProductStatus)
@@ -518,7 +521,7 @@ route.patch("/changeTextileStatus", upload, AuthJwt, textile.changeTextileStatus
 // =============== Customer routes =======================
 
 // addCategory route
-route.post("/addCustomer",AuthJwt, upload, customer.addCustomer);
+route.post("/addCustomer", AuthJwt, upload, customer.addCustomer);
 
 // get list of the customer
 route.get("/listCustomer", AuthJwt, customer.listCustomer);
@@ -549,15 +552,15 @@ route.delete("/deleteCustomer", AuthJwt, customer.deleteCustomer);
 // // product preview 
 // route.get('/preview',AuthJwt  ,stock.preview);
 
-route.post('/addInward',AuthJwt,upload,stock.addInward);
+route.post('/addInward', AuthJwt, upload, stock.addInward);
 
-route.post('/addOutward',AuthJwt,upload,stock.addOutward);
+route.post('/addOutward', AuthJwt, upload, stock.addOutward);
 
-route.post('/addTransfer',AuthJwt,upload,stock.addTransfer);
+route.post('/addTransfer', AuthJwt, upload, stock.addTransfer);
 
-route.get('/listEntires',AuthJwt,stock.listEntires);
+route.get('/listEntires', AuthJwt, stock.listEntires);
 
-route.get('/totalEntries',AuthJwt,stock.totalEntries);
+route.get('/totalEntries', AuthJwt, stock.totalEntries);
 
 // =============== Hardware routes =======================
 

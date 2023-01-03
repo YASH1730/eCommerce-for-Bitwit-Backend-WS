@@ -13,23 +13,23 @@ const primaryMaterial = require("../../database/models/primaryMaterial");
 
 exports.addPrimaryMaterial = async (req, res) => {
 
-//console.log(req.body,req.file)
-//console.log(req.files['primaryMaterial_image'])
+  //console.log(req.body,req.file)
+  //console.log(req.files['primaryMaterial_image'])
 
-if (req.files['primaryMaterial_image'] !== undefined) 
-req.body.primaryMaterial_image = `${process.env.Official}/${req.files['primaryMaterial_image'][0].path}` 
+  if (req.files['primaryMaterial_image'] !== undefined)
+    req.body.primaryMaterial_image = `${process.env.Official}/${req.files['primaryMaterial_image'][0].path}`
 
 
   const data = primaryMaterial(req.body)
 
   await data.save()
     .then((response) => {
-      res.send({message : 'Material Added Successfully !!!',response})
+      res.send({ message: 'Material Added Successfully !!!', response })
     })
     .catch((error) => {
       //console.log(error)
       res.status(203);
-      res.send({message : 'Duplicate Value Found !!!'})
+      res.send({ message: 'Duplicate Value Found !!!' })
     })
 
 }
@@ -57,32 +57,32 @@ exports.getPrimaryMaterial = async (req, res) => {
 
 exports.editPrimaryMaterial = async (req, res) => {
 
-  if (req.files['primaryMaterial_image'] !== undefined) 
-req.body.primaryMaterial_image = `${process.env.Official}/${req.files['primaryMaterial_image'][0].path}` 
+  if (req.files['primaryMaterial_image'] !== undefined)
+    req.body.primaryMaterial_image = `${process.env.Official}/${req.files['primaryMaterial_image'][0].path}`
 
 
   await primaryMaterial.findOneAndUpdate({ _id: req.body._id }, req.body)
-      .then((data) => {
-        if (data)
-          return res.status(200).send({ message: 'Material is updated successfully.' })
-        else
-          return res.status(203).send({ message: 'No entries found' })
-      })
-      .catch((error) => {
-        return res.status(203).send({ message: 'Something Went Wrong' })
-      })
+    .then((data) => {
+      if (data)
+        return res.status(200).send({ message: 'Material is updated successfully.' })
+      else
+        return res.status(203).send({ message: 'No entries found' })
+    })
+    .catch((error) => {
+      return res.status(203).send({ message: 'Something Went Wrong' })
+    })
 
 }
 
 // delete category
 
-exports.deleteCategory = async (req,res) =>{
+exports.deletePrimaryMaterial = async (req, res) => {
 
   // //console.log(req.query)
 
-   await categories.deleteOne({_id : req.query.ID}).then((data)=>{
+  await primaryMaterial.deleteOne({ _id: req.query.ID }).then((data) => {
     // //console.log(data)
-    res.send({massage : 'Material deleted !!!'})
+    res.send({ massage: 'Material deleted !!!' })
   })
 
 }
@@ -90,18 +90,18 @@ exports.deleteCategory = async (req,res) =>{
 
 // for Changing the Status of the category
 
-exports.changePrimaryMaterialStatus = async(req,res) =>{
+exports.changePrimaryMaterialStatus = async (req, res) => {
   //console.log(req.body)
-  await primaryMaterial.findByIdAndUpdate({_id : req.body._id},{primaryMaterial_status : req.body.primaryMaterial_status})
-  .then((data)=>{
+  await primaryMaterial.findByIdAndUpdate({ _id: req.body._id }, { primaryMaterial_status: req.body.primaryMaterial_status })
+    .then((data) => {
       //console.log(data)
       res.send('all okay')
-  })
+    })
 
-  .catch((err)=>{
+    .catch((err) => {
       //console.log(err)
       res.send('Something went Wrong !!!')
-  })
+    })
 }
 
 
