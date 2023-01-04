@@ -133,7 +133,7 @@ exports.dropDraft = async (req, res) => {
             data.save()
                 .then(() => {
                     console.log(req.body.operation)
-                    draft.updateOne({ DID: req.body.DID }, { draftStatus: req.body.draftStatus })
+                    draft.updateOne({ DID: req.body.DID }, { draftStatus: req.body.draftStatus, AID: req.body.AID })
                         .then(() => { return res.send({ message: 'Draft Resolved !!!' }) })
                         .catch((err) => { console.log(err); return res.status(500).send({ message: 'Some Error Occurred !!!' }) })
                 })

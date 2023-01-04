@@ -49,7 +49,7 @@ const uuid = require('uuid')
 //         .catch((err)=>{
 //             res.status(404).send({message : 'Something went wrong !!!'})
 //         })
-        
+
 // }
 
 // exports.deleteStock = async (req,res)=>{
@@ -66,7 +66,7 @@ const uuid = require('uuid')
 //         .catch((err)=>{
 //             res.status(404).send({message : 'Something went wrong !!!'})
 //         })
-        
+
 // }
 
 // //  for product preview before adding
@@ -109,113 +109,113 @@ const uuid = require('uuid')
 
 // ========================= Inward ===================
 
-exports.addInward = async(req,res)=>{
+exports.addInward = async (req, res) => {
     try {
         req.body.inward_id = uuid.v4();
         req.body.order_no = uuid.v4();
         req.body.product_articles = req.body.product_articles.split(',')
         req.body.hardware_articles = req.body.hardware_articles.split(',')
-        
+
         let data = inward(req.body)
-         data = await data.save()
-         console.log(data)
-        
-        if(data) return res.send({message : 'Inward Entries added !!!',data});
+        data = await data.save()
+        console.log(data)
+
+        if (data) return res.send({ message: 'Inward Entries added !!!', response: data });
 
     } catch (error) {
         console.log(error)
-        return res.sendStatus(500).send({message : 'Something went wrong !!!'})
+        return res.sendStatus(500).send({ message: 'Something went wrong !!!' })
     }
-    
+
 }
 
 // ======================== Outward ==============
 
-exports.addOutward = async(req,res)=>{
+exports.addOutward = async (req, res) => {
     try {
         req.body.outward_id = uuid.v4();
         req.body.order_no = uuid.v4();
         req.body.product_articles = req.body.product_articles.split(',')
         req.body.hardware_articles = req.body.hardware_articles.split(',')
-      
+
         console.log(req.body)
-        
+
         let data = outward(req.body)
-         data = await data.save()
-         console.log(data)
-        
-        if(data) return res.send({message : 'Outward Entries added !!!',data});
+        data = await data.save()
+        console.log(data)
+
+        if (data) return res.send({ message: 'Outward Entries added !!!', response: data });
 
     } catch (error) {
         console.log(error)
-        return res.sendStatus(500).send({message : 'Something went wrong !!!'})
+        return res.sendStatus(500).send({ message: 'Something went wrong !!!' })
     }
-    
+
 }
 
 // ========================= Transfer ============ 
-exports.addTransfer = async(req,res)=>{
+exports.addTransfer = async (req, res) => {
     try {
         req.body.transfer_id = uuid.v4();
         req.body.order_no = uuid.v4();
         req.body.product_articles = req.body.product_articles.split(',')
         req.body.hardware_articles = req.body.hardware_articles.split(',')
-      
+
         console.log(req.body)
-        
+
         let data = transfer(req.body)
-         data = await data.save()
-         console.log(data)
-        
-        if(data) return res.send({message : 'Transfer Entries added !!!',data});
+        data = await data.save()
+        console.log(data)
+
+        if (data) return res.send({ message: 'Transfer Entries added !!!', response: data });
 
     } catch (error) {
         console.log(error)
-        return res.sendStatus(500).send({message : 'Something went wrong !!!'})
+        return res.sendStatus(500).send({ message: 'Something went wrong !!!' })
     }
-    
+
 }
 
 
 // list all entries
-exports.listEntires = async(req,res)=>{
+exports.listEntires = async (req, res) => {
     try {
         const params = {
-            page : parseInt(req.query.page) || 1,
-            limit : parseInt(req.query.limit) || 50,
-            type : req.query.type
-        } 
+            page: parseInt(req.query.page) || 1,
+            limit: parseInt(req.query.limit) || 50,
+            type: req.query.type
+        }
 
         let data = '';
         let total = '';
         switch (params.type) {
             case 'Inward':
-                 total = await inward.estimatedDocumentCount()
-                 data = await inward.find({}).skip(params.page > 0 ? (params.page - 1) * params.limit : 0).limit(params.limit)
-                if(data) return res.send({data,total});
+                total = await inward.estimatedDocumentCount()
+                data = await inward.find({}).skip(params.page > 0 ? (params.page - 1) * params.limit : 0).limit(params.limit)
+                if (data) return res.send({ data, total });
                 break;
             case 'Outward':
                 total = await outward.estimatedDocumentCount()
-                 data = await outward.find({}).skip(params.page > 0 ? (params.page - 1) * params.limit : 0).limit(params.limit)
-                if(data) return res.send({data,total});
+                data = await outward.find({}).skip(params.page > 0 ? (params.page - 1) * params.limit : 0).limit(params.limit)
+                if (data) return res.send({ data, total });
                 break;
             case 'Transfer':
                 total = await transfer.estimatedDocumentCount()
-                 data = await transfer.find({}).skip(params.page > 0 ? (params.page - 1) * params.limit : 0).limit(params.limit)
-                if(data) return res.send({data,total});
+                data = await transfer.find({}).skip(params.page > 0 ? (params.page - 1) * params.limit : 0).limit(params.limit)
+                if (data) return res.send({ data, total });
                 break;
             default:
-                return res.send({data : [],total : 0});
+                return res.send({ data: [], total: 0 });
         }
     } catch (error) {
         console.log(error)
-        return res.sendStatus(500).send({message : 'Something went wrong !!!'})
+        return res.sendStatus(500).send({ message: 'Something went wrong !!!' })
     }
-    
+
 }
 
 // total entires
-exports.totalEntries = async(req,res)=>{
+exports.totalEntries = async (req, res) => {
     try {
         let data = {}
         data.inward = await inward.estimatedDocumentCount();
@@ -225,6 +225,6 @@ exports.totalEntries = async(req,res)=>{
     } catch (error) {
         console.log(error)
         return res.sendStatus(500);
-        
+
     }
 }
