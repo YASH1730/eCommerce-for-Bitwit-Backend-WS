@@ -214,7 +214,7 @@ route.get('/getLastMergeProduct', AuthJwt, mergeProduct.getLastMergeProduct);
 
 // ================== Banner Routes =============================
 
-// add banners
+// add banners 
 
 route.post('/addBanner', AuthJwt, upload, banner.addBanner);
 
