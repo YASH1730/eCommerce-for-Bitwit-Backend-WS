@@ -1,4 +1,4 @@
-// const stock = require("../../database/models/stock");
+const stock = require("../../database/models/stock");
 const inward = require("../../database/models/Inward");
 const outward = require("../../database/models/outward");
 const product = require("../../database/models/products");
@@ -113,13 +113,70 @@ exports.addInward = async (req, res) => {
     try {
         req.body.inward_id = uuid.v4();
         req.body.order_no = uuid.v4();
-        req.body.product_articles = req.body.product_articles.split(',')
-        req.body.hardware_articles = req.body.hardware_articles.split(',')
+        req.body.product_articles = JSON.parse(req.body.product_articles);
+        req.body.hardware_articles = JSON.parse(req.body.hardware_articles);
+
+        // this will check the row is exist or if yes then update or insert it or insert it on not  
+
+        // ============== For Product ===================
+        if (req.body.product_articles.length > 0) {
+
+            // this loop is for creating new entries
+            let newData = req.body.product_articles.map((row) => {
+                let key = Object.keys(row)[0];
+                return {
+                    product_id: key,
+                    stock: row[key],
+                    warehouse: req.body.warehouse
+                }
+            })
+
+            // this will insert all updated product entires into Stock collection
+            await Promise.all(newData.map(async (row) => {
+                let response = await stock.findOne({ $and: [{ product_id: row.product_id }, { warehouse: req.body.warehouse }] })
+
+
+                if (response) row.stock = parseInt(row.stock) + parseInt(response.stock);
+
+                // console.log(">>>", row);
+
+                return stock.findOneAndUpdate({ product_id: row.product_id, warehouse: row.warehouse }, row, { upsert: true });
+            })).then(() => console.log('All Done Gracefully !!!')).catch((err) => { console.log(err) })
+
+        }
+
+        // ============== For Hardware ===================
+        if (req.body.hardware_articles.length > 0) {
+
+            // this loop is for creating new entries
+            let newData = req.body.hardware_articles.map((row) => {
+                let key = Object.keys(row)[0];
+                return {
+                    product_id: key,
+                    stock: row[key],
+                    warehouse: req.body.warehouse
+                }
+            })
+
+            // this will insert all updated hardware entires into Stock collection
+            await Promise.all(newData.map(async (row) => {
+                let response = await stock.findOne({ $and: [{ product_id: row.product_id }, { warehouse: req.body.warehouse }] })
+
+
+                if (response) row.stock = parseInt(row.stock) + parseInt(response.stock);
+
+                // console.log(">>>", row);
+
+                return stock.findOneAndUpdate({ product_id: row.product_id, warehouse: row.warehouse }, row, { upsert: true });
+            })).then(() => console.log('All Done Gracefully !!!')).catch((err) => { console.log(err) })
+
+        }
+
+        // final inward entries
+        console.log(req.body)
 
         let data = inward(req.body)
         data = await data.save()
-        console.log(data)
-
         if (data) return res.send({ message: 'Inward Entries added !!!', response: data });
 
     } catch (error) {
@@ -133,16 +190,69 @@ exports.addInward = async (req, res) => {
 
 exports.addOutward = async (req, res) => {
     try {
+        console.log(req.body)
         req.body.outward_id = uuid.v4();
         req.body.order_no = uuid.v4();
-        req.body.product_articles = req.body.product_articles.split(',')
-        req.body.hardware_articles = req.body.hardware_articles.split(',')
+        req.body.product_articles = JSON.parse(req.body.product_articles);
+        req.body.hardware_articles = JSON.parse(req.body.hardware_articles);
+
+        // this will check the row is exist or if yes then update or insert it or insert it on not  
+
+        // ============== For Product =================
+        if (req.body.product_articles.length > 0) {
+
+            // this loop is for creating new entries
+            let newData = req.body.product_articles.map((row) => {
+                let key = Object.keys(row)[0];
+                return {
+                    product_id: key.trim(),
+                    stock: row[key],
+                    warehouse: req.body.warehouse
+                }
+            })
+
+            // this will insert all updated product entires into Stock collection
+            await Promise.all(newData.map(async (row) => {
+                let response = await stock.findOne({ $and: [{ product_id: row.product_id }, { warehouse: req.body.warehouse }] })
+
+
+                if (response) row.stock = Math.abs(parseInt(row.stock) - parseInt(response.stock));
+
+                // console.log(">>>", row);
+
+                return stock.findOneAndUpdate({ product_id: row.product_id, warehouse: row.warehouse }, row, { upsert: true });
+            })).then(() => console.log('All Done Gracefully !!!')).catch((err) => { console.log(err) })
+
+        }
+
+        // ============== For Hardware ===================
+        if (req.body.hardware_articles.length > 0) {
+
+            // this loop is for creating new entries
+            let newData = req.body.hardware_articles.map((row) => {
+                let key = Object.keys(row)[0];
+                return {
+                    product_id: key.trim(),
+                    stock: row[key],
+                    warehouse: req.body.warehouse
+                }
+            })
+
+            // this will insert all updated hardware entires into Stock collection
+            await Promise.all(newData.map(async (row) => {
+                let response = await stock.findOne({ $and: [{ product_id: row.product_id }, { warehouse: req.body.warehouse }] })
+
+                if (response) row.stock = Math.abs(parseInt(row.stock) - parseInt(response.stock));
+
+                return stock.findOneAndUpdate({ product_id: row.product_id, warehouse: row.warehouse }, row, { upsert: true });
+            })).then(() => console.log('All Done Gracefully !!!')).catch((err) => { console.log(err) })
+
+        }
 
         console.log(req.body)
 
         let data = outward(req.body)
         data = await data.save()
-        console.log(data)
 
         if (data) return res.send({ message: 'Outward Entries added !!!', response: data });
 
@@ -158,8 +268,85 @@ exports.addTransfer = async (req, res) => {
     try {
         req.body.transfer_id = uuid.v4();
         req.body.order_no = uuid.v4();
-        req.body.product_articles = req.body.product_articles.split(',')
-        req.body.hardware_articles = req.body.hardware_articles.split(',')
+        req.body.product_articles = JSON.parse(req.body.product_articles);
+        req.body.hardware_articles = JSON.parse(req.body.hardware_articles);
+
+
+        // this will check the row is exist or if yes then update or insert it or insert it on not  
+
+        // ============== For Product =================
+        if (req.body.product_articles.length > 0) {
+
+            // this loop is for creating new entries
+            let newData = req.body.product_articles.map((row) => {
+                let key = Object.keys(row)[0];
+                return {
+                    product_id: key.trim(),
+                    stock: row[key],
+                    warehouse: req.body.warehouse
+                }
+            })
+
+            // this will insert all updated product entires into Stock collection
+            await Promise.all(newData.map(async (row) => {
+                let response_sub = await stock.findOne({ $and: [{ product_id: row.product_id }, { warehouse: req.body.warehouse }] })
+
+                if (response_sub) row.stock = Math.abs(parseInt(row.stock) - parseInt(response_sub.stock));
+
+                return stock.findOneAndUpdate({ product_id: row.product_id, warehouse: req.body.warehouse }, row, { upsert: true })
+
+            })).then(() => console.log('All Done Gracefully !!!')).catch((err) => { console.log(err) })
+
+            await Promise.all(newData.map(async (row) => {
+                let response_add = await stock.findOne({ $and: [{ product_id: row.product_id }, { warehouse: req.body.warehouse_to }] })
+
+                const entryTo = row;
+                entryTo.warehouse = req.body.warehouse_to;
+
+                if (response_add) entryTo.stock = Math.abs(parseInt(row.stock) + parseInt(response_add.stock));
+
+                return stock.findOneAndUpdate({ product_id: row.product_id, warehouse: req.body.warehouse_to }, entryTo, { upsert: true });
+
+            })).then(() => console.log('All Done Gracefully !!!')).catch((err) => { console.log(err) })
+
+        }
+
+        // ============== For Hardware ===================
+        if (req.body.hardware_articles.length > 0) {
+
+            // this loop is for creating new entries
+            let newData = req.body.hardware_articles.map((row) => {
+                let key = Object.keys(row)[0];
+                return {
+                    product_id: key.trim(),
+                    stock: row[key],
+                    warehouse: req.body.warehouse
+                }
+            })
+
+            // this will insert all updated hardware entires into Stock collection
+            await Promise.all(newData.map(async (row) => {
+                let response_sub = await stock.findOne({ $and: [{ product_id: row.product_id }, { warehouse: req.body.warehouse }] })
+
+
+                if (response_sub) row.stock = Math.abs(parseInt(row.stock) - parseInt(response_sub.stock));
+
+                return stock.findOneAndUpdate({ product_id: row.product_id, warehouse: req.body.warehouse }, row, { upsert: true });
+            })).then(() => console.log('All Done Gracefully !!!')).catch((err) => { console.log(err) })
+
+            // this will insert all updated hardware entires into Stock collection
+            await Promise.all(newData.map(async (row) => {
+                let response_add = await stock.findOne({ $and: [{ product_id: row.product_id }, { warehouse: req.body.warehouse_to }] })
+
+                const entryTo = row;
+                entryTo.warehouse = req.body.warehouse_to;
+
+                if (response_add) entryTo.stock = Math.abs(parseInt(row.stock) + parseInt(response_add.stock));
+
+                return stock.findOneAndUpdate({ product_id: row.product_id, warehouse: req.body.warehouse_to }, entryTo, { upsert: true });
+            })).then(() => console.log('All Done Gracefully !!!')).catch((err) => { console.log(err) })
+
+        }
 
         console.log(req.body)
 
@@ -204,6 +391,11 @@ exports.listEntires = async (req, res) => {
                 data = await transfer.find({}).skip(params.page > 0 ? (params.page - 1) * params.limit : 0).limit(params.limit)
                 if (data) return res.send({ data, total });
                 break;
+            case 'Stock':
+                total = await stock.estimatedDocumentCount()
+                data = await stock.find({}).skip(params.page > 0 ? (params.page - 1) * params.limit : 0).limit(params.limit)
+                if (data) return res.send({ data, total });
+                break;
             default:
                 return res.send({ data: [], total: 0 });
         }
@@ -225,6 +417,51 @@ exports.totalEntries = async (req, res) => {
     } catch (error) {
         console.log(error)
         return res.sendStatus(500);
+
+    }
+}
+
+// get SKU of list for inward for outward entries
+exports.getStockSKU = async (req, res) => {
+
+    try {
+        console.log(req.query)
+
+        let P_SKU = [];
+        let H_SKU = [];
+
+
+        if (req.query.warehouse === undefined || req.query.search === undefined)
+            return res.send({ P_SKU, H_SKU })
+        if (req.query.warehouse === '' || req.query.search === '')
+            return res.send({ P_SKU, H_SKU })
+
+
+        const response = await stock.aggregate(
+            [
+                { '$match': { '$and': [{ warehouse: req.query.warehouse }, { 'product_id': { '$regex': req.query.search, '$options': 'i' } }] } },
+
+                {
+                    '$group': {
+                        '_id': '$_id',
+                        'product_id': { '$first': '$product_id' },
+                        'stock': { '$first': '$stock' },
+                    }
+                },
+                { '$limit': 10 }]);
+
+        if (response) {
+            if (req.query.search.split('')[0].toUpperCase() === 'P')
+                P_SKU = response;
+            else if (req.query.search.split('')[0].toUpperCase() === 'H')
+                H_SKU = response;
+        }
+
+        res.send({ P_SKU, H_SKU })
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).send('Something Went Wrong !!!');
 
     }
 }

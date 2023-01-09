@@ -55,7 +55,6 @@ exports.addProduct = async (req, res) => {
 // Get Product List 
 
 exports.getListProduct = async (req, res) => {
-    
     try {
     //  console.log(req.query)
     const params = JSON.parse(req.query.filter)
@@ -97,26 +96,18 @@ exports.getListProduct = async (req, res) => {
 
     // final operation center
 
-    await product.aggregate([
+    const response = await product.aggregate([
         {'$match' : query},
         {'$skip' : params.page > 0 ? (params.page - 1) * params.limit : 0},
         {'$limit' : params.limit}
     ])
-    .then((response)=>{
-        if(response)
-        {
-            return res.send({data : response, total : total})
-        }
-    })
-    .catch((err)=>{
-        console.log(err);
-        return res.sendStatus(500).send({message : 'Something went wrong !!!'})
-    })
 
+    return res.send({data : response, total : total})
+  
     ,{ allowDiskUse : true };
     } catch (err) {
         console.log("Error>>>",err);
-        res.send(500);
+        return res.status(500).send('Something Went Wrong !!!');
     }
 }
 
@@ -289,10 +280,10 @@ exports.getProductDetails = async (req,res)=>{
 // add variation 
 
 exports.variation = async (req, res) => {
-    //console.log("Files >>>>> ",req.files);    
-    //console.log("Complete >>>> ",req.body);
+    
+    try{
 
-    // check for product images 
+//   =============================== Set Up The New Variant
     let image_urls = []
 
     if (req.files['product_image'] !== undefined) {
@@ -301,10 +292,14 @@ exports.variation = async (req, res) => {
         })
     }
 
-    // check for previously saved image 
-    let previousImages = JSON.parse(req.body.savedImages) 
+    req.body.primary_material = req.body.primary_material.split(',');
+    req.body.polish = req.body.polish.split(',');
+    req.body.warehouse = req.body.warehouse.split(',');
 
-    if(previousImages.length > 0) image_urls.push(...previousImages)
+    // check for previously saved image 
+    let previousImages = JSON.parse(req.body.savedImages)
+
+    if (previousImages.length > 0) image_urls.push(...previousImages)
 
     req.body.product_image = image_urls;
 
@@ -320,29 +315,24 @@ exports.variation = async (req, res) => {
     // selling points conversation in array
     req.body.selling_points = JSON.parse(req.body.selling_points);
 
-    //console.log("Complete >>>> ",req.body);
+    console.log("New Variant >>> ",req.body);
+//   =============================== Set Up The New Variant end
 
-    // return res.send('all okay')
+// this will save the variant to the respective parent product
+    let response = await product.findOne({SKU : req.body.parent_SKU},{variations : 1});
+    await product.updateOne({SKU : req.body.parent_SKU}, {variation : response.variations.push(req.body.SKU)})
 
-    const data = product(req.body);
+    // Now save the new product in Product Collection
+    let data = product(req.body);
+    response = await data.save()
 
-    await data.save()
-        .then((response) => {
-            product.findOneAndUpdate({SKU : req.body.parentProduct}, {variation_array : req.body.parentArray})
-            .then((result)=>{
-                //console.log(result);
-                res.send({ message: 'Variation added successfully !!!',response })
-            })
-            .catch((err)=>{
-                //console.log(err)
-                res.status(203).send({ message: 'Some error occurred !!!' })
-            })
-        })
-        .catch((err) => {
-            //console.log(err)
-            res.status(203).send({ message: 'Some error occurred !!!' })
-        })
+    if(response) return res.send({message : 'Variant Added Successfully', response});
 
+}
+catch(err){
+    console.log(err)
+    return res.status(500).send('Something Went Wrong !!!')
+}
 
 }
 

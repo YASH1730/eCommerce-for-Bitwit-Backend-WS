@@ -21,11 +21,11 @@ const product = mongoose.Schema({
     primary_material_name: { type: String },
     warehouse: { type: Array, default: [] },
     warehouse_name: { type: String },
-    length_main: { type: Number, default: 0, default: 0 },
-    breadth: { type: Number, default: 0, default: 0 },
-    height: { type: Number, default: 0, default: 0 },
-    bangalore_stock: { type: Number, default: 0, default: 0 },
-    jodhpur_stock: { type: Number, default: 0, default: 0 },
+    length_main: { type: Number, default: 0 },
+    breadth: { type: Number, default: 0 },
+    height: { type: Number, default: 0 },
+    bangalore_stock: { type: Number, default: 0, },
+    jodhpur_stock: { type: Number, default: 0, },
     weight: { type: Number },
     polish: { type: Array, default: [] },
     polish_name: { type: String },
@@ -43,7 +43,7 @@ const product = mongoose.Schema({
     door_name: { type: String },
     fitting: { type: String, default: "None" },
     fitting_name: { type: String },
-    selling_points: { type: Array },
+    selling_points: { type: Array, default: [] },
     dial_size: { type: Number, default: 0 },
     seating_size_width: { type: Number, default: 0 },
     seating_size_depth: { type: Number, default: 0 },
@@ -98,7 +98,6 @@ const product = mongoose.Schema({
     package_breadth: { type: Number, default: 0 },
     quantity: { type: Number, default: 0 },
     unit: { type: String },
-    variation_array: { type: Array, default: [] },
     assembly_level: { type: String },
     continue_selling: { type: Boolean, default: true },
     wheel: { type: String, default: "None" },
@@ -118,9 +117,12 @@ const product = mongoose.Schema({
     plywood: { type: String },
     top_size_breadth: { type: Number, default: 0 },
     top_size_length: { type: Number, default: 0 },
-    ceramic_drawers_qty: { type: Number, default: 0 }
+    ceramic_drawers_qty: { type: Number, default: 0 },
+    variations: { type: Array, default: [] },
+    variant_label: { type: String, default: '' },
+    parent_SKU: { type: String, default: '' }
 
 })
 
-module.exports = mongoose.model('product', product);
-// module.exports = mongoose.model('new_product', product);
+// module.exports = mongoose.model('product', product);
+module.exports = mongoose.model('new_product', product);

@@ -550,7 +550,7 @@ route.delete("/deleteCustomer", AuthJwt, customer.deleteCustomer);
 // route.patch('/updateStock',AuthJwt ,upload ,stock.updateStock);
 
 // // product preview 
-// route.get('/preview',AuthJwt  ,stock.preview);
+route.get('/getStockSKU', stock.getStockSKU);
 
 route.post('/addInward', AuthJwt, upload, stock.addInward);
 

@@ -1,6 +1,7 @@
 const { default: mongoose } = require('mongoose')
 
 const inward = mongoose.Schema({
+    warehouse: { type: String },
     product_articles: { type: Array, default: [] },
     hardware_articles: { type: Array, default: [] },
     supplier: { type: String },
