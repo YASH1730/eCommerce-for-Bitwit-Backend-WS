@@ -288,14 +288,25 @@ exports.addTransfer = async (req, res) => {
             })
 
             // this will insert all updated product entires into Stock collection
+            // from warehouse
             await Promise.all(newData.map(async (row) => {
                 let response_sub = await stock.findOne({ $and: [{ product_id: row.product_id }, { warehouse: req.body.warehouse }] })
 
-                if (response_sub) row.stock = Math.abs(parseInt(row.stock) - parseInt(response_sub.stock));
+                let updated = {}
+                if (response_sub) {
+                    updated = {
+                        product_id: row.product_id,
+                        stock: Math.abs(parseInt(row.stock) - parseInt(response_sub.stock)),
+                        warehouse: req.body.warehouse
+                    }
+                }
 
-                return stock.findOneAndUpdate({ product_id: row.product_id, warehouse: req.body.warehouse }, row, { upsert: true })
+
+                return stock.findOneAndUpdate({ product_id: row.product_id, warehouse: req.body.warehouse }, updated, { upsert: true })
 
             })).then(() => console.log('All Done Gracefully !!!')).catch((err) => { console.log(err) })
+
+            // to warehouse 
 
             await Promise.all(newData.map(async (row) => {
                 let response_add = await stock.findOne({ $and: [{ product_id: row.product_id }, { warehouse: req.body.warehouse_to }] })
@@ -329,9 +340,17 @@ exports.addTransfer = async (req, res) => {
                 let response_sub = await stock.findOne({ $and: [{ product_id: row.product_id }, { warehouse: req.body.warehouse }] })
 
 
-                if (response_sub) row.stock = Math.abs(parseInt(row.stock) - parseInt(response_sub.stock));
+                // if (response_sub) row.stock = Math.abs(parseInt(row.stock) - parseInt(response_sub.stock));
+                let updated = {}
+                if (response_sub) {
+                    updated = {
+                        product_id: row.product_id,
+                        stock: Math.abs(parseInt(row.stock) - parseInt(response_sub.stock)),
+                        warehouse: req.body.warehouse
+                    }
+                }
 
-                return stock.findOneAndUpdate({ product_id: row.product_id, warehouse: req.body.warehouse }, row, { upsert: true });
+                return stock.findOneAndUpdate({ product_id: row.product_id, warehouse: req.body.warehouse }, updated, { upsert: true });
             })).then(() => console.log('All Done Gracefully !!!')).catch((err) => { console.log(err) })
 
             // this will insert all updated hardware entires into Stock collection

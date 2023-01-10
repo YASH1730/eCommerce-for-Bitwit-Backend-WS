@@ -56,6 +56,8 @@ exports.addProduct = async (req, res) => {
 
 exports.getListProduct = async (req, res) => {
     try {
+
+    // product.collection.drop()
     //  console.log(req.query)
     const params = JSON.parse(req.query.filter)
     let total = await product.estimatedDocumentCount();
@@ -230,6 +232,7 @@ exports.getPresentSKUs = async (req, res) => {
 
     console.log(req.query)
 
+
     product.aggregate(
         [
         {'$match' : {'SKU' : {'$regex' : req.query.search, '$options' : 'i' }}}, 
@@ -315,12 +318,16 @@ exports.variation = async (req, res) => {
     // selling points conversation in array
     req.body.selling_points = JSON.parse(req.body.selling_points);
 
-    console.log("New Variant >>> ",req.body);
+    // console.log("New Variant >>> ",req.body);
 //   =============================== Set Up The New Variant end
 
 // this will save the variant to the respective parent product
     let response = await product.findOne({SKU : req.body.parent_SKU},{variations : 1});
-    await product.updateOne({SKU : req.body.parent_SKU}, {variation : response.variations.push(req.body.SKU)})
+    console.log(response, req.body.SKU)
+    response.variations.push(req.body.SKU)
+
+    let variations = response.variations; 
+    await product.updateOne({SKU : req.body.parent_SKU}, {variations})
 
     // Now save the new product in Product Collection
     let data = product(req.body);

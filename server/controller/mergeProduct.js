@@ -112,6 +112,7 @@ exports.updateMergeProduct = async (req, res) => {
 exports.getListMergeProduct = async (req, res) => {
     try {
         //  console.log(req.query)
+        // merge.collection.drop()
         const params = JSON.parse(req.query.filter)
         let total = await merge.estimatedDocumentCount();
 
@@ -184,7 +185,8 @@ exports.getLastMergeProduct = async (req, res) => {
 
 exports.deleteMergeProduct = async (req, res) => {
     // merge.collection.drop();
-
+    console.log(req.query.ID)
+    if (req.query.ID === 'undefined') return res.status(203).send('Please provide the valid ID')
     merge.deleteOne({ _id: req.query.ID })
         .then((data) => {
             res.send({ message: "Merge Product deleted successfully !!!" })

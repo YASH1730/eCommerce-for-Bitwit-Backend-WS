@@ -36,9 +36,6 @@ const mergeproducts = mongoose.Schema({
     seo_title: { type: String },
     seo_description: { type: String },
     seo_keyword: { type: String },
-
-
-
 })
 
 module.exports = mongoose.model('mergeproducts', mergeproducts);
