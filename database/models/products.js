@@ -120,8 +120,10 @@ const product = mongoose.Schema({
     ceramic_drawers_qty: { type: Number, default: 0 },
     variations: { type: Array, default: [] },
     variant_label: { type: String, default: '' },
-    parent_SKU: { type: String, default: '' }
-
+    parent_SKU: { type: String, default: '' },
+    amazon_url: { type: String, default: '' },
+    flipkart_url: { type: String, default: '' },
+    jiomart_url: { type: String, default: '' },
 })
 
 // module.exports = mongoose.model('product', product);
