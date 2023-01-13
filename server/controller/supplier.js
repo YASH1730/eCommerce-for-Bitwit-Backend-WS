@@ -27,6 +27,7 @@ exports.addSupplier = async (req, res) => {
 // get Supplier ===================
 
 exports.getSupplier = async (req, res) => {
+  // Supplier.collection.drop();
 
   await Supplier.find()
     .then((data) => {
@@ -90,11 +91,13 @@ exports.getLastSupplier = async (req, res) => {
 
 exports.getSupplierDropdown = async (req, res) => {
   //console.log(req.body)
+  // Supplier.collection.drop();
+
   try {
     // const H_SKU = await hardware.find({},{_id : 0,SKU : 1})
-    const Suppliers = await Supplier.find({'SID': { $regex : req.query.search, $options : 'i' }},
-        {_id : 0,'SID': 1}).limit(10)
-        
+    const Suppliers = await Supplier.find({ 'SID': { $regex: req.query.search, $options: 'i' } },
+      { _id: 0, 'SID': 1 }).limit(10)
+
     res.send({ Suppliers })
   } catch (error) {
     console.log(error)

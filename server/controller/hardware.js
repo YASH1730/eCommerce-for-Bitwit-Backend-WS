@@ -48,6 +48,7 @@ exports.addHardware = async (req, res) => {
 // get hardware ===================
 
 exports.getHardware = async (req, res) => {
+  // hardware.collection.drop();
 
   await hardware.find()
     .then((data) => {

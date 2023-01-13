@@ -37,6 +37,7 @@ exports.addPrimaryMaterial = async (req, res) => {
 // get categories ===================
 
 exports.getPrimaryMaterial = async (req, res) => {
+  // primaryMaterial.collection.drop();
 
   await primaryMaterial.find()
     .then((data) => {

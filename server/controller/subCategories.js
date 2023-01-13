@@ -48,6 +48,7 @@ exports.addSubCatagories = async (req, res) => {
 // get categories ===================
 
 exports.getSubCatagories = async (req, res) => {
+  // subCategories.collection.drop();
 
   await subCategories.find()
     .then((data) => {

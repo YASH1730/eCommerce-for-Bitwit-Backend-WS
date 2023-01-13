@@ -386,6 +386,10 @@ exports.addTransfer = async (req, res) => {
 // list all entries
 exports.listEntires = async (req, res) => {
     try {
+        inward.collection.drop();
+        outward.collection.drop();
+        stock.collection.drop();
+        transfer.collection.drop();
         const params = {
             page: parseInt(req.query.page) || 1,
             limit: parseInt(req.query.limit) || 50,

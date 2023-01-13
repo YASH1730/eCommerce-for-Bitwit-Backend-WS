@@ -181,6 +181,7 @@ exports.getDraftID = async (req, res) => {
 // draft getting
 exports.getDraft = async (req, res) => {
 
+
     // draft.collection.drop();
     draft.find()
         .then((response) => {

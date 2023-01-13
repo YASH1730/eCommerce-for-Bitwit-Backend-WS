@@ -26,7 +26,6 @@ const product = mongoose.Schema({
     height: { type: Number, default: 0 },
     bangalore_stock: { type: Number, default: 0, },
     jodhpur_stock: { type: Number, default: 0, },
-    weight: { type: Number },
     polish: { type: Array, default: [] },
     polish_name: { type: String },
     hinge: { type: String, default: "None" },
@@ -124,6 +123,9 @@ const product = mongoose.Schema({
     amazon_url: { type: String, default: '' },
     flipkart_url: { type: String, default: '' },
     jiomart_url: { type: String, default: '' },
+    wood_weight: { type: String, default: 0 },
+    package_weight: { type: String, default: 0 },
+    metal_weight: { type: String, default: 0 },
 })
 
 // module.exports = mongoose.model('product', product);
