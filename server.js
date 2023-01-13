@@ -6,7 +6,6 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const mongo = require("./database/dbConfig");
 const cors = require("cors");
-const { render } = require("pug");
 
 // midilwear to parse the body
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -14,19 +13,23 @@ app.use(bodyParser.json());
 
 app.use(cors());
 
+// public path
+app.use(express.static(path.join(__dirname, "public")));
+app.set("views", "./src/public");
+
 //set up the view engine
 app.set("view engine", "pug");
 app.set("views", "views");
 
-// app.use((req, res, next) => {
-//   res.render('maintenance')
-// })
+app.use((req, res, next) => {
+  res.render('maintenance')
+})
 
-// public path
-app.use(express.static(path.join(__dirname, "public")));
 
 // set uploads as static
+
 app.use("/upload", express.static(path.join(__dirname, "upload")));
+
 // requiring the routes
 app.use("/api/", require("./server/routes"));
 
