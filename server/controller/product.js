@@ -1,6 +1,7 @@
 require('dotenv').config();
 const product = require('../../database/models/products')
 const hardware = require('../../database/models/hardware');
+const polish = require('../../database/models/polish');
 const { match } = require('assert');
 
 // ================================================= Apis for Products ======================================================= 
@@ -346,17 +347,11 @@ catch(err){
 // APIS for Hardware 
 
 exports.getHardwareDropdown = async (req,res)=>{
-    hardware.find({},{
-        _id : 0,
-        SKU: 1,
-        title: 1,
-        sub_category_name: 1,
-        status : 1
-    })
-    .then((response)=>{
 
-        //  hinge knob door handle fitting polish handle_material fabric textile
-        const data = {
+    try {
+
+           //  hinge knob door handle fitting polish handle_material fabric textile
+           const data = {
             hinge : [],
             knob : [],
             door : [],
@@ -366,23 +361,37 @@ exports.getHardwareDropdown = async (req,res)=>{
             fabric : [],
             textile : []
         }
-        // console.log(response)
-        data.hinge = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'hinge'}); 
-        data.knob = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'knob'}); 
-        data.door = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'door'}); 
-        data.handle = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'handle'}); 
-        data.fitting = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'fitting'}); 
-        data.polish = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'polish'}); 
-        data.fabric = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'fabric'}); 
-        data.textile = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'textile'});
+
+        let polishRes = await polish.find({},{_id : 1,polish_name : 1})
+
+        if (polishRes) data.polish = polishRes
+
+        let response = await hardware.find({},{
+            _id : 0,
+            SKU: 1,
+            title: 1,
+            sub_category_name: 1,
+            status : 1
+        })
         
-        // //console.log(data);
+        if(response){
+            // console.log(response)
+            data.hinge = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'hinge'}); 
+            data.knob = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'knob'}); 
+            data.door = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'door'}); 
+            data.handle = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'handle'}); 
+            data.fitting = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'fitting'}); 
+            data.fabric = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'fabric'}); 
+            data.textile = response.filter((row)=>{return row.sub_category_name.toLowerCase() === 'textile'});
+            
+        }
+        console.log(data)
         return res.send(data)
-    })
-    .catch((err)=>{
-        //console.log(err);
+    }
+    catch(err){
+        console.log(err);
         return res.sendStatus(500).send('Something went wrong !!!')
-    })
+    }
 }
 
 // get ArticlesId

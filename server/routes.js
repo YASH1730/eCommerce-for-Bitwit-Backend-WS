@@ -60,7 +60,12 @@ const upload = multer({
         fileSize: 1024 * 1024 * 5
     },
     fileFilter: fileFilter
-}).fields([{ name: "product_image" }, { name: "featured_image" }, { name: "category_image" }, { name: 'banner_image' }, { name: 'specification_image' }, { name: 'fabric_image' }, { name: 'textile_image' }, { name: 'primaryMaterial_image' }, { name: 'profile_image' }, { name: 'mannequin_image' }, { name: 'hardware_image' }]);
+}).fields([{ name: "product_image" }, { name: "featured_image" }, { name: "category_image" }, { name: 'banner_image' }, { name: 'specification_image' },
+{ name: 'fabric_image' }, { name: 'textile_image' }, { name: 'primaryMaterial_image' }, { name: 'profile_image' },
+{ name: 'mannequin_image' }, { name: 'hardware_image' }
+    , { name: 'outDoor_image' },
+    , { name: 'inDoor_image' },
+]);
 
 
 // middleware for encryption
@@ -149,7 +154,7 @@ route.post('/addProducts', AuthJwt, upload, products.addProduct);
 
 // Get the list product
 
-route.get('/getListProduct', products.getListProduct);
+route.get('/getListProduct', AuthJwt, upload, products.getListProduct);
 
 // delete product
 

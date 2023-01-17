@@ -21,9 +21,8 @@ app.set("views", "./src/public");
 app.set("view engine", "pug");
 app.set("views", "views");
 
-app.use((req, res, next) => {
-  res.render('maintenance')
-})
+// PUT Server ON sleep
+// app.use((req, res, next) => {  res.render('maintenance')})
 
 
 // set uploads as static
@@ -33,18 +32,11 @@ app.use("/upload", express.static(path.join(__dirname, "upload")));
 // requiring the routes
 app.use("/api/", require("./server/routes"));
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  if (req.method === "OPTIONS") {
-    res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
-    return res.status(200).json({});
-  }
-  next();
-});
+app.use(express.static("frontEnd/build"));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'frontEnd', 'build', 'index.html'))
+})
 
 app.listen(port, () => {
   //console.log("Server is running at port", port);
