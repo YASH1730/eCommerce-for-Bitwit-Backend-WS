@@ -3,6 +3,7 @@ const { stringify } = require("nodemon/lib/utils");
 
 const product = mongoose.Schema({
     SKU: { type: String, unique: true },
+    ACIN: { type: String },
     CVW: { type: Number },
     product_title: { type: String },
     category_name: { type: String, default: "None" },
@@ -118,7 +119,6 @@ const product = mongoose.Schema({
     top_size_length: { type: Number, default: 0 },
     ceramic_drawers_qty: { type: Number, default: 0 },
     variations: { type: Array, default: [] },
-    variant_label: { type: String, default: '' },
     parent_SKU: { type: String, default: '' },
     amazon_url: { type: String, default: '' },
     flipkart_url: { type: String, default: '' },

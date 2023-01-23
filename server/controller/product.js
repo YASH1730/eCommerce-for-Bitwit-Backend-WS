@@ -8,7 +8,7 @@ const { match } = require('assert');
 //==============================================================================================================================
 
 
-// Add Products 
+// Add Products this function is not is use 
 
 exports.addProduct = async (req, res) => {
     //console.log('files>>>',req.files);
@@ -323,12 +323,12 @@ exports.variation = async (req, res) => {
 //   =============================== Set Up The New Variant end
 
 // this will save the variant to the respective parent product
-    let response = await product.findOne({SKU : req.body.parent_SKU},{variations : 1});
-    console.log(response, req.body.SKU)
-    response.variations.push(req.body.SKU)
+    // let response = await product.findOne({SKU : req.body.parent_SKU},{variations : 1});
+    // console.log(response, req.body.SKU)
+    // response.variations.push(req.body.SKU)
 
-    let variations = response.variations; 
-    await product.updateOne({SKU : req.body.parent_SKU}, {variations})
+    // let variations = response.variations; 
+    // await product.updateOne({SKU : req.body.parent_SKU}, {variations})
 
     // Now save the new product in Product Collection
     let data = product(req.body);

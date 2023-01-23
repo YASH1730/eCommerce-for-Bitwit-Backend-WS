@@ -1,6 +1,7 @@
 require('dotenv').config();
 const draft = require('../../database/models/draft')
-const product = require('../../database/models/products')
+const product = require('../../database/models/products');
+const { v4: uuid } = require('uuid');
 
 // Schema({
 //     DID : {type: String, unique : true},
@@ -51,7 +52,10 @@ exports.addDraft = async (req, res) => {
 
             req.body.mannequin_image = req.files['mannequin_image'] ? `${process.env.Official}/${req.files['mannequin_image'][0].path}` : '';
 
-            req.body.selling_points = JSON.parse(req.body.selling_points)
+            req.body.selling_points = JSON.parse(req.body.selling_points);
+
+            // ACIN number for variations 
+            req.body.ACIN = uuid();
 
             data.message = "Alert : New Product adding request.";
 

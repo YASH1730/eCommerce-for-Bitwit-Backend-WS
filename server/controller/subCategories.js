@@ -17,7 +17,7 @@ exports.addSubCatagories = async (req, res) => {
 
   const data = subCategories(req.body)
 
-  await categories.findOne({ "category_name": { $regex: `^${req.body.sub_category_name}`, $options: 'i' } })
+  await categories.findOne({ "category_name": `${req.body.sub_category_name}` })
     .then(async (result) => {
       if (result === null) {
         await data.save()
