@@ -24,7 +24,6 @@ app.set("views", "views");
 // PUT Server ON sleep
 // app.use((req, res, next) => {  res.render('maintenance')})
 
-
 // set uploads as static
 
 app.use("/upload", express.static(path.join(__dirname, "upload")));

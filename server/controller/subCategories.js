@@ -13,10 +13,12 @@ require('dotenv').config();
 
 exports.addSubCatagories = async (req, res) => {
 
-  console.log(req.body)
+  // console.log(req.body)
+
+  if (req.files['sub_category_image'] !== undefined)
+    req.body.sub_category_image = `${process.env.Official}/${req.files['sub_category_image'][0].path}`
 
   const data = subCategories(req.body)
-
   await categories.findOne({ "category_name": `${req.body.sub_category_name}` })
     .then(async (result) => {
       if (result === null) {
@@ -69,7 +71,10 @@ exports.getSubCatagories = async (req, res) => {
 
 exports.editSubCatagories = async (req, res) => {
 
-  console.log(req.body);
+  // console.log(req.body);
+  if (req.files['sub_category_image'] !== undefined)
+    req.body.sub_category_image = `${process.env.Official}/${req.files['sub_category_image'][0].path}`
+
   await subCategories.findOneAndUpdate({ _id: req.body._id }, req.body)
     .then((data) => {
       if (data)
