@@ -187,6 +187,12 @@ route.delete("/deleteCategory", AuthJwt, categories.deleteCategory);
 // change category status
 route.post("/changeStatusCategory", upload, AuthJwt, categories.changeStatus);
 
+// change category status
+route.get("/getCategoryList",AuthJwt, categories.getCategoryList);
+
+// change category status
+route.post("/applyDiscount", upload,AuthJwt, categories.applyDiscount);
+
 // =============== Products routes =======================
 
 // add product

@@ -50,19 +50,16 @@ exports.addCatagories = async (req, res) => {
 
 exports.getCatagories = async (req, res) => {
 
-  await categories.find()
-    .sort({ category_name: 1 })
-    .then((data) => {
-
-      if (data)
-        res.send(data)
-      else
-        res.send('no entries found')
-    })
-    .catch((error) => {
-      res.status(500).send(error)
-    })
-
+  try {
+    let response = await categories.find().sort({ category_name: 1 })
+    if (response)
+      res.send(response)
+    else
+      res.send('no entries found')
+  } catch (error) {
+    console.log('>>Error>>', error)
+    res.status(500).send(error)
+  }
 }
 
 // edit categories ======================
@@ -122,6 +119,65 @@ exports.changeStatus = async (req, res) => {
     })
 }
 
+// list category for discount fields
+exports.getCategoryList = async(req,res)=>{
+  try{
+
+    if(req.query.search === undefined) return res.send([])
+
+    let response = await categories.aggregate([
+    
+      {$match :{ category_name: { $regex: req.query.search, $options: "i" } }},
+    {  $group: {
+      _id: "$_id",
+      category_name: { $first: "$category_name" },
+      discount_limit: { $first: "$discount_limit" },
+    }},
+    {
+      $limit : 10
+    }
+  ])
+
+  // console.log(response)
+
+  if(response)
+    return res.send(response)
+
+  }
+  catch(err){
+    console.log('error >> ',err)
+    res.status(500).send('Something went wrong !!!')
+  }
+}
+
+// apply discount
+exports.applyDiscount = async (req, res) => {
+
+  try {
+    console.log('body >>',req.body.discount_array)
+    if(req.body.discount_array.length > 0)
+    {
+      let discount = JSON.parse(req.body.discount_array)
+      console.log(discount)
+
+      let response = await Promise.all(discount.map(async row=>{
+        console.log(row)
+        return await categories.findOneAndUpdate({category_name : row.name},{discount_limit : parseInt(row.discount)})
+      }))
+
+      if(response) return res.send({message : 'Discount Applied Successfully !!!'})
+
+    }
+    else{
+      return res.status(203).send({message :'Please select some categories first.'})
+    }
+    
+  } catch (error) {
+    console.log('>> error >>',error);
+    res.status(500).send('Something Went Wrong !!!')
+  }
+
+}
 
 
 // ================================================= Apis for categories Ends =======================================================
