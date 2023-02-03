@@ -30,6 +30,7 @@ const fabric = require("./controller/fabric");
 const textile = require("./controller/textile");
 const stock = require("./controller/stock");
 const logging = require("../database/models/logging");
+const policy = require("./controller/policy");
 const { default: axios } = require("axios");
 
 // middleware for the multer setup
@@ -52,7 +53,10 @@ const fileFilter = (req, file, cb) => {
         file.mimetype === "image/jpeg" ||
         file.mimetype === "image/png" ||
         file.mimetype === "image/svg" ||
-        file.mimetype === "image/jpg"
+        file.mimetype === "image/jpg" ||
+        file.mimetype === "text/csv" ||
+        file.mimetype === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
+
     ) {
         cb(null, true);
     } else {
@@ -64,7 +68,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 1024 * 1024 * 5,
+        fileSize: 1024 * 1024 * 50,
     },
     fileFilter: fileFilter,
 }).fields([
@@ -82,6 +86,8 @@ const upload = multer({
     { name: "hardware_image" },
     { name: "outDoor_image" }, ,
     { name: "inDoor_image" },
+    { name: "inDoor_image" },
+    { name: "COD_File" },
 ]);
 
 // middleware for encryption
@@ -670,6 +676,9 @@ route.patch("/editHardware", AuthJwt, upload, hardware.editHardware);
 // delete category
 route.delete("/deleteHardware", AuthJwt, hardware.deleteHardware);
 
+// get hardware details
+route.get("/getHardwareDetails", AuthJwt, hardware.getHardwareDetails);
+
 // change category status
 route.patch(
     "/changeHardwareStatus",
@@ -681,5 +690,15 @@ route.patch(
 // for token refresh
 route.post("/refreshToken", upload, user.refreshToken);
 route.get("/listLogs", user.listLogs);
+
+// for pincode ===============
+
+route.post("/uploadPincodeCSV",AuthJwt,upload, policy.uploadPincodeCSV);
+
+route.get("/listPinCode", policy.listPinCode);
+
+route.post("/statusDelivery",AuthJwt,upload, policy.statusDelivery);
+
+route.delete("/deleteDelivery", policy.deleteCategory);
 
 module.exports = route;

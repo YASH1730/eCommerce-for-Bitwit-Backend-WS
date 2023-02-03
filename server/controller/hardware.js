@@ -70,7 +70,6 @@ exports.getHardware = async (req, res) => {
 exports.editHardware = async (req, res) => {
 
   console.log(req.body);
-  //console.log(req.files['hardware_image'])
 
   await hardware.findOneAndUpdate({ _id: req.body._id }, req.body)
     .then((data) => {
@@ -136,6 +135,24 @@ exports.getLastHardware = async (req, res) => {
       //  //console.log(err)
       res.status(203).send({ message: 'Some error occurred !!!' })
     })
+
+}
+
+// get Hardware details 
+exports.getHardwareDetails = async (req, res) => {
+  try {
+    // console.log(req.query)
+    if (req.query === {}) return res.status(404).send({ message: 'Please Provide the hardware id.' })
+
+    let data = await hardware.findOne(req.query)
+
+    if (data) {
+      return res.send(data)
+    }
+  } catch (err) {
+    console.log('error>>>', err);
+    return res.status(500).send({ message: 'Something went wrang !!!' })
+  }
 
 }
 

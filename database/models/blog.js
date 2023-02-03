@@ -9,6 +9,8 @@ const user  = mongoose.Schema({
     card_description : String,
     description : String,
     
+}, {
+    timestamps : true
 })
 
 module.exports = mongoose.model('blogData',user);
