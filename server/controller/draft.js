@@ -45,10 +45,6 @@ exports.addDraft = async (req, res) => {
           });
         }
 
-        req.body.primary_material = req.body.primary_material.split(",");
-        req.body.polish = req.body.polish.split(",");
-        req.body.warehouse = req.body.warehouse.split(",");
-
         req.body.product_image = Product_image_urls;
 
         req.body.featured_image = req.files["featured_image"]
@@ -63,6 +59,10 @@ exports.addDraft = async (req, res) => {
           ? `${process.env.Official}/${req.files["mannequin_image"][0].path}`
           : "";
 
+        req.body.primary_material = req.body.primary_material.split(",");
+        req.body.polish = req.body.polish.split(",");
+        req.body.warehouse = req.body.warehouse.split(",");
+
         req.body.selling_points = JSON.parse(req.body.selling_points);
 
         // ACIN number for variations
@@ -74,15 +74,15 @@ exports.addDraft = async (req, res) => {
 
         break;
       case "updateProduct":
+        req.body.primary_material = req.body.primary_material.split(",");
+        req.body.polish = req.body.polish.split(",");
+        req.body.warehouse = req.body.warehouse.split(",");
+
         if (req.files["product_image"] !== undefined) {
           req.files["product_image"].map((val) => {
             image_urls.push(`${process.env.Official}/${val.path}`);
           });
         }
-
-        req.body.primary_material = req.body.primary_material.split(",");
-        req.body.polish = req.body.polish.split(",");
-        req.body.warehouse = req.body.warehouse.split(",");
 
         // check for previously saved image
         let previousImages = JSON.parse(req.body.savedImages);
@@ -119,6 +119,17 @@ exports.addDraft = async (req, res) => {
           }
         }
         req.body.hardware_image = image_urls;
+
+        req.body.featured_image = req.files["featured_image"]
+          ? `${process.env.Official}/${req.files["featured_image"][0].path}`
+          : "";
+
+        req.body.specification_image = req.files["specification_image"]
+          ? `${process.env.Official}/${req.files["specification_image"][0].path}`
+          : "";
+
+        req.body.primary_material = req.body.primary_material.split(",");
+
         req.body.warehouse = req.body.warehouse.split(",");
         // selling points conversation in array
         req.body.selling_points = JSON.parse(req.body.selling_points);
@@ -137,6 +148,21 @@ exports.addDraft = async (req, res) => {
           });
           req.body.hardware_image = image_urls;
         }
+
+        // check for previously saved image
+        previousImages = JSON.parse(req.body.savedImages);
+
+        if (previousImages.length > 0) image_urls.push(...previousImages);
+
+        req.body.hardware_image = image_urls;
+
+        // check for Images
+        if (req.files["featured_image"] !== undefined)
+          req.body.featured_image = `${process.env.Official}/${req.files["featured_image"][0].path}`;
+        if (req.files["specification_image"] !== undefined)
+          req.body.specification_image = `${process.env.Official}/${req.files["specification_image"][0].path}`;
+
+        req.body.primary_material = req.body.primary_material.split(",");
 
         console.log(req.body);
         data.message = `Alert : Hardware ${req.body.SKU} updating request.`;
@@ -323,7 +349,7 @@ exports.getDraftID = async (req, res) => {
       .limit(1);
 
     if (response) {
-      console.log(response);
+      // console.log(response);
       return res.send(response);
     } else {
       return res.status(203).send("D-01001");
@@ -383,6 +409,7 @@ exports.getDraft = async (req, res) => {
 
     const response = await draft.aggregate([
       { $match: query },
+      { $sort: { _id: -1 } },
       { $skip: params.page > 0 ? (params.page - 1) * params.limit : 0 },
       { $limit: params.limit },
     ]);

@@ -215,7 +215,7 @@ exports.addInward = async (req, res) => {
 
 exports.addOutward = async (req, res) => {
   try {
-    // console.log(req.body);
+    console.log(req.body);
     req.body.outward_id = uuid.v4();
     req.body.order_no = uuid.v4();
     req.body.product_articles = JSON.parse(req.body.product_articles);

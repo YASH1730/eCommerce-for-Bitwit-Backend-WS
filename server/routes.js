@@ -30,7 +30,7 @@ const fabric = require("./controller/fabric");
 const textile = require("./controller/textile");
 const stock = require("./controller/stock");
 const logging = require("../database/models/logging");
-const policy = require("./controller/policy");
+const cod = require("./controller/cod");
 const { default: axios } = require("axios");
 
 // middleware for the multer setup
@@ -58,6 +58,9 @@ const fileFilter = (req, file, cb) => {
     file.mimetype ===
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   ) {
+    if (file.fieldname === "COD_File") {
+      file.originalname = "currentCSV.csv";
+    }
     cb(null, true);
   } else {
     cb(null, false);
@@ -694,14 +697,14 @@ route.get("/listLogs", user.listLogs);
 
 // for pincode ===============
 
-route.post("/uploadPincodeCSV", AuthJwt, upload, policy.uploadPincodeCSV);
+route.post("/uploadPincodeCSV", AuthJwt, upload, cod.uploadPincodeCSV);
 
-route.get("/listPinCode", policy.listPinCode);
+route.get("/listPinCode", cod.listPinCode);
 
-route.post("/statusDelivery", AuthJwt, upload, policy.statusDelivery);
+route.post("/statusDelivery", AuthJwt, upload, cod.statusDelivery);
 
-route.delete("/deleteDelivery", policy.deleteCategory);
+route.delete("/deleteDelivery", cod.deletePincode);
 
-route.get("/update", draft.update);
+route.get("/downloadCSV", cod.downloadCSV);
 
 module.exports = route;
