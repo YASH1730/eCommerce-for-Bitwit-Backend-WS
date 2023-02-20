@@ -2,7 +2,11 @@ require("dotenv").config();
 const draft = require("../../database/models/draft");
 const product = require("../../database/models/products");
 const hardware = require("../../database/models/hardware");
+const categories = require("../../database/models/categories");
+const subCategories = require("../../database/models/subCategories");
+
 const { v4: uuid } = require("uuid");
+const blog = require("../../database/models/blog");
 
 // Schema({
 //     DID : {type: String, unique : true},
@@ -27,6 +31,7 @@ exports.addDraft = async (req, res) => {
       type: req.body.type,
       operation: req.body.operation,
     };
+    let id = undefined;
     // console.log(req.files);
 
     // console.log(req.body);
@@ -169,7 +174,7 @@ exports.addDraft = async (req, res) => {
         data.payload = req.body;
         break;
       case "deleteHardware":
-        let id = await draft
+        id = await draft
           .find({}, { _id: 0, DID: 1 })
           .sort({ _id: -1 })
           .limit(1);
@@ -185,11 +190,87 @@ exports.addDraft = async (req, res) => {
         data.message = "Alert : HardWare deletion request.";
 
         data.payload = await hardware.findOne({ _id: req.body._id });
+      case "insertCategory":
+        if (req.files["category_image"] !== undefined)
+          req.body.category_image = `${process.env.Official}/${req.files["category_image"][0].path}`;
 
-      //  await hardware.deleteOne(req.query); // deleting article
+        let duplicate = await categories.findOne({
+          category_name: {
+            $regex: `^${req.body.category_name}`,
+            $options: "i",
+          },
+        });
+
+        if (duplicate === null) {
+          data.message = "Alert : New Category adding request.";
+          data.payload = req.body;
+        } else {
+          res.status(203);
+          return res.send({
+            message: "Category Name is already exist in sub category!!!",
+          });
+        }
+
+        break;
+      case "updateCategory":
+        if (req.files["category_image"] !== undefined)
+          req.body.category_image = `${process.env.Official}/${req.files["category_image"][0].path}`;
+
+        data.message = "Alert : New Category update request.";
+        data.payload = req.body;
+        break;
+      case "insertSubCategory":
+        if (req.files["sub_category_image"] !== undefined)
+          req.body.sub_category_image = `${process.env.Official}/${req.files["sub_category_image"][0].path}`;
+
+        // const data = subCategories(req.body);
+        let check = await categories.findOne({
+          category_name: `${req.body.sub_category_name}`,
+        });
+
+        if (check === null) {
+          data.message = "Alert : New Sub Category update request.";
+          data.payload = req.body;
+        } else {
+          res.status(203);
+          res.send({
+            message: "Sub Category Name is already exist in category!!!",
+          });
+        }
+
+        break;
+      case "updateSubCategory":
+        if (req.files["sub_category_image"] !== undefined)
+          req.body.sub_category_image = `${process.env.Official}/${req.files["sub_category_image"][0].path}`;
+
+        data.message = "Alert : New Sub Category update request.";
+        data.payload = req.body;
+        break;
+      case "deleteBlog":
+        id = await draft
+          .find({}, { _id: 0, DID: 1 })
+          .sort({ _id: -1 })
+          .limit(1);
+
+        if (id) {
+          console.log(">>>", id[0]);
+          data.DID = `DID-0${parseInt(id[0].DID.split("-")[1]) + 1}`;
+        } else {
+          data.DID = "D-01001";
+        }
+        console.log(req.body);
+
+        data.message = "Alert : HardWare deletion request.";
+
+        data.payload = await blog.findOne({ _id: req.body._id });
+        break;
       default:
         console.log("May be operation type not found.");
     }
+
+    // console.log(data);
+
+    // return res.send("All Okay");
 
     if (!data.payload) return res.sendStatus("203").send("Type not found.");
 
@@ -309,6 +390,114 @@ exports.dropDraft = async (req, res) => {
         break;
       case "deleteHardware":
         response = await hardware.findOneAndRemove({ SKU: req.body.SKU });
+        console.log(req.body.operation);
+        if (response) {
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
+      case "insertCategory":
+        data = categories(req.body);
+        response = await data.save();
+        if (response) {
+          //console.log(req.body.operation)
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus, AID: response._id }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
+      case "updateCategory":
+        response = await categories.findOneAndUpdate(
+          { _id: req.body.AID },
+          req.body
+        );
+        if (response) {
+          // //console.log(req.body.operation)
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
+      case "insertSubCategory":
+        data = subCategories(req.body);
+        response = await data.save();
+        if (response) {
+          //console.log(req.body.operation)
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus, AID: response._id }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
+      case "updateSubCategory":
+        response = await subCategories.findOneAndUpdate(
+          { _id: req.body.AID },
+          req.body
+        );
+        if (response) {
+          // //console.log(req.body.operation)
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
+      case "deleteBlog":
+        response = await blog.findOneAndRemove({ _id: req.body._id });
         console.log(req.body.operation);
         if (response) {
           draft

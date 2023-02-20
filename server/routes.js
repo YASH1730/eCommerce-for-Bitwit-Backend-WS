@@ -203,6 +203,8 @@ route.get("/getCategoryList", AuthJwt, categories.getCategoryList);
 // change category status
 route.post("/applyDiscount", upload, AuthJwt, categories.applyDiscount);
 
+route.get("/getCategoryDetails", AuthJwt, categories.getCategoryDetails);
+
 // =============== Products routes =======================
 
 // add product
@@ -349,6 +351,13 @@ route.patch(
   AuthJwt,
   upload,
   subCategories.editSubCatagories
+);
+// edit sub cat
+route.get(
+  "/getSubCategoryDetails",
+  AuthJwt,
+  upload,
+  subCategories.getSubCategoryDetails
 );
 
 // ================== Primary Material Routes =============================
