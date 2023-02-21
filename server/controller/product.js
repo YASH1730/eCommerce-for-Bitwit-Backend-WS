@@ -139,8 +139,9 @@ exports.getLastProduct = async (req, res) => {
 // delete products
 
 exports.deleteProduct = async (req, res) => {
+  console.log(req.query.ID);
   product
-    .deleteOne({ SKU: req.query.ID })
+    .deleteOne({ _id: req.query.ID })
     .then((data) => {
       res.send({ message: "Product deleted successfully !!!" });
     })

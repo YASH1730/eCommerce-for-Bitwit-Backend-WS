@@ -38,7 +38,7 @@ exports.addDraft = async (req, res) => {
 
     // global var for switch case
     let image_urls = [];
-
+    let previousImages = [];
     // selection stage
     switch (req.body.operation) {
       case "insertProduct":
@@ -90,7 +90,7 @@ exports.addDraft = async (req, res) => {
         }
 
         // check for previously saved image
-        let previousImages = JSON.parse(req.body.savedImages);
+        previousImages = JSON.parse(req.body.savedImages);
 
         if (previousImages.length > 0) image_urls.push(...previousImages);
 
