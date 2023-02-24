@@ -4,8 +4,10 @@ const product = require("../../database/models/products");
 const hardware = require("../../database/models/hardware");
 const categories = require("../../database/models/categories");
 const subCategories = require("../../database/models/subCategories");
+const material = require("../../database/models/primaryMaterial");
+const polish = require("../../database/models/polish");
 
-const { v4: uuid } = require("uuid");
+const uuid = require("uuid");
 const blog = require("../../database/models/blog");
 
 // Schema({
@@ -32,13 +34,14 @@ exports.addDraft = async (req, res) => {
       operation: req.body.operation,
     };
     let id = undefined;
+    let image_urls = [];
+    let previousImages = [];
     // console.log(req.files);
 
     // console.log(req.body);
 
     // global var for switch case
-    let image_urls = [];
-    let previousImages = [];
+
     // selection stage
     switch (req.body.operation) {
       case "insertProduct":
@@ -71,7 +74,7 @@ exports.addDraft = async (req, res) => {
         req.body.selling_points = JSON.parse(req.body.selling_points);
 
         // ACIN number for variations
-        req.body.ACIN = uuid();
+        req.body.ACIN = uuid.v4();
 
         data.message = "Alert : New Product adding request.";
 
@@ -264,6 +267,87 @@ exports.addDraft = async (req, res) => {
 
         data.payload = await blog.findOne({ _id: req.body._id });
         break;
+      case "insertMaterial":
+        if (req.files["primaryMaterial_image"] !== undefined)
+          req.body.primaryMaterial_image = `${process.env.Official}/${req.files["primaryMaterial_image"][0].path}`;
+
+        data.message = "Alert : New Material adding request.";
+        data.payload = req.body;
+        break;
+      case "updateMaterial":
+        if (req.files["primaryMaterial_image"] !== undefined)
+          req.body.primaryMaterial_image = `${process.env.Official}/${req.files["primaryMaterial_image"][0].path}`;
+
+        data.message = `Alert : Material ${req.body.AID} updating request.`;
+        data.payload = req.body;
+        break;
+      case "insertPolish":
+        image_urls = [];
+
+        if (req.files["outDoor_image"] !== undefined) {
+          req.files["outDoor_image"].map((val) => {
+            image_urls.push(`${process.env.Official}/${val.path}`);
+          });
+        }
+
+        req.body.outDoor_image = image_urls;
+
+        image_urls = [];
+
+        if (req.files["inDoor_image"] !== undefined) {
+          req.files["inDoor_image"].map((val) => {
+            image_urls.push(`${process.env.Official}/${val.path}`);
+          });
+        }
+
+        req.body.inDoor_image = image_urls;
+
+        data.message = "Alert : New Polish adding request.";
+
+        data.payload = req.body;
+        break;
+      case "updatePolish":
+        image_urls = JSON.parse(req.body.savedOutDoor);
+
+        if (req.files["outDoor_image"] !== undefined) {
+          req.files["outDoor_image"].map((val) => {
+            image_urls.push(`${process.env.Official}/${val.path}`);
+          });
+        }
+
+        req.body.outDoor_image = image_urls;
+
+        image_urls = JSON.parse(req.body.savedIndoor);
+
+        if (req.files["inDoor_image"] !== undefined) {
+          req.files["inDoor_image"].map((val) => {
+            image_urls.push(`${process.env.Official}/${val.path}`);
+          });
+        }
+        req.body.inDoor_image = image_urls;
+
+        data.message = `Alert : Polish ${req.body._id} updating request.`;
+
+        data.payload = req.body;
+        break;
+      case "insertBlog":
+        req.body.uuid = uuid.v4();
+
+        if (req.files["banner_image"] === undefined)
+          return res.status(203).send({ message: "Image Is Required !!!" });
+        req.body.card_image = `${process.env.Official}/${req.files["banner_image"][0].path}`;
+
+        data.message = "Alert : New Blog adding request.";
+        data.payload = req.body;
+
+        break;
+      case "updateBlog":
+        if (req.files["banner_image"] !== undefined)
+          req.body.card_image = `${process.env.Official}/${req.files["banner_image"][0].path}`;
+
+        data.message = `Alert : BLog ${req.body._id} updating request.`;
+
+        data.payload = req.body;
       default:
         console.log("May be operation type not found.");
     }
@@ -516,11 +600,146 @@ exports.dropDraft = async (req, res) => {
             });
         }
         break;
+      case "insertMaterial":
+        console.log(req.body);
+        data = material(req.body);
+        response = await data.save();
+        if (response) {
+          //console.log(req.body.operation)
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus, AID: response._id }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
+      case "updateMaterial":
+        material
+          .findOneAndUpdate({ _id: req.body.AID }, req.body)
+          .then(() => {
+            //console.log(req.body.operation)
+            draft
+              .updateOne(
+                { DID: req.body.DID },
+                { draftStatus: req.body.draftStatus }
+              )
+              .then(() => {
+                return res.send({ message: "Draft Resolved !!!" });
+              })
+              .catch((err) => {
+                console.log(err);
+                return res
+                  .status(500)
+                  .send({ message: "Some Error Occurred !!!" });
+              });
+          })
+          .catch((err) => {
+            console.log(err);
+            return res.status(500).send({ message: "Some Error Occurred !!!" });
+          });
+        break;
+      case "insertPolish":
+        data = polish(req.body);
+        response = await data.save();
+        if (response) {
+          //console.log(req.body.operation)
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus, AID: response._id }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
+      case "updatePolish":
+        polish
+          .findOneAndUpdate({ _id: req.body.AID }, req.body)
+          .then(() => {
+            //console.log(req.body.operation)
+            draft
+              .updateOne(
+                { DID: req.body.DID },
+                { draftStatus: req.body.draftStatus }
+              )
+              .then(() => {
+                return res.send({ message: "Draft Resolved !!!" });
+              })
+              .catch((err) => {
+                console.log(err);
+                return res
+                  .status(500)
+                  .send({ message: "Some Error Occurred !!!" });
+              });
+          })
+          .catch((err) => {
+            console.log(err);
+            return res.status(500).send({ message: "Some Error Occurred !!!" });
+          });
+        break;
+      case "insertBlog":
+        data = blog(req.body);
+        response = await data.save();
+        if (response) {
+          //console.log(req.body.operation)
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus, AID: response.uuid }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
+      case "updateBlog":
+        response = await blog.findOneAndUpdate({ _id: req.body.AID }, req.body);
+        if (response) {
+          // //console.log(req.body.operation)
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
       default:
         console.log("May be operation type not found.");
         break;
     }
 
+    // return res.send("All Okay");
     // if (!data.payload) return res.sendStatus("203").send("Type not found.");
   } catch (err) {
     console.log("Error >> ", err);

@@ -95,4 +95,11 @@ exports.changePrimaryMaterialStatus = async (req, res) => {
     });
 };
 
+// get specific material
+
+exports.getMaterialDetails = async (req, res) => {
+  let response = await primaryMaterial.findOne({ _id: req.query.ID });
+  return res.send(response);
+};
+
 // ================================================= Apis for categories Ends =======================================================

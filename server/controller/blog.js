@@ -1,9 +1,8 @@
-require('dotenv').config();
+require("dotenv").config();
 
-
-const blogDB = require("../../database/models/blog");
 const image = require("../../database/models/image");
 
+const blogDB = require("../../database/models/blog");
 const uuid = require("uuid");
 
 // Api for card creation
@@ -24,14 +23,13 @@ exports.createBlog = async (req, res) => {
   await SaveToDb.save()
     .then((response) => {
       //console.log("Blog Added Successfully !!!");
-      return res.send({ message: "Blog Added Successfully !!!",response});
+      return res.send({ message: "Blog Added Successfully !!!", response });
     })
     .catch((err) => {
       //console.log({ massage: "Blog Not Added !!!", err });
       return res.status(203).send({ message: "Blog Not Added !!!" });
     });
 };
-
 
 // API for update the blog
 
@@ -44,7 +42,8 @@ exports.updateBlog = async (req, res) => {
   if (req.files["banner_image"] !== undefined)
     req.body.card_image = `${process.env.Official}/${req.files["banner_image"][0].path}`;
 
-  await blogDB.findOneAndUpdate({_id: req.body._id},req.body)
+  await blogDB
+    .findOneAndUpdate({ _id: req.body._id }, req.body)
     .then((data) => {
       //console.log("Blog Update Successfully !!!");
       return res.send({ message: "Blog Update Successfully !!!" });
@@ -55,10 +54,9 @@ exports.updateBlog = async (req, res) => {
     });
 };
 
-
 // Api for card extraction for Home
 
-exports.getBlogHome =  async(req, res) => {
+exports.getBlogHome = async (req, res) => {
   // get data from db
   await blogDB
     .find()
@@ -73,7 +71,6 @@ exports.getBlogHome =  async(req, res) => {
       return res.status(203).send({ massage: "No data !!!" });
     });
 };
-
 
 exports.uploadImage = async (req, res) => {
   // //console.log(req.files);
@@ -100,32 +97,31 @@ exports.uploadImage = async (req, res) => {
 
 // get specific blog by uuid
 
-exports.getBlog = async(req,res) =>{
+exports.getBlog = async (req, res) => {
   //console.log(req.query)
-  await blogDB.findOne({uuid : req.query.uuid})
-  .then((data)=>{
-    //console.log(data)
-    res.send(data)
-  })
-  .catch((err) => {
-    //console.log(err)
-    return res.status("203").send({ message: "Something Went Wrong !!!" });
-  });
-}
-
+  await blogDB
+    .findOne({ _id: req.query._id })
+    .then((data) => {
+      //console.log(data)
+      res.send(data);
+    })
+    .catch((err) => {
+      //console.log(err)
+      return res.status("203").send({ message: "Something Went Wrong !!!" });
+    });
+};
 
 // delete specific blog by uuid
 
-exports.deleteBLog = async(req,res) =>{
-  console.log(req.query)
-  await blogDB.deleteOne({_id : req.query._id})
-  .then((data)=>{
-    return res.send({message : 'Blog Deleted Successfully !!!'})
-  })
-  .catch((err) => {
-    // console.log(err)
-    return res.status("203").send({ message: "Something Went Wrong !!!" });
-  });
-}
-
-
+exports.deleteBLog = async (req, res) => {
+  console.log(req.query);
+  await blogDB
+    .deleteOne({ _id: req.query._id })
+    .then((data) => {
+      return res.send({ message: "Blog Deleted Successfully !!!" });
+    })
+    .catch((err) => {
+      // console.log(err)
+      return res.status("203").send({ message: "Something Went Wrong !!!" });
+    });
+};

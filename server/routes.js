@@ -32,6 +32,7 @@ const stock = require("./controller/stock");
 const logging = require("../database/models/logging");
 const cod = require("./controller/cod");
 const { default: axios } = require("axios");
+const review = require("./controller/review");
 
 // middleware for the multer setup
 const storage = multer.diskStorage({
@@ -88,10 +89,9 @@ const upload = multer({
   { name: "mannequin_image" },
   { name: "hardware_image" },
   { name: "outDoor_image" },
-  ,
-  { name: "inDoor_image" },
   { name: "inDoor_image" },
   { name: "COD_File" },
+  { name: "review_images" },
 ]);
 
 // middleware for encryption
@@ -389,13 +389,11 @@ route.patch(
   primaryMaterial.editPrimaryMaterial
 );
 
-// edit editPrimaryMaterial
-route.delete(
-  "/deletePrimaryMaterial",
-  AuthJwt,
-  upload,
-  primaryMaterial.deletePrimaryMaterial
-);
+// delete PrimaryMaterial
+route.delete("/deletePrimaryMaterial", primaryMaterial.deletePrimaryMaterial);
+
+// get material
+route.get("/getMaterialDetails", AuthJwt, primaryMaterial.getMaterialDetails);
 
 // ==================  Secondary Material Routes =============================
 
@@ -443,6 +441,9 @@ route.patch("/changePolishStatus", AuthJwt, upload, polish.changePolishStatus);
 
 // edit editPrimaryMaterial
 route.patch("/editPolish", AuthJwt, upload, polish.editPolish);
+
+// get Polish
+route.get("/getPolishDetails", AuthJwt, polish.getPolishDetails);
 
 // ==================  Hinge  Routes =============================
 
@@ -715,5 +716,18 @@ route.post("/statusDelivery", AuthJwt, upload, cod.statusDelivery);
 route.delete("/deleteDelivery", cod.deletePincode);
 
 route.get("/downloadCSV", cod.downloadCSV);
+
+// reviews
+route.get("/getReview", AuthJwt, review.getReview);
+
+route.post("/changeStatus", AuthJwt, upload, review.changeStatus);
+
+route.post("/addReply", AuthJwt, upload, review.addReply);
+
+route.post("/addReview", AuthJwt, upload, review.addReview);
+
+route.delete("/deleteReview", AuthJwt, review.deleteReview);
+
+route.get("/metaReview", AuthJwt, review.metaReview);
 
 module.exports = route;
