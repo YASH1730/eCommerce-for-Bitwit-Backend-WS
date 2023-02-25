@@ -2,8 +2,6 @@ const review = require("../../database/models/review");
 
 exports.getReview = async (req, res) => {
   try {
-    // console.log(req.query);
-
     const params = JSON.parse(req.query.filter);
     let total = await review.estimatedDocumentCount();
     let active = await review.find({ hide: true }).count();
@@ -116,7 +114,7 @@ exports.addReview = async (req, res) => {
       }
     }
 
-    req.body.review = JSON.parse(req.body.review);
+    // req.body.review = JSON.parse(req.body.review);
 
     req.body.review_images = imageURLs;
     req.body.review_videos = videoURLs;
@@ -130,6 +128,48 @@ exports.addReview = async (req, res) => {
 
     if (response)
       return res.send({ message: "Review Added Successfully !!!", response });
+
+    return res.status(203).send({ message: "Something went wrong." });
+  } catch (error) {
+    console.log("ERROR>>>", error);
+    return res.sendStatus(500);
+  }
+};
+// for updateReview a review
+exports.updateReview = async (req, res) => {
+  try {
+    // console.log("Files >>>", req.files);
+    console.log("Files >>>", req.body);
+
+    // let imageURLs = [];
+    // let videoURLs = [];
+
+    // if (req.files["review_images"]) {
+    //   if (req.files["review_images"].length > 0) {
+    //     req.files["review_images"].map((file) => {
+    //       if (file.mimetype === "video/mp4")
+    //         return videoURLs.push(`${process.env.Official}/${file.path}`);
+    //       return imageURLs.push(`${process.env.Official}/${file.path}`);
+    //     });
+    //   }
+    // }
+
+    // req.body.review = JSON.parse(req.body.review);
+
+    // req.body.review_images = imageURLs;
+    // req.body.review_videos = videoURLs;
+
+    if (!req.body._id)
+      return res.sendStatus(203).send("Please provide the review _id .");
+    console.log("Final Body >>>", req.body);
+
+    const response = await review.findOneAndUpdate(
+      { _id: req.body._id },
+      req.body
+    );
+
+    if (response)
+      return res.send({ message: "Review Updated Successfully !!!", response });
 
     return res.status(203).send({ message: "Something went wrong." });
   } catch (error) {

@@ -730,4 +730,6 @@ route.delete("/deleteReview", AuthJwt, review.deleteReview);
 
 route.get("/metaReview", AuthJwt, review.metaReview);
 
+route.patch("/updateReview", AuthJwt, upload, review.updateReview);
+
 module.exports = route;
