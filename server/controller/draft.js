@@ -6,6 +6,7 @@ const categories = require("../../database/models/categories");
 const subCategories = require("../../database/models/subCategories");
 const material = require("../../database/models/primaryMaterial");
 const polish = require("../../database/models/polish");
+const customer = require("../../database/models/customer");
 
 const uuid = require("uuid");
 const blog = require("../../database/models/blog");
@@ -263,7 +264,7 @@ exports.addDraft = async (req, res) => {
         }
         console.log(req.body);
 
-        data.message = "Alert : HardWare deletion request.";
+        data.message = "Alert : Blog deletion request.";
 
         data.payload = await blog.findOne({ _id: req.body._id });
         break;
@@ -348,6 +349,27 @@ exports.addDraft = async (req, res) => {
         data.message = `Alert : BLog ${req.body._id} updating request.`;
 
         data.payload = req.body;
+      case "deleteCustomer":
+        id = await draft
+          .find({}, { _id: 0, DID: 1 })
+          .sort({ _id: -1 })
+          .limit(1);
+
+        if (id) {
+          console.log(">>>", id[0]);
+          data.DID = `DID-0${parseInt(id[0].DID.split("-")[1]) + 1}`;
+        } else {
+          data.DID = "D-01001";
+        }
+        console.log(req.body);
+
+        data.message = "Alert : Customer deletion request.";
+
+        data.payload = await customer.findOne(
+          { CID: data.AID },
+          { address: 0 }
+        );
+        break;
       default:
         console.log("May be operation type not found.");
     }
@@ -356,7 +378,7 @@ exports.addDraft = async (req, res) => {
 
     // return res.send("All Okay");
 
-    if (!data.payload) return res.sendStatus("203").send("Type not found.");
+    if (!data.payload) return res.status(203).send("Type not found.");
 
     console.log(data);
 
@@ -718,6 +740,26 @@ exports.dropDraft = async (req, res) => {
         response = await blog.findOneAndUpdate({ _id: req.body.AID }, req.body);
         if (response) {
           // //console.log(req.body.operation)
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
+      case "deleteCustomer":
+        response = await customer.findOneAndRemove({ CID: req.body.CID });
+        console.log(req.body.operation);
+        if (response) {
           draft
             .updateOne(
               { DID: req.body.DID },

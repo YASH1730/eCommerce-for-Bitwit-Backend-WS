@@ -124,7 +124,7 @@ exports.getLastProduct = async (req, res) => {
     .limit(1)
     .then((response) => {
       if (response !== null) {
-        // console.log('>>>',response);
+        // console.log(">>>", response);
         res.send(response);
       } else {
         res.status(203).send("P-01001");
@@ -156,53 +156,53 @@ exports.updateProduct = async (req, res) => {
   //console.log("Files >>>>> ",req.files);
 
   // check for product images
-  let image_urls = [];
+  // let image_urls = [];
 
-  if (req.files["product_image"] !== undefined) {
-    req.files["product_image"].map((val) => {
-      image_urls.push(`${process.env.Official}/${val.path}`);
-    });
-  }
+  // if (req.files["product_image"] !== undefined) {
+  //   req.files["product_image"].map((val) => {
+  //     image_urls.push(`${process.env.Official}/${val.path}`);
+  //   });
+  // }
 
-  // check for previously saved image
-  let previousImages = JSON.parse(req.body.savedImages);
+  // // check for previously saved image
+  // let previousImages = JSON.parse(req.body.savedImages);
 
-  if (previousImages.length > 0) image_urls.push(...previousImages);
+  // if (previousImages.length > 0) image_urls.push(...previousImages);
 
-  req.body.product_image = image_urls;
+  // req.body.product_image = image_urls;
 
-  // check for Images
-  if (req.files["featured_image"] !== undefined)
-    req.body.featured_image = `${process.env.Official}/${req.files["featured_image"][0].path}`;
-  if (req.files["specification_image"] !== undefined)
-    req.body.specification_image = `${process.env.Official}/${req.files["specification_image"][0].path}`;
-  if (req.files["mannequin_image"] !== undefined)
-    req.body.mannequin_image = `${process.env.Official}/${req.files["mannequin_image"][0].path}`;
+  // // check for Images
+  // if (req.files["featured_image"] !== undefined)
+  //   req.body.featured_image = `${process.env.Official}/${req.files["featured_image"][0].path}`;
+  // if (req.files["specification_image"] !== undefined)
+  //   req.body.specification_image = `${process.env.Official}/${req.files["specification_image"][0].path}`;
+  // if (req.files["mannequin_image"] !== undefined)
+  //   req.body.mannequin_image = `${process.env.Official}/${req.files["mannequin_image"][0].path}`;
 
-  // check for product ID
-  if (req.body._id === undefined)
-    return res.status(204).send("Payload is absent.");
+  // // check for product ID
+  // if (req.body._id === undefined)
+  //   return res.status(204).send("Payload is absent.");
 
-  // selling points conversation in array
-  req.body.selling_points = JSON.parse(req.body.selling_points);
+  // // selling points conversation in array
+  // req.body.selling_points = JSON.parse(req.body.selling_points);
 
   //console.log("Complete >>>> ",req.body);
 
   // return res.send('ALl OKay')
-
+  console.log(req.query);
   await product
-    .findOneAndUpdate({ _id: req.body._id }, req.body)
+    .findOneAndUpdate({ SKU: req.query.search }, { SKU: req.query.SKU })
     .then((data) => {
       ////console.log(data)
       if (data)
         return res.status(200).send({
           message: "Product is updated successfully.",
-          image: image_urls,
+          // image: image_urls,
         });
       else return res.status(203).send({ message: "No entries found" });
     })
     .catch((error) => {
-      //console.log(error)
+      console.log(error);
       return res.status(203).send("Something Went Wrong !!!");
     });
 };

@@ -225,7 +225,7 @@ route.patch("/updateProduct", AuthJwt, upload, products.updateProduct);
 
 // Find last document for SKU id increment
 
-route.get("/getLastProduct", AuthJwt, products.getLastProduct);
+route.get("/getLastProduct", products.getLastProduct);
 
 // Update Bulk
 
