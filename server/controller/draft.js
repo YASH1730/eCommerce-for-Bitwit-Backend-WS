@@ -10,6 +10,7 @@ const customer = require("../../database/models/customer");
 
 const uuid = require("uuid");
 const blog = require("../../database/models/blog");
+const order = require("../../database/models/order");
 
 // Schema({
 //     DID : {type: String, unique : true},
@@ -369,6 +370,11 @@ exports.addDraft = async (req, res) => {
           { CID: data.AID },
           { address: 0 }
         );
+        break;
+      case "createOrder":
+        if (req.body.CID === null) req.body.CID = "Not Registered";
+        data.message = "Alert : Create Order request.";
+        data.payload = req.body;
         break;
       default:
         console.log("May be operation type not found.");
@@ -764,6 +770,28 @@ exports.dropDraft = async (req, res) => {
             .updateOne(
               { DID: req.body.DID },
               { draftStatus: req.body.draftStatus }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
+      case "createOrder":
+        console.log(req.body);
+        data = order(req.body);
+        response = await data.save();
+        if (response) {
+          //console.log(req.body.operation)
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus, AID: response.O }
             )
             .then(() => {
               return res.send({ message: "Draft Resolved !!!" });

@@ -329,6 +329,10 @@ route.delete("/deleteOrder", AuthJwt, order.deleteOrder);
 // get  Custom order
 route.get("/customOrderList", AuthJwt, order.customOrderList);
 
+// place abandoned checkouts
+// route.post("/placeAbandonedOrder", upload, order.placeAbandonedOrder);
+route.get("/listAbandonedOrder", upload, order.listAbandonedOrder);
+
 // ================== sub categories Routes =============================
 
 // addCategory route
