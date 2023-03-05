@@ -4,7 +4,7 @@ const customer = require("../../database/models/customer");
 const abandoned = require("../../database/models/abandoned");
 const cp = require("../../database/models/customProduct");
 const { v4: uuidv4 } = require("uuid");
-
+const wishlist = require("../../database/models/wishlist");
 // ================================================= Apis for order =======================================================
 //==============================================================================================================================
 
@@ -261,7 +261,7 @@ exports.customOrderList = async (req, res) => {
 //   }
 // };
 
-// list order
+//  list AbandonedOrder
 
 exports.listAbandonedOrder = async (req, res) => {
   // order.collection.drop();
@@ -321,6 +321,59 @@ exports.listAbandonedOrder = async (req, res) => {
           .send({ message: "Something went wrong !!!" });
       }),
       { allowDiskUse: true };
+  } catch (err) {
+    console.log("Error>>>", err);
+    res.send(500);
+  }
+};
+
+// list wish list
+
+exports.getWishlist = async (req, res) => {
+  // wishlist.collection.drop();
+  try {
+    console.log(req.query);
+    const params = JSON.parse(req.query.filter);
+    let total = await wishlist.estimatedDocumentCount();
+
+    // filter Section Starts
+
+    let query = {};
+    let filterArray = [];
+
+    if (params.CID) filterArray.push({ CID: params.CID });
+
+    // for checking the filter is free or not
+    if (filterArray.length > 0) {
+      query = { $and: filterArray };
+
+      // this is for search document count
+      let count = await wishlist.aggregate([
+        { $match: query },
+        { $count: "Count" },
+      ]);
+      total = count.length > 0 ? count[0].Count : 0;
+    }
+
+    // filter ends
+
+    // final operation center
+
+    let response = await wishlist.aggregate([
+      { $match: query },
+      { $skip: params.page > 0 ? (params.page - 1) * params.limit : 0 },
+      {
+        $lookup: {
+          from: "customers",
+          localField: "CID",
+          foreignField: "CID",
+          as: "customer",
+        },
+      },
+      { $limit: params.limit },
+    ]);
+
+    if (response) return res.send({ data: response, total: total });
   } catch (err) {
     console.log("Error>>>", err);
     res.send(500);

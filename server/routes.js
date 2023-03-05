@@ -80,7 +80,8 @@ const upload = multer({
   { name: "featured_image" },
   { name: "category_image" },
   { name: "sub_category_image" },
-  { name: "banner_image" },
+  { name: "web_banner" },
+  { name: "mobile_banner" },
   { name: "specification_image" },
   { name: "fabric_image" },
   { name: "textile_image" },
@@ -282,17 +283,13 @@ route.get("/getLastMergeProduct", AuthJwt, mergeProduct.getLastMergeProduct);
 
 // ================== Banner Routes =============================
 
-// add banners
-
-route.post("/addBanner", AuthJwt, upload, banner.addBanner);
-
 // list banners
 
 route.get("/listBanner", AuthJwt, banner.listBanner);
 
-// change status banners
+route.get("/getBannerDetails", AuthJwt, banner.getBannerDetails);
 
-route.patch("changStatusBanner", upload, AuthJwt, banner.changeStatus);
+route.get("/getSequence", AuthJwt, banner.getSequence);
 
 // ================== Order Routes =============================
 
@@ -331,7 +328,9 @@ route.get("/customOrderList", AuthJwt, order.customOrderList);
 
 // place abandoned checkouts
 // route.post("/placeAbandonedOrder", upload, order.placeAbandonedOrder);
-route.get("/listAbandonedOrder", upload, order.listAbandonedOrder);
+route.get("/listAbandonedOrder", AuthJwt, upload, order.listAbandonedOrder);
+
+route.get("/getWishlist", AuthJwt, upload, order.getWishlist);
 
 // ================== sub categories Routes =============================
 

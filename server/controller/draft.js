@@ -11,6 +11,7 @@ const customer = require("../../database/models/customer");
 const uuid = require("uuid");
 const blog = require("../../database/models/blog");
 const order = require("../../database/models/order");
+const banner = require("../../database/models/banner");
 
 // Schema({
 //     DID : {type: String, unique : true},
@@ -376,15 +377,58 @@ exports.addDraft = async (req, res) => {
         data.message = "Alert : Create Order request.";
         data.payload = req.body;
         break;
+      case "addBanner":
+        console.log(req.files);
+        // Web
+        if (req.files["web_banner"] !== undefined)
+          req.body.web_banner = `${process.env.Official}/${req.files["web_banner"][0].path}`;
+        // Mobile
+        if (req.files["mobile_banner"] !== undefined)
+          req.body.mobile_banner = `${process.env.Official}/${req.files["mobile_banner"][0].path}`;
+        req.body.uuid = uuid.v4();
+        console.log(req.body);
+        data.message = "Alert : Add Banner request.";
+        data.payload = req.body;
+        break;
+      case "updateBanner":
+        console.log(req.files);
+        // Web
+        if (req.files["web_banner"] !== undefined)
+          req.body.web_banner = `${process.env.Official}/${req.files["web_banner"][0].path}`;
+        // Mobile
+        if (req.files["mobile_banner"] !== undefined)
+          req.body.mobile_banner = `${process.env.Official}/${req.files["mobile_banner"][0].path}`;
+        console.log(req.body);
+        data.message = "Alert : Update Banner request.";
+        data.payload = req.body;
+        break;
+      case "deleteBanner":
+        id = await draft
+          .find({}, { _id: 0, DID: 1 })
+          .sort({ _id: -1 })
+          .limit(1);
+
+        if (id) {
+          data.DID = `DID-0${parseInt(id[0].DID.split("-")[1]) + 1}`;
+        } else {
+          data.DID = "D-01001";
+        }
+
+        console.log(data);
+        data.message = "Alert : Banner deletion request.";
+
+        data.payload = await banner.findOne({ uuid: data.AID });
+        break;
       default:
         console.log("May be operation type not found.");
     }
 
-    // console.log(data);
+    console.log(data);
 
     // return res.send("All Okay");
 
-    if (!data.payload) return res.status(203).send("Type not found.");
+    if (!data.payload)
+      return res.status(203).send({ message: "Type not found." });
 
     console.log(data);
 
@@ -792,6 +836,71 @@ exports.dropDraft = async (req, res) => {
             .updateOne(
               { DID: req.body.DID },
               { draftStatus: req.body.draftStatus, AID: response.O }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
+      case "addBanner":
+        console.log(req.body);
+        data = banner(req.body);
+        response = await data.save();
+        if (response) {
+          //console.log(req.body.operation)
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus, AID: response.uuid }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
+      case "deleteBanner":
+        response = await banner.findOneAndRemove({ uuid: req.body.uuid });
+        console.log(req.body.operation);
+        if (response) {
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
+      case "updateBanner":
+        response = await banner.findOneAndUpdate(
+          { uuid: req.body.AID },
+          req.body
+        );
+        if (response) {
+          // //console.log(req.body.operation)
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus }
             )
             .then(() => {
               return res.send({ message: "Draft Resolved !!!" });
