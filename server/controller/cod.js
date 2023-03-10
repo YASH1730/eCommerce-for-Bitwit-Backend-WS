@@ -1,4 +1,5 @@
 const pincode = require("../../database/models/pincode");
+const COD = require("../../database/models/COD");
 const fs = require("fs");
 const path = require("path");
 const csv = require("fast-csv");
@@ -133,3 +134,14 @@ exports.downloadCSV = async (req, res) => {
     res.status(500).send({ message: "Something went wrong !!!" });
   }
 };
+
+exports.getCod = async (req, res) => {
+  try {
+    // COD.collection.drop()
+    let response = await COD.find();
+    res.send(response[0]);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ message: "Something went wrong !!!" });
+  }
+}

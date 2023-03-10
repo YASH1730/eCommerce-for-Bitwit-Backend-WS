@@ -17,10 +17,22 @@ const order = mongoose.Schema({
   paid: { type: Number },
   total: { type: Number },
   discount: { type: Number },
+  GST: { type: String },
+  has_GST: { type: String, default  : 'no' },
   note: { type: String },
   custom_order: { type: Boolean, default: false },
   sale_channel: { type: String, default: "Online" },
   PO: { type: String, default: "" },
+  classification : {type : String, default : 'personal'},
+  customer_type : {type : String, default : ''},
+  pic_before_dispatch : {type : Boolean, default : false},
+  fulfilled : {type : Boolean, default : false},
+  advance_received : {type : Number, default : 0},
+  pay_method_remaining : {type : String, default : ''},
+  pay_method_advance : {type : String, default : ''},
+  inventory_location : {type : String, default : ''},
+  courier_company : {type : String, default : ''},
+  AWB : {type : String, default : ''},
 });
 
 module.exports = mongoose.model("order", order);

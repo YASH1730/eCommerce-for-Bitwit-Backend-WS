@@ -12,6 +12,7 @@ const uuid = require("uuid");
 const blog = require("../../database/models/blog");
 const order = require("../../database/models/order");
 const banner = require("../../database/models/banner");
+const cod = require("../../database/models/COD");
 
 // Schema({
 //     DID : {type: String, unique : true},
@@ -418,6 +419,21 @@ exports.addDraft = async (req, res) => {
         data.message = "Alert : Banner deletion request.";
 
         data.payload = await banner.findOne({ uuid: data.AID });
+        break;
+      case "applyCOD":
+        id = await draft
+          .find({}, { _id: 0, DID: 1 })
+          .sort({ _id: -1 })
+          .limit(1);
+
+        if (id) {
+          console.log(">>>", id[0]);
+          data.DID = `DID-0${parseInt(id[0].DID.split("-")[1]) + 1}`;
+        } else {
+          data.DID = "D-01001";
+        }
+        data.message = "Alert : Update COD limits.";
+        data.payload = req.body;
         break;
       default:
         console.log("May be operation type not found.");
@@ -901,6 +917,26 @@ exports.dropDraft = async (req, res) => {
             .updateOne(
               { DID: req.body.DID },
               { draftStatus: req.body.draftStatus }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
+      case "applyCOD":
+        response = await cod.findOneAndUpdate({limit : req.body.limit },req.body, {upsert : true});
+        if (response) {
+          //console.log(req.body.operation)
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus, AID: response._id }
             )
             .then(() => {
               return res.send({ message: "Draft Resolved !!!" });

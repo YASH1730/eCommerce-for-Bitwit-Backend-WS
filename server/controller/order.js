@@ -186,25 +186,29 @@ exports.deleteOrder = async (req, res) => {
 // custom order apis
 exports.addCustomProduct = async (req, res) => {
   //console.log(req.files)
-  // cp.collection.drop('customProduct')
-  if (req.files["product_image"] !== undefined) {
-    req.body.product_image = req.files["product_image"].map((val) => {
-      return `${process.env.Official}/${val.path}`;
-    });
-  }
+  try {
+    if (req.files["product_image"] !== undefined) {
+      req.body.product_image = req.files["product_image"].map((val) => {
+        return `${process.env.Official}/${val.path}`;
+      });
+    }
+    if (req.files["polish_image"] !== undefined) {
+      req.body.polish_image = req.files["polish_image"].map((val) => {
+        return `${process.env.Official}/${val.path}`;
+      });
+    }
 
-  console.log(req.body);
-  const data = cp(req.body);
-  data
-    .save()
-    .then((data) => {
+    console.log(req.body);
+    let data = await cp(req.body).save()
+    if (data) {
       // console.log(data)
       return res.send({ message: "Custom Product added !!!", data });
-    })
-    .catch((err) => {
-      console.log(err);
-      return res.status(500).send("Something Went Wrong");
-    });
+    }
+  }
+  catch (err) {
+    console.log(err);
+    return res.status(500).send("Something Went Wrong");
+  };
 };
 
 // get last cp

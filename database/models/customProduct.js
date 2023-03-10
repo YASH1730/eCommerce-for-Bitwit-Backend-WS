@@ -4,6 +4,7 @@ const customProduct = mongoose.Schema({
    CUS: { type: String, unique: true, required: true },
    product_title: { type: String },
    product_image: { type: Array },
+   polish_image: { type: Array },
    length: { type: Number },
    height: { type: Number },
    breadth: { type: Number },
@@ -11,7 +12,10 @@ const customProduct = mongoose.Schema({
    MRP: { type: Number },
    discount: { type: Number },
    polish_time: { type: String },
-   note: { type: String }
+   note: { type: String },
+   polish : {type : String},
+   cusPolish : {type : String},
+   polish_note : {type : String},
 
 })
 
