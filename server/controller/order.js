@@ -383,3 +383,62 @@ exports.getWishlist = async (req, res) => {
     res.send(500);
   }
 };
+
+
+// upload image 
+exports.uploadImage = async(req,res) =>{
+  try {
+    let image_urls = []
+    let design_image_urls = []
+    
+
+    if(req.files['polish_image'])
+    {
+      req.files["polish_image"].map((val) => {
+        image_urls.push(`${process.env.Official}/${val.path}`);
+      });
+    }
+    if(req.files['design_image'])
+    {
+      req.files["design_image"].map((val) => {
+        design_image_urls.push(`${process.env.Official}/${val.path}`);
+      });
+    }
+
+    return res.send({polish : image_urls, design : design_image_urls})
+
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send([])
+  }
+}
+
+// upload image 
+exports.getDetails = async(req,res) =>{
+  try {
+   
+    console.log(req.query)
+    if (req.query._id === 'undefined') return res.status(203).send('Please provide a valid ID.')
+
+    let data = await order.findOne({_id : req.query._id});
+    let custom_product = [];
+    if(data){
+    custom_product =await Promise.all(Object.keys(data.quantity).map(async row=>{
+      let data = '';
+      if(row.includes('CUS'))  
+      {
+        data =  await cp.findOne({CUS : row})
+        return data
+      }
+    }))
+
+
+    console.log(data,custom_product)
+    return res.send({data,custom_product})
+
+  }
+}catch(error) {
+    console.log(error)
+    return res.status(500).send([])
+  }
+}

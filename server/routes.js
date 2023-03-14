@@ -95,6 +95,7 @@ const upload = multer({
   { name: "review_images" },
   { name: "banner_image" },
   { name: "polish_image" },
+  { name: "design_image" },
 ]);
 
 // middleware for encryption
@@ -738,5 +739,11 @@ route.get("/metaReview", AuthJwt, review.metaReview);
 route.patch("/updateReview", AuthJwt, upload, review.updateReview);
 
 route.get("/getCOD", cod.getCod);
+
+// route for upload images directly
+route.post('/uploadAllImage',upload,order.uploadImage)
+
+// get order details
+route.get('/getOrderDetails',order.getDetails)
 
 module.exports = route;
