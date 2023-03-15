@@ -101,14 +101,13 @@ const upload = multer({
 // middleware for encryption
 function encode(req, res, next) {
   const saltRounds = 10;
-
+// console.log(req.body)
   if (
-    req.body.user_Name == undefined ||
-    req.body.phoneNumber == undefined ||
-    req.body.email == undefined ||
-    req.body.password == undefined ||
-    req.body.address == undefined ||
-    req.body.role == undefined
+    req.body.user_name === undefined ||
+    req.body.mobile === undefined ||
+    req.body.email === undefined ||
+    req.body.password === undefined ||
+    req.body.role === undefined 
   )
     return res
       .status(204)
@@ -179,10 +178,16 @@ async function tracker(req, res, next) {
 route.get("/", user.home);
 
 // registration route
-route.post("/register", encode, user.register);
+route.post("/register", upload,encode, user.register);
 
 // login route
 route.post("/login", upload, tracker, user.login);
+
+// listing route
+route.get("/listUser",AuthJwt, user.listUser);
+
+// updateUser
+route.patch("/updateUser",upload,AuthJwt, user.updateUser);
 
 // =============== Categories routes =======================
 

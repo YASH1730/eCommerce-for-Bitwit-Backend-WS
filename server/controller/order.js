@@ -1,6 +1,7 @@
 require("dotenv").config();
 const order = require("../../database/models/order");
 const customer = require("../../database/models/customer");
+const product = require("../../database/models/products");
 const abandoned = require("../../database/models/abandoned");
 const cp = require("../../database/models/customProduct");
 const { v4: uuidv4 } = require("uuid");
@@ -386,26 +387,24 @@ exports.getWishlist = async (req, res) => {
 
 
 // upload image 
-exports.uploadImage = async(req,res) =>{
+exports.uploadImage = async (req, res) => {
   try {
     let image_urls = []
     let design_image_urls = []
-    
 
-    if(req.files['polish_image'])
-    {
+
+    if (req.files['polish_image']) {
       req.files["polish_image"].map((val) => {
         image_urls.push(`${process.env.Official}/${val.path}`);
       });
     }
-    if(req.files['design_image'])
-    {
+    if (req.files['design_image']) {
       req.files["design_image"].map((val) => {
         design_image_urls.push(`${process.env.Official}/${val.path}`);
       });
     }
 
-    return res.send({polish : image_urls, design : design_image_urls})
+    return res.send({ polish: image_urls, design: design_image_urls })
 
   } catch (error) {
     console.log(error)
@@ -414,30 +413,48 @@ exports.uploadImage = async(req,res) =>{
 }
 
 // upload image 
-exports.getDetails = async(req,res) =>{
+exports.getDetails = async (req, res) => {
   try {
-   
+
     console.log(req.query)
     if (req.query._id === 'undefined') return res.status(203).send('Please provide a valid ID.')
 
-    let data = await order.findOne({_id : req.query._id});
+    let data = await order.findOne({ _id: req.query._id });
     let custom_product = [];
-    if(data){
-    custom_product =await Promise.all(Object.keys(data.quantity).map(async row=>{
-      let data = '';
-      if(row.includes('CUS'))  
-      {
-        data =  await cp.findOne({CUS : row})
+    if (data) {
+
+      custom_product = Object.keys(data.quantity).filter(row => row.includes('CUS'))
+      default_product = Object.keys(data.quantity).filter(row => row.includes('P'))
+
+      custom_product = custom_product.length > 0 ? await Promise.all(custom_product.map(async row => {
+        let data = '';
+        data = await cp.findOne({ CUS: row }, {
+          _id: 1,
+          CUS: 1,
+          product_title: 1,
+          product_image: 1,
+          selling_price: 1,
+        })
         return data
-      }
-    }))
+      })) : []
+      default_product = default_product.length > 0 ? await Promise.all(default_product.map(async row => {
+        let data = '';
+        data = await product.findOne({ SKU: row }, {
+          _id: 1,
+          SKU: 1,
+          product_title: 1,
+          product_image: 1,
+          selling_price: 1,
+        })
+        return data
+      })): []
 
 
-    console.log(data,custom_product)
-    return res.send({data,custom_product})
+      console.log(data, custom_product, default_product)
+      return res.send({ data, custom_product, product : default_product })
 
-  }
-}catch(error) {
+    }
+  } catch (error) {
     console.log(error)
     return res.status(500).send([])
   }
