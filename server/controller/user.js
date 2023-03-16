@@ -143,9 +143,10 @@ exports.refreshToken = async (req, res) => {
           return res.status(200).send({
             message: "Token refreshed successfully !!!",
             token,
-            name: data.user_Name,
+            name: data.user_name,
             email: data.email,
             role: data.role,
+            access : data.access
           });
         } else return res.status(203).send({ message: "User Not Found !!!" });
       });
