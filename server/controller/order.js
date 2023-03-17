@@ -6,6 +6,7 @@ const abandoned = require("../../database/models/abandoned");
 const cp = require("../../database/models/customProduct");
 const { v4: uuidv4 } = require("uuid");
 const wishlist = require("../../database/models/wishlist");
+const { count } = require("../../database/models/order");
 // ================================================= Apis for order =======================================================
 //==============================================================================================================================
 
@@ -200,16 +201,15 @@ exports.addCustomProduct = async (req, res) => {
     }
 
     console.log(req.body);
-    let data = await cp(req.body).save()
+    let data = await cp(req.body).save();
     if (data) {
       // console.log(data)
       return res.send({ message: "Custom Product added !!!", data });
     }
-  }
-  catch (err) {
+  } catch (err) {
     console.log(err);
     return res.status(500).send("Something Went Wrong");
-  };
+  }
 };
 
 // get last cp
@@ -341,6 +341,30 @@ exports.getWishlist = async (req, res) => {
     const params = JSON.parse(req.query.filter);
     let total = await wishlist.estimatedDocumentCount();
 
+    let mostLiked = await wishlist.aggregate([
+      { $unwind: "$product_id" },
+      { $group: { _id: "$product_id", count: { $sum: 1 } } },
+      { $match: { _id: { $ne: null }, count: { $gt: 1 } } },
+      {
+        $lookup: {
+          from: "new_products",
+          localField: "_id",
+          foreignField: "SKU",
+          pipeline: [
+            {
+              $group: {
+                _id: "$_id",
+                product_title: { $first: "$product_title" },
+              },
+            },
+          ],
+          as: "product",
+        },
+      },
+      { $sort: { count: -1 } },
+      { $limit: params.limit },
+    ]);
+
     // filter Section Starts
 
     let query = {};
@@ -372,90 +396,117 @@ exports.getWishlist = async (req, res) => {
           from: "customers",
           localField: "CID",
           foreignField: "CID",
+          pipeline: [
+            {
+              $group: {
+                _id: "$_id",
+                CID: { $first: "$CID" },
+                username: { $first: "$username" },
+                mobile: { $first: "$mobile" },
+                email: { $first: "$email" },
+              },
+            },
+          ],
           as: "customer",
         },
       },
       { $limit: params.limit },
     ]);
 
-    if (response) return res.send({ data: response, total: total });
+    // console.log(mostLiked);
+
+    if (response) return res.send({ data: response, total: total, mostLiked });
   } catch (err) {
     console.log("Error>>>", err);
     res.send(500);
   }
 };
 
-
-// upload image 
+// upload image
 exports.uploadImage = async (req, res) => {
   try {
-    let image_urls = []
-    let design_image_urls = []
+    let image_urls = [];
+    let design_image_urls = [];
 
-
-    if (req.files['polish_image']) {
+    if (req.files["polish_image"]) {
       req.files["polish_image"].map((val) => {
         image_urls.push(`${process.env.Official}/${val.path}`);
       });
     }
-    if (req.files['design_image']) {
+    if (req.files["design_image"]) {
       req.files["design_image"].map((val) => {
         design_image_urls.push(`${process.env.Official}/${val.path}`);
       });
     }
 
-    return res.send({ polish: image_urls, design: design_image_urls })
-
+    return res.send({ polish: image_urls, design: design_image_urls });
   } catch (error) {
-    console.log(error)
-    return res.status(500).send([])
+    console.log(error);
+    return res.status(500).send([]);
   }
-}
+};
 
-// upload image 
+// upload image
 exports.getDetails = async (req, res) => {
   try {
-
-    console.log(req.query)
-    if (req.query._id === 'undefined') return res.status(203).send('Please provide a valid ID.')
+    console.log(req.query);
+    if (req.query._id === "undefined")
+      return res.status(203).send("Please provide a valid ID.");
 
     let data = await order.findOne({ _id: req.query._id });
     let custom_product = [];
     if (data) {
+      custom_product = Object.keys(data.quantity).filter((row) =>
+        row.includes("CUS")
+      );
+      default_product = Object.keys(data.quantity).filter((row) =>
+        row.includes("P")
+      );
 
-      custom_product = Object.keys(data.quantity).filter(row => row.includes('CUS'))
-      default_product = Object.keys(data.quantity).filter(row => row.includes('P'))
+      custom_product =
+        custom_product.length > 0
+          ? await Promise.all(
+              custom_product.map(async (row) => {
+                let data = "";
+                data = await cp.findOne(
+                  { CUS: row },
+                  {
+                    _id: 1,
+                    CUS: 1,
+                    product_title: 1,
+                    product_image: 1,
+                    selling_price: 1,
+                  }
+                );
+                return data;
+              })
+            )
+          : [];
+      default_product =
+        default_product.length > 0
+          ? await Promise.all(
+              default_product.map(async (row) => {
+                let data = "";
+                data = await product.findOne(
+                  { SKU: row },
+                  {
+                    _id: 1,
+                    SKU: 1,
+                    product_title: 1,
+                    product_image: 1,
+                    selling_price: 1,
+                  }
+                );
+                return data;
+              })
+            )
+          : [];
 
-      custom_product = custom_product.length > 0 ? await Promise.all(custom_product.map(async row => {
-        let data = '';
-        data = await cp.findOne({ CUS: row }, {
-          _id: 1,
-          CUS: 1,
-          product_title: 1,
-          product_image: 1,
-          selling_price: 1,
-        })
-        return data
-      })) : []
-      default_product = default_product.length > 0 ? await Promise.all(default_product.map(async row => {
-        let data = '';
-        data = await product.findOne({ SKU: row }, {
-          _id: 1,
-          SKU: 1,
-          product_title: 1,
-          product_image: 1,
-          selling_price: 1,
-        })
-        return data
-      })): []
-
-
-      console.log(data, custom_product, default_product)
-      return res.send({ data, custom_product, product : default_product })
-
+      console.log(data, custom_product, default_product);
+      return res.send({ data, custom_product, product: default_product });
     }
   } catch (error) {
-    console.log(error)
-    return res.status(500).send([])
+    console.log(error);
+    return res.status(500).send([]);
   }
-}
+};
