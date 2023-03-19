@@ -1,5 +1,6 @@
 require("dotenv").config();
 const order = require("../../database/models/order");
+const coupon = require("../../database/models/coupon");
 const customer = require("../../database/models/customer");
 const product = require("../../database/models/products");
 const abandoned = require("../../database/models/abandoned");
@@ -508,5 +509,88 @@ exports.getDetails = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).send([]);
+  }
+};
+
+// list coupon
+
+exports.listCoupon = async (req, res) => {
+  try {
+    // coupon.collection.drop();
+    console.log(req.query);
+    const params = JSON.parse(req.query.filter);
+    let total = await coupon.estimatedDocumentCount();
+
+    // filter Section Starts
+
+    let query = {};
+    let filterArray = [];
+
+    if (params.O) filterArray.push({ O: params.O });
+
+    if (params.coupon_code)
+      filterArray.push({
+        coupon_code: { $regex: params.coupon_code, $options: "i" },
+      });
+
+    if (params.valid_from)
+      filterArray.push({
+        valid_from: params.valid_from,
+      });
+
+    if (params.expiry)
+      filterArray.push({
+        expiry: params.expiry,
+      });
+
+    // for checking the filter is free or not
+    if (filterArray.length > 0) {
+      query = { $and: filterArray };
+
+      // this is for search document count
+      let count = await coupon.aggregate([
+        { $match: query },
+        { $count: "Count" },
+      ]);
+      total = count.length > 0 ? count[0].Count : 0;
+    }
+
+    // filter ends
+
+    // final operation center
+
+    await coupon
+      .aggregate([
+        { $match: query },
+        { $skip: params.page > 0 ? (params.page - 1) * params.limit : 0 },
+        { $limit: params.limit },
+      ])
+      .then((response) => {
+        if (response) {
+          return res.send({ data: response, total: total });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        return res
+          .sendStatus(500)
+          .send({ message: "Something went wrong !!!" });
+      }),
+      { allowDiskUse: true };
+  } catch (err) {
+    console.log("Error>>>", err);
+    res.send(500);
+  }
+};
+
+exports.getCouponDetails = async (req, res) => {
+  try {
+    let response = await coupon.findOne({ coupon_code: req.query.code });
+    if (response) {
+      console.log(response);
+      return res.send(response);
+    }
+  } catch (error) {
+    return res.status(500).send({ message: "Something went wrong." });
   }
 };

@@ -7,6 +7,7 @@ const subCategories = require("../../database/models/subCategories");
 const material = require("../../database/models/primaryMaterial");
 const polish = require("../../database/models/polish");
 const customer = require("../../database/models/customer");
+const coupon = require("../../database/models/coupon");
 
 const uuid = require("uuid");
 const blog = require("../../database/models/blog");
@@ -433,6 +434,31 @@ exports.addDraft = async (req, res) => {
           data.DID = "D-01001";
         }
         data.message = "Alert : Update COD limits.";
+        data.payload = req.body;
+        break;
+      case "addCoupon":
+        data.message = "Alert : Add new coupon request.";
+        data.payload = req.body;
+        break;
+      case "deleteCoupon":
+        id = await draft
+          .find({}, { _id: 0, DID: 1 })
+          .sort({ _id: -1 })
+          .limit(1);
+
+        if (id) {
+          data.DID = `DID-0${parseInt(id[0].DID.split("-")[1]) + 1}`;
+        } else {
+          data.DID = "D-01001";
+        }
+
+        console.log(data);
+        data.message = "Alert : Coupon deletion request.";
+
+        data.payload = await coupon.findOne({ coupon_code: data.AID });
+        break;
+      case "updateCoupon":
+        data.message = "Alert : Update coupon request.";
         data.payload = req.body;
         break;
       default:
@@ -930,13 +956,82 @@ exports.dropDraft = async (req, res) => {
         }
         break;
       case "applyCOD":
-        response = await cod.findOneAndUpdate({limit : req.body.limit },req.body, {upsert : true});
+        response = await cod.findOneAndUpdate(
+          { limit: req.body.limit },
+          req.body,
+          { upsert: true }
+        );
         if (response) {
           //console.log(req.body.operation)
           draft
             .updateOne(
               { DID: req.body.DID },
               { draftStatus: req.body.draftStatus, AID: response._id }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
+      case "addCoupon":
+        console.log(req.body);
+        data = coupon(req.body);
+        response = await data.save();
+        if (response) {
+          //console.log(req.body.operation)
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus, AID: response.coupon_code }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
+      case "deleteCoupon":
+        response = await coupon.findOneAndRemove({ _id: req.body._id });
+        // console.log(req.body.operation);
+        if (response) {
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
+      case "updateCoupon":
+        response = await coupon.findOneAndUpdate(
+          { coupon_code: req.body.AID },
+          req.body
+        );
+        if (response) {
+          // //console.log(req.body.operation)
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus }
             )
             .then(() => {
               return res.send({ message: "Draft Resolved !!!" });

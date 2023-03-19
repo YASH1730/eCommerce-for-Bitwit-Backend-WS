@@ -101,13 +101,13 @@ const upload = multer({
 // middleware for encryption
 function encode(req, res, next) {
   const saltRounds = 10;
-// console.log(req.body)
+  // console.log(req.body)
   if (
     req.body.user_name === undefined ||
     req.body.mobile === undefined ||
     req.body.email === undefined ||
     req.body.password === undefined ||
-    req.body.role === undefined 
+    req.body.role === undefined
   )
     return res
       .status(204)
@@ -178,16 +178,16 @@ async function tracker(req, res, next) {
 route.get("/", user.home);
 
 // registration route
-route.post("/register", upload,encode, user.register);
+route.post("/register", upload, encode, user.register);
 
 // login route
 route.post("/login", upload, tracker, user.login);
 
 // listing route
-route.get("/listUser",AuthJwt, user.listUser);
+route.get("/listUser", AuthJwt, user.listUser);
 
 // updateUser
-route.patch("/updateUser",upload,AuthJwt, user.updateUser);
+route.patch("/updateUser", upload, AuthJwt, user.updateUser);
 
 // =============== Categories routes =======================
 
@@ -746,9 +746,14 @@ route.patch("/updateReview", AuthJwt, upload, review.updateReview);
 route.get("/getCOD", cod.getCod);
 
 // route for upload images directly
-route.post('/uploadAllImage',upload,order.uploadImage)
+route.post("/uploadAllImage", upload, order.uploadImage);
 
 // get order details
-route.get('/getOrderDetails',order.getDetails)
+route.get("/getOrderDetails", order.getDetails);
+
+// ============= coupone ===
+route.get("/listCoupon", AuthJwt, order.listCoupon);
+
+route.get("/getCouponDetails", AuthJwt, order.getCouponDetails);
 
 module.exports = route;

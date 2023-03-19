@@ -1,118 +1,122 @@
-require('dotenv').config();
+require("dotenv").config();
 const customer = require("../../database/models/customer");
-const { v4: uuidv4 } = require('uuid');
-const Crypt = require('cryptr');
-const crypt = new Crypt('asdf465f4s2d1f65e4s32d1f6534361e65##$#$#$#23$#5er135##4dfd434<>?<?');
+const { v4: uuidv4 } = require("uuid");
+const Crypt = require("cryptr");
+const crypt = new Crypt(
+  "asdf465f4s2d1f65e4s32d1f6534361e65##$#$#$#23$#5er135##4dfd434<>?<?"
+);
 // const decryptedString = crypt.decrypt(encryptedString);
 
-// ================================================= Apis for banner ======================================================= 
+// ================================================= Apis for banner =======================================================
 //==============================================================================================================================
 
-// place an customer 
+// place an customer
 
 exports.addCustomer = async (req, res) => {
-  req.body.CID = `CID-${uuidv4()}`
+  req.body.CID = `CID-${uuidv4()}`;
 
-  if (req.files['profile_image'] !== undefined)
-    req.body.profile_image = `${process.env.Official}/${req.files['profile_image'][0].path}`
-
+  if (req.files["profile_image"] !== undefined)
+    req.body.profile_image = `${process.env.Official}/${req.files["profile_image"][0].path}`;
 
   req.body.password = crypt.encrypt(req.body.password);
 
-  req.body.address = JSON.parse(req.body.shipping)
+  req.body.address = JSON.parse(req.body.shipping);
   const data = customer(req.body);
-  await data.save(req.body)
+  await data
+    .save(req.body)
     .then((response) => {
       console.log(response);
 
-      return res.status(200).send({ message: 'Customer added successfully !!!', response });
+      return res
+        .status(200)
+        .send({ message: "Customer added successfully !!!", response });
     })
     .catch((err) => {
-      console.log(err)
-      return res.status(400).send({ message: 'Duplicate entries are not allowed !!!' })
-    })
-}
+      console.log(err);
+      return res
+        .status(400)
+        .send({ message: "Duplicate entries are not allowed !!!" });
+    });
+};
 
 // list customer
 
 exports.listCustomer = async (req, res) => {
-
-  await customer.find({ $sort: { register_time: -1 } })
+  await customer
+    .find({ $sort: { register_time: -1 } })
     .then((response) => {
-      console.log(response)
+      // console.log(response)
       return res.status(200).send(response);
     })
     .catch((err) => {
-      return res.status(203).send({ message: 'No entries !!!' })
-    })
-}
+      return res.status(203).send({ message: "No entries !!!" });
+    });
+};
 
 // get delete customer
 
 exports.deleteCustomer = async (req, res) => {
   //console.log(req.query)
-  await customer.deleteOne(req.query)
+  await customer
+    .deleteOne(req.query)
     .then((response) => {
       return res.status(200).send(response);
     })
     .catch((err) => {
-      return res.status(203).send({ message: 'Customer has been deleted !!!' })
-    })
-}
+      return res.status(203).send({ message: "Customer has been deleted !!!" });
+    });
+};
 
 // get specific customer
 
 exports.searchCustomer = async (req, res) => {
-
-  await customer.find(req.query)
+  await customer
+    .find(req.query)
     .then((response) => {
       return res.status(200).send(response);
     })
     .catch((err) => {
       return res.status(500).send(err);
-    })
-}
-
+    });
+};
 
 // for Changing the Status of the Customer
 
 exports.changeCustomerStatus = async (req, res) => {
   //  //console.log(req.body)
-  await customer.findByIdAndUpdate({ _id: req.body._id }, { status: req.body.status })
+  await customer
+    .findByIdAndUpdate({ _id: req.body._id }, { status: req.body.status })
     .then((data) => {
       //console.log(data)
-      res.send('all okay')
+      res.send("all okay");
     })
 
     .catch((err) => {
       //console.log(err)
-      res.status(203).send('Something went wrong !!!')
-    })
-}
-
+      res.status(203).send("Something went wrong !!!");
+    });
+};
 
 exports.updateCustomer = async (req, res) => {
-
   //console.log(req.body);
   //console.log(req.files['profile_image'])
 
-  if (req.files['profile_image'] !== undefined)
-    req.body.profile_image = `${process.env.Official}/${req.files['profile_image'][0].path}`
+  if (req.files["profile_image"] !== undefined)
+    req.body.profile_image = `${process.env.Official}/${req.files["profile_image"][0].path}`;
 
   if (req.body.address) req.body.address = JSON.parse(req.body.address);
 
-
-  await customer.findOneAndUpdate({ CID: req.body.CID }, req.body)
+  await customer
+    .findOneAndUpdate({ CID: req.body.CID }, req.body)
     .then((data) => {
       if (data)
-        return res.status(200).send({ message: 'Customer is updated successfully.' })
-      else
-        return res.status(203).send({ message: 'No entries found' })
+        return res
+          .status(200)
+          .send({ message: "Customer is updated successfully." });
+      else return res.status(203).send({ message: "No entries found" });
     })
     .catch((error) => {
       //console.log(error)
-      return res.status(203).send({ message: 'Something went wrong !!!' })
-    })
-
-}
-
+      return res.status(203).send({ message: "Something went wrong !!!" });
+    });
+};
