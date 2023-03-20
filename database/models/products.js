@@ -11,6 +11,7 @@ const product = mongoose.Schema({
   sub_category_name: { type: String, default: "None" },
   sub_category_id: { type: String, default: "None" },
   product_description: { type: String },
+  dial: { type: Boolean, default : false },
   seo_title: { type: String },
   seo_description: { type: String },
   seo_keyword: { type: String },

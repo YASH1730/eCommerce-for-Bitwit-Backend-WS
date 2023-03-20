@@ -8,6 +8,8 @@ const customer = mongoose.Schema({
   mobile: { type: Number, unique: true },
   email: { type: String, unique: true },
   password: { type: String },
+  classification: { type: String, default : 'personal' },
+  customer_type: { type: String, default : '' },
   address: { type: Array },
 });
 

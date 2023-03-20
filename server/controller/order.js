@@ -450,7 +450,7 @@ exports.uploadImage = async (req, res) => {
 // upload image
 exports.getDetails = async (req, res) => {
   try {
-    console.log(req.query);
+    // console.log(req.query);
     if (req.query._id === "undefined")
       return res.status(203).send("Please provide a valid ID.");
 
@@ -503,7 +503,7 @@ exports.getDetails = async (req, res) => {
             )
           : [];
 
-      console.log(data, custom_product, default_product);
+      // console.log(data, custom_product, default_product);
       return res.send({ data, custom_product, product: default_product });
     }
   } catch (error) {

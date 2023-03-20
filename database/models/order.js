@@ -8,6 +8,8 @@ const order = mongoose.Schema({
   customer_name: { type: String },
   customer_email: { type: String },
   customer_mobile: { type: String },
+  country :  { type: String, default : 'India' },
+  pincode: { type: String },
   city: { type: String },
   state: { type: String },
   shipping: { type: String },
