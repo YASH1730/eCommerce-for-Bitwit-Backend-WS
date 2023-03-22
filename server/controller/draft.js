@@ -8,13 +8,19 @@ const material = require("../../database/models/primaryMaterial");
 const polish = require("../../database/models/polish");
 const customer = require("../../database/models/customer");
 const coupon = require("../../database/models/coupon");
-
+const review = require("../../database/models/review")
 const uuid = require("uuid");
 const blog = require("../../database/models/blog");
 const order = require("../../database/models/order");
 const banner = require("../../database/models/banner");
 const cod = require("../../database/models/COD");
 
+
+// crypt 
+const Crypt = require("cryptr");
+const crypt = new Crypt(
+  "asdf465f4s2d1f65e4s32d1f6534361e65##$#$#$#23$#5er135##4dfd434<>?<?"
+);
 // Schema({
 //     DID : {type: String, unique : true},
 //     AID : {type : String},
@@ -41,6 +47,8 @@ exports.addDraft = async (req, res) => {
     let id = undefined;
     let image_urls = [];
     let previousImages = [];
+    let videoURLs = [];
+
     // console.log(req.files);
 
     // console.log(req.body);
@@ -461,7 +469,76 @@ exports.addDraft = async (req, res) => {
         data.message = "Alert : Update coupon request.";
         data.payload = req.body;
         break;
-      default:
+      case "addReview":
+      
+          if (req.files["review_images"]) {
+            if (req.files["review_images"].length > 0) {
+              req.files["review_images"].map((file) => {
+                if (file.mimetype === "video/mp4")
+                  return videoURLs.push(`${process.env.Official}/${file.path}`);
+                return image_urls.push(`${process.env.Official}/${file.path}`);
+              });
+            }
+          }
+      
+          // req.body.review = JSON.parse(req.body.review);
+      
+          req.body.review_images = image_urls;
+          req.body.review_videos = videoURLs;
+      
+            data.message = "Alert : Add review request.";
+            data.payload = req.body;
+          break;
+      case "updateReview":
+        data.message = "Alert : Update review request.";
+        data.payload = req.body;  
+      break;
+      case "addReply":
+        id = await draft
+        .find({}, { _id: 0, DID: 1 })
+        .sort({ _id: -1 })
+        .limit(1);
+
+      if (id) {
+        data.DID = `DID-0${parseInt(id[0].DID.split("-")[1]) + 1}`;
+      } else {
+        data.DID = "D-01001";
+      }
+
+      console.log(data);
+      data.message = "Alert : Add reply request.";
+
+      data.payload = req.body;
+      break;   
+      case "deleteReview":
+        id = await draft
+          .find({}, { _id: 0, DID: 1 })
+          .sort({ _id: -1 })
+          .limit(1);
+
+        if (id) {
+          data.DID = `DID-0${parseInt(id[0].DID.split("-")[1]) + 1}`;
+        } else {
+          data.DID = "D-01001";
+        }
+
+        console.log(data);
+        data.message = "Alert : Review deletion request.";
+        data.payload = await review.findOne({ _id: data.AID });
+        break;
+      case "addCustomer":
+        req.body.CID = `CID-${uuid.v4()}`;
+        if (req.files["profile_image"] !== undefined)
+          req.body.profile_image = `${process.env.Official}/${req.files["profile_image"][0].path}`;
+
+        req.body.password = crypt.encrypt(req.body.password);
+
+        req.body.address = JSON.parse(req.body.shipping);
+        req.body.billing = JSON.parse(req.body.billing);
+        data.message = "Alert : Add customer request.";
+        data.payload = req.body;
+      break;
+        default:
         console.log("May be operation type not found.");
     }
 
@@ -1032,6 +1109,124 @@ exports.dropDraft = async (req, res) => {
             .updateOne(
               { DID: req.body.DID },
               { draftStatus: req.body.draftStatus }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
+      case "addReview":
+        console.log(req.body);
+        data = review(req.body);
+        response = await data.save();
+        if (response) {
+          //console.log(req.body.operation)
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus, AID: response._id }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
+      case "updateReview":
+        response = await review.findOneAndUpdate(
+          { _id: req.body.AID },
+          req.body
+        );
+        if (response) {
+          // //console.log(req.body.operation)
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;  
+      case "addReply":
+        let reply = JSON.parse(req.body.reply);
+
+        let old = await review.findOne({ _id: req.body._id }, { admin_reply: 1 });
+    
+        console.log(old);
+    
+        reply = [...old.admin_reply, ...reply];
+    
+        response = await review.findOneAndUpdate(
+          { _id: req.body._id },
+          { admin_reply: reply }
+        );
+        if (response) {
+          // //console.log(req.body.operation)
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+          }
+      break;
+      case "deleteReview":
+        response = await review.findOneAndRemove({ _id: req.body._id });
+        // console.log(req.body.operation);
+        if (response) {
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+      break; 
+      case "addCustomer":
+        console.log(req.body);
+        data = customer(req.body);
+        response = await data.save();
+        if (response) {
+          //console.log(req.body.operation)
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus, AID: response.CID }
             )
             .then(() => {
               return res.send({ message: "Draft Resolved !!!" });

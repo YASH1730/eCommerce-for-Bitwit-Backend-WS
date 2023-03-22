@@ -23,8 +23,6 @@ const Handle = require("./controller/handle");
 const Gallery = require("./controller/gallery");
 const blog = require("./controller/blog");
 const hardware = require("./controller/hardware");
-// const like = require("./controller/like");
-// const review = require("./controller/review");
 const draft = require("./controller/draft");
 const fabric = require("./controller/fabric");
 const textile = require("./controller/textile");
@@ -742,6 +740,8 @@ route.delete("/deleteReview", AuthJwt, review.deleteReview);
 route.get("/metaReview", AuthJwt, review.metaReview);
 
 route.patch("/updateReview", AuthJwt, upload, review.updateReview);
+
+route.get("/getReviewDetails", AuthJwt, review.getReviewDetails);
 
 route.get("/getCOD", cod.getCod);
 

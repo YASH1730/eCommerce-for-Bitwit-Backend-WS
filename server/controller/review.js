@@ -2,6 +2,7 @@ const review = require("../../database/models/review");
 
 exports.getReview = async (req, res) => {
   try {
+    // review.collection.drop();
     const params = JSON.parse(req.query.filter);
     let total = await review.estimatedDocumentCount();
     let active = await review.find({ hide: true }).count();
@@ -141,24 +142,6 @@ exports.updateReview = async (req, res) => {
     // console.log("Files >>>", req.files);
     console.log("Files >>>", req.body);
 
-    // let imageURLs = [];
-    // let videoURLs = [];
-
-    // if (req.files["review_images"]) {
-    //   if (req.files["review_images"].length > 0) {
-    //     req.files["review_images"].map((file) => {
-    //       if (file.mimetype === "video/mp4")
-    //         return videoURLs.push(`${process.env.Official}/${file.path}`);
-    //       return imageURLs.push(`${process.env.Official}/${file.path}`);
-    //     });
-    //   }
-    // }
-
-    // req.body.review = JSON.parse(req.body.review);
-
-    // req.body.review_images = imageURLs;
-    // req.body.review_videos = videoURLs;
-
     if (!req.body._id)
       return res.sendStatus(203).send("Please provide the review _id .");
     console.log("Final Body >>>", req.body);
@@ -204,3 +187,14 @@ exports.metaReview = async (req, res) => {
     res.status(500).send({ message: "Something went wrong !!!" });
   }
 };
+
+exports.getReviewDetails = async (req,res) =>{
+  try {
+    let response = await review.findOne({_id : req.query._id})
+    if(response)
+    return res.send(response)
+  } catch (error) {
+    console.log(error)
+    res.status(500).send('Something Went Wrong !!!')
+  }
+}

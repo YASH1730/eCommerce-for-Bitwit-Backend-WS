@@ -354,6 +354,7 @@ exports.getHardwareDropdown = async (req, res) => {
       handle: [],
       fabric: [],
       textile: [],
+      dial : [],
     };
 
     let polishRes = await polish.find({}, { _id: 1, polish_name: 1 });
@@ -393,6 +394,9 @@ exports.getHardwareDropdown = async (req, res) => {
       });
       data.textile = response.filter((row) => {
         return row.sub_category_name.toLowerCase() === "textile";
+      });
+      data.dial = response.filter((row) => {
+        return row.sub_category_name.toLowerCase() === "dial";
       });
     }
     console.log(data);

@@ -5,7 +5,7 @@ const review = mongoose.Schema({
   product_id: { type: String },
   rating: { type: String },
   review: { type: String, default: "" },
-  admin_reply: { type: String, default: "" },
+  admin_reply: { type: Array, default: [] },
   review_title: { type: String },
   review_images: { type: Array, default: [] },
   review_videos: { type: Array, default: [] },

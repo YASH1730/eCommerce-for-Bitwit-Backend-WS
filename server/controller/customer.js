@@ -21,6 +21,7 @@ exports.addCustomer = async (req, res) => {
   req.body.password = crypt.encrypt(req.body.password);
 
   req.body.address = JSON.parse(req.body.shipping);
+  req.body.billing = JSON.parse(req.body.billing);
   const data = customer(req.body);
   await data
     .save(req.body)
@@ -42,15 +43,21 @@ exports.addCustomer = async (req, res) => {
 // list customer
 
 exports.listCustomer = async (req, res) => {
-  await customer
+  // customer.collection.drop();
+  try{
+    let response = await customer
     .find({ $sort: { register_time: -1 } })
-    .then((response) => {
-      // console.log(response)
+    
+    if(response)  {
       return res.status(200).send(response);
-    })
-    .catch((err) => {
-      return res.status(203).send({ message: "No entries !!!" });
-    });
+    }
+  }
+  catch(err){
+    console.log(err)
+    res.status(500).send('Something went wrong !!!')
+
+  }
+ 
 };
 
 // get delete customer

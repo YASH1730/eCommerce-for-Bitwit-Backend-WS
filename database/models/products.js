@@ -42,6 +42,7 @@ const product = mongoose.Schema({
   door: { type: String, default: "None" },
   door_qty: { type: Number, default: 0 },
   door_name: { type: String },
+  dial_name: { type: String, default : '' },
   fitting: { type: String, default: "None" },
   fitting_name: { type: String },
   selling_points: { type: Array, default: [] },

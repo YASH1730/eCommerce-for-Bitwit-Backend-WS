@@ -10,7 +10,8 @@ const customer = mongoose.Schema({
   password: { type: String },
   classification: { type: String, default : 'personal' },
   customer_type: { type: String, default : '' },
-  address: { type: Array },
+  address: { type: Array, default : [] },
+  billing: { type: Array, default : [] },
 });
 
 module.exports = mongoose.model("customer", customer);
