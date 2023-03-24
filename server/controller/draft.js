@@ -14,7 +14,7 @@ const blog = require("../../database/models/blog");
 const order = require("../../database/models/order");
 const banner = require("../../database/models/banner");
 const cod = require("../../database/models/COD");
-
+const cp = require("../../database/models/customProduct")
 
 // crypt 
 const Crypt = require("cryptr");
@@ -538,13 +538,36 @@ exports.addDraft = async (req, res) => {
         data.message = "Alert : Add customer request.";
         data.payload = req.body;
       break;
-        default:
+      case "editOrder":
+
+        let products = JSON.parse(req.body.quantity)
+
+        req.body.quantity = products
+
+        const ids = Object.keys(products)
+        
+       
+        let price = await product.find({SKU : { $in: ids} }, {SKU : 1,selling_price : 1})
+        let Cprice = await cp.find({CUS : {$in: ids}}, {CUS : 1, selling_price : 1})
+        
+        price = price.reduce((sum,row)=>{return sum + (products[row.SKU] * row.selling_price)},0)
+        Cprice = Cprice.reduce((row,sum)=>{return sum + (products[row.CUS] * row.selling_price)},0)
+        
+        console.log(price,Cprice)
+
+        req.body.subTotal = price + Cprice
+        req.body.total = (price + Cprice)-(price + Cprice)/100 * req.body.discount 
+
+        data.message = "Alert : Update order request.";
+        data.payload = req.body;
+      break
+      default:
         console.log("May be operation type not found.");
     }
 
     console.log(data);
 
-    // return res.send("All Okay");
+    // return res.send('ALL okay')
 
     if (!data.payload)
       return res.status(203).send({ message: "Type not found." });
@@ -1239,7 +1262,30 @@ exports.dropDraft = async (req, res) => {
             });
         }
         break;
-      default:
+      case "editOrder":
+        response = await order.findOneAndUpdate(
+          { O: req.body.AID },
+          req.body
+        );
+        if (response) {
+          // //console.log(req.body.operation)
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
+        default:
         console.log("May be operation type not found.");
         break;
     }
