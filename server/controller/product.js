@@ -240,6 +240,7 @@ exports.getPresentSKUs = async (req, res) => {
           _id: "$_id",
           SKU: { $first: "$SKU" },
           product_title: { $first: "$product_title" },
+          category_name: { $first: "$category_name" },
           featured_image: { $first: "$featured_image" },
           length_main: { $first: "$length_main" },
           breadth: { $first: "$breadth" },
@@ -249,6 +250,22 @@ exports.getPresentSKUs = async (req, res) => {
           discount_limit: { $first: "$discount_limit" },
           range: { $first: "$range" },
         },
+      },
+      {
+        $lookup:{
+          from: "categories",
+          localField: "category_name",
+          foreignField: "category_name",
+          pipeline: [
+            {
+              $group: {
+                _id: "$_id",
+                discount_limit: { $first: "$discount_limit" },
+              },
+            },
+          ],
+          as : "category"
+        }
       },
       { $limit: 10 },
     ])

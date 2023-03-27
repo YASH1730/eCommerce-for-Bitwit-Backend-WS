@@ -384,6 +384,16 @@ exports.addDraft = async (req, res) => {
         break;
       case "createOrder":
         if (req.body.CID === null) req.body.CID = "Not Registered";
+
+          // this step is for fullfilment obj of the  product
+          req.body.items = {}
+
+          Object.keys(req.body.quantity).map(row=>(req.body.items = {...req.body.items,[row] : {
+            fullfilled : false,
+            trackingId : '',
+            shipping_carrier : ''
+          }}))
+
         data.message = "Alert : Create Order request.";
         data.payload = req.body;
         break;
@@ -540,27 +550,68 @@ exports.addDraft = async (req, res) => {
       break;
       case "editOrder":
 
+      console.log(req.body)
         let products = JSON.parse(req.body.quantity)
-
+        let productPrice = JSON.parse(req.body.product_price)
+        let discount = JSON.parse(req.body.discount_per_product)
+        req.body.items = JSON.parse(req.body.items)
+        
         req.body.quantity = products
-
+        
         const ids = Object.keys(products)
         
-       
+        
         let price = await product.find({SKU : { $in: ids} }, {SKU : 1,selling_price : 1})
         let Cprice = await cp.find({CUS : {$in: ids}}, {CUS : 1, selling_price : 1})
         
-        price = price.reduce((sum,row)=>{return sum + (products[row.SKU] * row.selling_price)},0)
-        Cprice = Cprice.reduce((row,sum)=>{return sum + (products[row.CUS] * row.selling_price)},0)
+        // assginin gthe new product price to it 
+        price.map(row=>{
+          if(!productPrice.hasOwnProperty(row.SKU))
+          Object.assign(productPrice,{[row.SKU] : row.selling_price})
+        })
+        // assginin gthe new product price to it 
+        Cprice.map(row=>{
+          if(!productPrice.hasOwnProperty(row.CUS))
+          Object.assign(productPrice,{[row.CUS] : row.selling_price})
+        })
         
-        console.log(price,Cprice)
+        // assginin gthe new product discount to it 
+        ids.map(row=>{
+          if(!discount.hasOwnProperty(row))
+          Object.assign(discount,{[row] : 0})
+        })
+        
 
-        req.body.subTotal = price + Cprice
-        req.body.total = (price + Cprice)-(price + Cprice)/100 * req.body.discount 
+        price = Object.keys(productPrice).reduce((sum,row)=>{return sum + (products[row] * productPrice[row])},0)
+
+        // console.log(price,Cprice)
+
+        req.body.product_price = productPrice
+        req.body.discount_per_product = discount
+        
+        req.body.subTotal = price
+        req.body.total = req.body.discount_type === 'pecentage' ? price-(price/100) * req.body.discount : price - req.body.discount   
 
         data.message = "Alert : Update order request.";
         data.payload = req.body;
       break
+      case "addOrderFulfilment":
+        id = await draft
+        .find({}, { _id: 0, DID: 1 })
+        .sort({ _id: -1 })
+        .limit(1);
+
+      if (id) {
+        data.DID = `DID-0${parseInt(id[0].DID.split("-")[1]) + 1}`;
+      } else {
+        data.DID = "D-01001";
+      }
+      req.body.items = JSON.parse(req.body.items)
+      req.body.DID = data.DID
+      // console.log(data);
+      data.message = "Alert : Order fulfilment  request.";
+      data.payload = req.body;
+      break ;
       default:
         console.log("May be operation type not found.");
     }
@@ -1285,6 +1336,30 @@ exports.dropDraft = async (req, res) => {
             });
         }
         break;
+      case "addOrderFulfilment":
+        console.log(req.body)
+        response = await order.findOneAndUpdate(
+          { O: req.body.AID },
+          req.body
+        );
+        if (response) {
+          // //console.log(req.body.operation)
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break
         default:
         console.log("May be operation type not found.");
         break;
