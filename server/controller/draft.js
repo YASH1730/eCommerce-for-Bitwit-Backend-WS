@@ -391,7 +391,8 @@ exports.addDraft = async (req, res) => {
           Object.keys(req.body.quantity).map(row=>(req.body.items = {...req.body.items,[row] : {
             fullfilled : false,
             trackingId : '',
-            shipping_carrier : ''
+            shipping_carrier : '',
+            qty : 0
           }}))
 
         data.message = "Alert : Create Order request.";
