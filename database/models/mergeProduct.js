@@ -7,6 +7,7 @@ const mergeproducts = mongoose.Schema({
     product_title: { type: String },
     category_name: { type: String },
     category_id: { type: String },
+    status : {type :Boolean , default : false},
     sub_category_name: { type: String },
     sub_category_id: { type: String },
     warehouse: { type: Array, default: [] },
