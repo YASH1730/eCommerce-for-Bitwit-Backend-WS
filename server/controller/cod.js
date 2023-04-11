@@ -35,9 +35,10 @@ exports.uploadPincodeCSV = async (req, res) => {
         // promise to save data
         let response = await Promise.all(
           data.map((row) => {
+            // console.log(row)
             let formateData = {
               pincode: row.pincode || row.Pincode || row.pin_code || 0,
-              delivery_status: true,
+              delivery_status: row.Status !== undefined ? row.Status : true ,
             };
             return pincode.findOneAndUpdate(
               { pincode: formateData.pincode },
