@@ -245,10 +245,9 @@ exports.getPresentSKUs = async (req, res) => {
           length_main: { $first: "$length_main" },
           breadth: { $first: "$breadth" },
           height: { $first: "$height" },
-          MRP: { $first: "$MRP" },
           selling_price: { $first: "$selling_price" },
           discount_limit: { $first: "$discount_limit" },
-          range: { $first: "$range" },
+          assembly_part: { $first: "$assembly_part" },
         },
       },
       {
@@ -267,7 +266,7 @@ exports.getPresentSKUs = async (req, res) => {
           as : "category"
         }
       },
-      { $limit: 10 },
+      { $limit: 5 },
     ])
     .then((response) => {
       console.log(response);

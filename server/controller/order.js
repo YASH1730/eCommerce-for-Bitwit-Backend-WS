@@ -463,6 +463,9 @@ exports.getDetails = async (req, res) => {
       default_product = Object.keys(data.quantity).filter((row) =>
         row.includes("P")
       );
+      part_product = Object.keys(data.quantity).filter((row) =>
+        row.includes("P")
+      );
 
       custom_product =
         custom_product.length > 0
@@ -489,7 +492,7 @@ exports.getDetails = async (req, res) => {
               default_product.map(async (row) => {
                 let data = "";
                 data = await product.findOne(
-                  { SKU: row },
+                  { SKU: row.split('(')[0] },
                   {
                     _id: 1,
                     SKU: 1,
@@ -502,6 +505,12 @@ exports.getDetails = async (req, res) => {
               })
             )
           : [];
+
+          default_product = default_product.map((row,i)=>{
+            row.SKU = part_product[i]
+            return row
+          })
+
 
       // console.log(data, custom_product, default_product);
       return res.send({ data, custom_product, product: default_product });

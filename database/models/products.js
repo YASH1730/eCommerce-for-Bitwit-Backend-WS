@@ -56,7 +56,7 @@ const product = mongoose.Schema({
   fabric_name: { type: String },
   wall_hanging: { type: Boolean, default: false },
   assembly_required: { type: String },
-  assembly_part: { type: Number, default: 0 },
+  assembly_part: { type: Number, default: 1 },
   legs: { type: String, default: "None" },
   mirror: { type: String },
   mirror_length: { type: Number },
