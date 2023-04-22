@@ -42,6 +42,8 @@ const order = mongoose.Schema({
   inventory_location : {type : String, default : ''},
   courier_company : {type : String, default : ''},
   AWB : {type : String, default : ''},
+  apartment : {type : String, default : ''},
+  landmark : {type : String, default : ''},
 });
 
 module.exports = mongoose.model("order", order);

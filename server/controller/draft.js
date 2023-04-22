@@ -362,6 +362,7 @@ exports.addDraft = async (req, res) => {
         data.message = `Alert : BLog ${req.body._id} updating request.`;
 
         data.payload = req.body;
+        break;
       case "deleteCustomer":
         id = await draft
           .find({}, { _id: 0, DID: 1 })
@@ -1599,8 +1600,9 @@ exports.getMetaDraft = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
+  console.log(req.query)
   let response = await draft.findOneAndUpdate(
-    { DID: req.query.DID },
+    { $or :  [{ DID: req.query.DID },{ _id: req.query.id }]},
     { DID: req.query.changeTo }
   );
   res.send("Okay");

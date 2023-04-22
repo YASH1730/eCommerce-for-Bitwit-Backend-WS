@@ -229,57 +229,89 @@ exports.updateBulk = async (req, res) => {
 
 // get present SKUs
 exports.getPresentSKUs = async (req, res) => {
-  console.log(req.query);
+  try {
 
-  product
-    .aggregate([
-      { $match: { SKU: { $regex: req.query.search, $options: "i" } } },
+    console.log(req.query);
 
-      {
-        $group: {
-          _id: "$_id",
-          SKU: { $first: "$SKU" },
-          product_title: { $first: "$product_title" },
-          category_name: { $first: "$category_name" },
-          featured_image: { $first: "$featured_image" },
-          length_main: { $first: "$length_main" },
-          breadth: { $first: "$breadth" },
-          height: { $first: "$height" },
-          selling_price: { $first: "$selling_price" },
-          discount_limit: { $first: "$discount_limit" },
-          assembly_part: { $first: "$assembly_part" },
+    let response = await product
+      .aggregate([
+        { $match: { SKU: { $regex: req.query.search, $options: "i" } } },
+
+        {
+          $group: {
+            _id: "$_id",
+            SKU: { $first: "$SKU" },
+            product_title: { $first: "$product_title" },
+            category_name: { $first: "$category_name" },
+            featured_image: { $first: "$featured_image" },
+            length_main: { $first: "$length_main" },
+            breadth: { $first: "$breadth" },
+            height: { $first: "$height" },
+            selling_price: { $first: "$selling_price" },
+            discount_limit: { $first: "$discount_limit" },
+            assembly_part: { $first: "$assembly_part" },
+          },
         },
-      },
-      {
-        $lookup:{
-          from: "categories",
-          localField: "category_name",
-          foreignField: "category_name",
-          pipeline: [
-            {
-              $group: {
-                _id: "$_id",
-                discount_limit: { $first: "$discount_limit" },
+        {
+          $lookup: {
+            from: "categories",
+            localField: "category_name",
+            foreignField: "category_name",
+            pipeline: [
+              {
+                $group: {
+                  _id: "$_id",
+                  discount_limit: { $first: "$discount_limit" },
+                },
               },
-            },
-          ],
-          as : "category"
-        }
-      },
-      { $limit: 5 },
-    ])
-    .then((response) => {
+            ],
+            as: "category"
+          }
+        },
+        {
+          $lookup: {
+            from: "stocks",
+            localField: "SKU",
+            foreignField: "product_id",
+            pipeline: [
+              {
+                $group: {
+                  _id: "$_id",
+                  SKU: { $first: "$product_id" },
+                  quantity: { $first: "$stock" },
+                  warehouse: { $first: "$warehouse" },
+                },
+              },
+            ],
+            as: "inventory"
+          }
+        },
+        { $limit: 5 },
+      ])
+
+      // checking the available inventory for product listing 
+      // if(response.length > 0)
+      // {
+
+      //   let check = fine({$and : [{SKU : {$in : response.map(row=>row.SKU)}},{ quantity : {$gt : 0}}]})
+
+      // }
+
+
+    if (response) {
       console.log(response);
       if (response !== null) {
         res.send(response);
       } else {
         res.status(203).send({ message: "Please Add Some Products First !!!" });
       }
-    })
-    .catch((err) => {
-      //  ////console.log(err)
-      res.status(203).send({ message: "Some error occurred !!!" });
-    });
+    }
+
+  } catch (error) {
+    res.status(203).send({ message: "Some error occurred !!!" });
+
+  }
+
 };
 
 // for product detail to show
@@ -370,7 +402,7 @@ exports.getHardwareDropdown = async (req, res) => {
       handle: [],
       fabric: [],
       textile: [],
-      dial : [],
+      dial: [],
     };
 
     let polishRes = await polish.find({}, { _id: 1, polish_name: 1 });

@@ -597,6 +597,8 @@ route.post("/dropDraft", AuthJwt, upload, draft.dropDraft);
 
 route.get("/getMetaDraft", AuthJwt, draft.getMetaDraft);
 
+route.get("/update", upload, draft.update);
+
 // route.patch("/changeProductStatus", AuthJwt, upload, draft.changeProductStatus)
 
 // =============== Fabric routes =======================
