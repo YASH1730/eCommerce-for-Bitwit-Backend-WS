@@ -44,6 +44,8 @@ const order = mongoose.Schema({
   AWB : {type : String, default : ''},
   apartment : {type : String, default : ''},
   landmark : {type : String, default : ''},
+},{
+  timestamps : true
 });
 
 module.exports = mongoose.model("order", order);

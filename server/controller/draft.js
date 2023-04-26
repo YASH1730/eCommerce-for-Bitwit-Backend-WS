@@ -16,6 +16,7 @@ const banner = require("../../database/models/banner");
 const cod = require("../../database/models/COD");
 const cp = require("../../database/models/customProduct")
 const merge = require("../../database/models/mergeProduct")
+const pincode = require("../../database/models/pincode")
 
 // crypt 
 const Crypt = require("cryptr");
@@ -569,18 +570,18 @@ exports.addDraft = async (req, res) => {
         let price = await product.find({ SKU: { $in: ids } }, { SKU: 1, selling_price: 1 })
         let Cprice = await cp.find({ CUS: { $in: ids } }, { CUS: 1, selling_price: 1 })
 
-        // assginin gthe new product price to it 
+        // assigning the new product price to it 
         price.map(row => {
           if (!productPrice.hasOwnProperty(row.SKU))
             Object.assign(productPrice, { [row.SKU]: row.selling_price })
         })
-        // assginin gthe new product price to it 
+        // assigning gthe new product price to it 
         Cprice.map(row => {
           if (!productPrice.hasOwnProperty(row.CUS))
             Object.assign(productPrice, { [row.CUS]: row.selling_price })
         })
 
-        // assginin gthe new product discount to it 
+        // assigning gthe new product discount to it 
         ids.map(row => {
           if (!discount.hasOwnProperty(row))
             Object.assign(discount, { [row]: 0 })
@@ -595,7 +596,7 @@ exports.addDraft = async (req, res) => {
         req.body.discount_per_product = discount
 
         req.body.subTotal = price
-        req.body.total = req.body.discount_type === 'pecentage' ? price - (price / 100) * req.body.discount : price - req.body.discount
+        req.body.total = req.body.discount_type === 'percentage' ? price - (price / 100) * req.body.discount : price - req.body.discount
 
         data.message = "Alert : Update order request.";
         data.payload = req.body;
@@ -659,7 +660,22 @@ exports.addDraft = async (req, res) => {
 
         data.payload = req.body;
         break;
-      default:
+      case "deletePinCode":
+          id = await draft
+            .find({}, { _id: 0, DID: 1 })
+            .sort({ _id: -1 })
+            .limit(1);
+  
+          if (id) {
+            data.DID = `DID-0${parseInt(id[0].DID.split("-")[1]) + 1}`;
+          } else {
+            data.DID = "D-01001";
+          }
+  
+          data.message = "Alert : Pin code deletion request.";
+          data.payload = await pincode.findOne({_id: data.AID}); 
+      break;
+        default:
         console.log("May be operation type not found.");
     }
 
@@ -1457,7 +1473,28 @@ exports.dropDraft = async (req, res) => {
             return res.status(500).send({ message: "Some Error Occurred !!!" });
           });
         break;
-      default:
+      case "deletePinCode":
+        console.log(req.body)
+          response = await pincode.findOneAndRemove({ _id: req.body._id });
+          // console.log(req.body.operation);
+          if (response) {
+            draft
+              .updateOne(
+                { DID: req.body.DID },
+                { draftStatus: req.body.draftStatus }
+              )
+              .then(() => {
+                return res.send({ message: "Draft Resolved !!!" });
+              })
+              .catch((err) => {
+                console.log(err);
+                return res
+                  .status(500)
+                  .send({ message: "Some Error Occurred !!!" });
+              });
+          }
+          break;
+        default:
         console.log("May be operation type not found.");
         break;
     }

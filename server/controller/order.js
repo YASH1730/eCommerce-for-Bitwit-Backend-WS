@@ -78,6 +78,7 @@ exports.listOrder = async (req, res) => {
         { $match: query },
         { $skip: params.page > 0 ? (params.page - 1) * params.limit : 0 },
         { $limit: params.limit },
+        {$sort : {order_time : -1}}
       ])
       .then((response) => {
         if (response) {
