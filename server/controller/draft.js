@@ -388,16 +388,18 @@ exports.addDraft = async (req, res) => {
       case "createOrder":
         if (req.body.CID === null) req.body.CID = "Not Registered";
 
-        // this step is for fullfilment obj of the  product
+        // this step is for fulfillment obj of the  product
         req.body.items = {}
 
+        // {
+        //   fulfilled: false,
+        //   trackingId: '',
+        //   shipping_carrier: '',
+        //   qty: 0,
+        //   date : ""
+        // }
         Object.keys(req.body.quantity).map(row => (req.body.items = {
-          ...req.body.items, [row]: {
-            fullfilled: false,
-            trackingId: '',
-            shipping_carrier: '',
-            qty: 0
-          }
+          ...req.body.items, [row]:[]
         }))
 
         data.message = "Alert : Create Order request.";
@@ -555,7 +557,6 @@ exports.addDraft = async (req, res) => {
         data.payload = req.body;
         break;
       case "editOrder":
-
         console.log(req.body)
         let products = JSON.parse(req.body.quantity)
         let productPrice = JSON.parse(req.body.product_price)
@@ -601,7 +602,7 @@ exports.addDraft = async (req, res) => {
         data.message = "Alert : Update order request.";
         data.payload = req.body;
         break
-      case "addOrderFulfilment":
+      case "addOrderFulfillment":
         id = await draft
           .find({}, { _id: 0, DID: 1 })
           .sort({ _id: -1 })
@@ -615,7 +616,7 @@ exports.addDraft = async (req, res) => {
         req.body.items = JSON.parse(req.body.items)
         req.body.DID = data.DID
         // console.log(data);
-        data.message = "Alert : Order fulfilment  request.";
+        data.message = "Alert : Order fulfillment  request.";
         data.payload = req.body;
         break;
       case "updateProductStatus":
@@ -1399,7 +1400,7 @@ exports.dropDraft = async (req, res) => {
             });
         }
         break;
-      case "addOrderFulfilment":
+      case "addOrderFulfillment":
         console.log(req.body)
         response = await order.findOneAndUpdate(
           { O: req.body.AID },
