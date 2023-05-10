@@ -1,5 +1,5 @@
-const pincode = require("../../database/models/pincode");
-const COD = require("../../database/models/COD");
+const pincode = require("../../../database/models/pincode");
+const COD = require("../../../database/models/COD");
 const fs = require("fs");
 const path = require("path");
 const csv = require("fast-csv");

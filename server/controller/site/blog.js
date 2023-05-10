@@ -1,8 +1,8 @@
 require("dotenv").config();
 
-const image = require("../../database/models/image");
+const image = require("../../../database/models/image");
 
-const blogDB = require("../../database/models/blog");
+const blogDB = require("../../../database/models/blog");
 const uuid = require("uuid");
 
 // Api for card creation

@@ -1,5 +1,5 @@
 require("dotenv").config();
-const customer = require("../../database/models/customer");
+const customer = require("../../../database/models/customer");
 const { v4: uuidv4 } = require("uuid");
 const Crypt = require("cryptr");
 const crypt = new Crypt(

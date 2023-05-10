@@ -1,5 +1,5 @@
 
-const secondaryMaterial = require("../../database/models/secondaryMaterial");
+const secondaryMaterial = require("../../../database/models/secondaryMaterial");
 
 
 // ================================================= Apis for sub categories ======================================================= 

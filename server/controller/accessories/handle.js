@@ -1,35 +1,35 @@
 
-const fitting = require("../../database/models/fitting");
+const Handle = require("../../../database/models/handle");
 
 
-// ================================================= Apis for Fitting  ======================================================= 
+// ================================================= Apis for Handle  ======================================================= 
 //==============================================================================================================================
 
-// add fitting
+// add Handle
 
-exports.addFitting = async (req, res) => {
+exports.addHandle = async (req, res) => {
 
 //console.log(req.body)
 
-  const data = fitting(req.body)
+  const data = Handle(req.body)
 
   await data.save()
     .then((response) => {
-      res.send({message : 'Fitting Added successfully !!!',response})
+      res.send({message : 'Handle Added successfully !!!',response})
     })
     .catch((error) => {
       //console.log(error)
       res.status(203);
-      res.send({message : 'Duplicate Fitting !!!'})
+      res.send({message : 'Duplicate Handle !!!'})
     })
 
 }
 
-// get categories ===================
+// get Handle ===================
 
-exports.getFitting = async (req, res) => {
+exports.getHandle = async (req, res) => {
 
-  await fitting.find()
+  await Handle.find()
     .then((data) => {
 
       if (data)
@@ -43,17 +43,17 @@ exports.getFitting = async (req, res) => {
 
 }
 
-// edit categories ====================== 626cb3a9b09eb22c92f25303
+// edit Handle ====================== 626cb3a9b09eb22c92f25303
 
 
-exports.editFitting = async (req, res) => {
+exports.editHandle = async (req, res) => {
 
   //console.log(req.body);
 
-  await fitting.findOneAndUpdate({ _id: req.body._id }, req.body)
+  await Handle.findOneAndUpdate({ _id: req.body._id }, req.body)
       .then((data) => {
         if (data)
-          return res.status(200).send({ message: 'Fitting is updated successfully.' })
+          return res.status(200).send({ message: 'Handle is updated successfully.' })
         else
           return res.status(203).send({ message: 'No entries found' })
       })
@@ -79,9 +79,9 @@ exports.editFitting = async (req, res) => {
 
 // for Changing the Status of the category
 
-exports.changeFittingStatus = async(req,res) =>{
+exports.changeHandleStatus = async(req,res) =>{
   //console.log(req.body)
-  await fitting.findByIdAndUpdate({_id : req.body._id},req.body)
+  await Handle.findByIdAndUpdate({_id : req.body._id},req.body)
   .then((data)=>{
       //console.log(data)
       res.send('all okay')
@@ -89,10 +89,10 @@ exports.changeFittingStatus = async(req,res) =>{
 
   .catch((err)=>{
       //console.log(err)
-      res.send('Something went wrong !!!')
+      res.send('Something went Wrong !!!')
   })
 }
 
 
 
-// ================================================= Apis for Fitting Ends =======================================================
+// ================================================= Apis for Handle Ends =======================================================

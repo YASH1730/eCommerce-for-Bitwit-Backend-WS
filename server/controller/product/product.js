@@ -1,7 +1,7 @@
 require("dotenv").config();
-const product = require("../../database/models/products");
-const hardware = require("../../database/models/hardware");
-const polish = require("../../database/models/polish");
+const product = require("../../../database/models/products");
+const hardware = require("../../../database/models/hardware");
+const polish = require("../../../database/models/polish");
 const { match } = require("assert");
 
 // ================================================= Apis for Products =======================================================

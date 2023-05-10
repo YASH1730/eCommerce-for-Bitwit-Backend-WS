@@ -1,5 +1,5 @@
 require('dotenv').config();
-const product = require("../../database/models/products")
+const product = require("../../../database/models/products")
 
 
 // ================================================= Apis for Gallery  ======================================================= 

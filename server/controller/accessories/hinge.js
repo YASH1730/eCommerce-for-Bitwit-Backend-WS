@@ -1,35 +1,35 @@
 
-const Handle = require("../../database/models/handle");
+const hinge = require("../../../database/models/hinge");
 
 
-// ================================================= Apis for Handle  ======================================================= 
+// ================================================= Apis for Hinge ======================================================= 
 //==============================================================================================================================
 
-// add Handle
+// add hinge
 
-exports.addHandle = async (req, res) => {
+exports.addHinge = async (req, res) => {
 
 //console.log(req.body)
 
-  const data = Handle(req.body)
+  const data = hinge(req.body)
 
   await data.save()
     .then((response) => {
-      res.send({message : 'Handle Added successfully !!!',response})
+      res.send({message : 'Hinge Added successfully !!!',response})
     })
     .catch((error) => {
       //console.log(error)
       res.status(203);
-      res.send({message : 'Duplicate Handle !!!'})
+      res.send({message : 'Duplicate Polish !!!'})
     })
 
 }
 
-// get Handle ===================
+// get categories ===================
 
-exports.getHandle = async (req, res) => {
+exports.getHinge = async (req, res) => {
 
-  await Handle.find()
+  await hinge.find()
     .then((data) => {
 
       if (data)
@@ -43,17 +43,17 @@ exports.getHandle = async (req, res) => {
 
 }
 
-// edit Handle ====================== 626cb3a9b09eb22c92f25303
+// edit categories ====================== 626cb3a9b09eb22c92f25303
 
 
-exports.editHandle = async (req, res) => {
+exports.editHinge = async (req, res) => {
 
   //console.log(req.body);
 
-  await Handle.findOneAndUpdate({ _id: req.body._id }, req.body)
+  await hinge.findOneAndUpdate({ _id: req.body._id }, req.body)
       .then((data) => {
         if (data)
-          return res.status(200).send({ message: 'Handle is updated successfully.' })
+          return res.status(200).send({ message: 'Polish is updated successfully.' })
         else
           return res.status(203).send({ message: 'No entries found' })
       })
@@ -79,9 +79,9 @@ exports.editHandle = async (req, res) => {
 
 // for Changing the Status of the category
 
-exports.changeHandleStatus = async(req,res) =>{
+exports.changeHingeStatus = async(req,res) =>{
   //console.log(req.body)
-  await Handle.findByIdAndUpdate({_id : req.body._id},req.body)
+  await hinge.findByIdAndUpdate({_id : req.body._id},req.body)
   .then((data)=>{
       //console.log(data)
       res.send('all okay')
@@ -89,10 +89,10 @@ exports.changeHandleStatus = async(req,res) =>{
 
   .catch((err)=>{
       //console.log(err)
-      res.send('Something went Wrong !!!')
+      res.status(203).send('Something went wrong !!!')
   })
 }
 
 
 
-// ================================================= Apis for Handle Ends =======================================================
+// ================================================= Apis for categories Ends =======================================================

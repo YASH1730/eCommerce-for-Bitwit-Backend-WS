@@ -1,5 +1,5 @@
 require('dotenv').config();
-const fabric = require("../../database/models/fabric");
+const fabric = require("../../../database/models/fabric");
 
 
 // ================================================= Apis for fabric ======================================================= 

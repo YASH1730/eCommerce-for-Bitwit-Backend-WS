@@ -3,8 +3,8 @@ const bcrypt = require("bcrypt");
 const JWT = require("jsonwebtoken");
 
 // DB modules
-const userDB = require("../../database/models/user");
-const logging = require("../../database/models/logging");
+const userDB = require("../../../database/models/user");
+const logging = require("../../../database/models/logging");
 
 // ================================================= Apis for User =======================================================
 //==============================================================================================================================

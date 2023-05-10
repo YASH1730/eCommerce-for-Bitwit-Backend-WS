@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const primaryMaterial = require("../../database/models/primaryMaterial");
+const primaryMaterial = require("../../../database/models/primaryMaterial");
 
 // ================================================= Apis for sub categories =======================================================
 //==============================================================================================================================

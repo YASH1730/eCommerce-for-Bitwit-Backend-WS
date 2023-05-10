@@ -1,13 +1,13 @@
 require("dotenv").config();
-const order = require("../../database/models/order");
-const coupon = require("../../database/models/coupon");
-const customer = require("../../database/models/customer");
-const product = require("../../database/models/products");
-const abandoned = require("../../database/models/abandoned");
-const cp = require("../../database/models/customProduct");
+const order = require("../../../database/models/order");
+const coupon = require("../../../database/models/coupon");
+const customer = require("../../../database/models/customer");
+const product = require("../../../database/models/products");
+const abandoned = require("../../../database/models/abandoned");
+const cp = require("../../../database/models/customProduct");
 const { v4: uuidv4 } = require("uuid");
-const wishlist = require("../../database/models/wishlist");
-const { count } = require("../../database/models/order");
+const wishlist = require("../../../database/models/wishlist");
+const { count } = require("../../../database/models/order");
 // ================================================= Apis for order =======================================================
 //==============================================================================================================================
 

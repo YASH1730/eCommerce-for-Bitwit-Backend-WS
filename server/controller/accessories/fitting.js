@@ -1,35 +1,35 @@
 
-const hinge = require("../../database/models/hinge");
+const fitting = require("../../../database/models/fitting");
 
 
-// ================================================= Apis for Hinge ======================================================= 
+// ================================================= Apis for Fitting  ======================================================= 
 //==============================================================================================================================
 
-// add hinge
+// add fitting
 
-exports.addHinge = async (req, res) => {
+exports.addFitting = async (req, res) => {
 
 //console.log(req.body)
 
-  const data = hinge(req.body)
+  const data = fitting(req.body)
 
   await data.save()
     .then((response) => {
-      res.send({message : 'Hinge Added successfully !!!',response})
+      res.send({message : 'Fitting Added successfully !!!',response})
     })
     .catch((error) => {
       //console.log(error)
       res.status(203);
-      res.send({message : 'Duplicate Polish !!!'})
+      res.send({message : 'Duplicate Fitting !!!'})
     })
 
 }
 
 // get categories ===================
 
-exports.getHinge = async (req, res) => {
+exports.getFitting = async (req, res) => {
 
-  await hinge.find()
+  await fitting.find()
     .then((data) => {
 
       if (data)
@@ -46,14 +46,14 @@ exports.getHinge = async (req, res) => {
 // edit categories ====================== 626cb3a9b09eb22c92f25303
 
 
-exports.editHinge = async (req, res) => {
+exports.editFitting = async (req, res) => {
 
   //console.log(req.body);
 
-  await hinge.findOneAndUpdate({ _id: req.body._id }, req.body)
+  await fitting.findOneAndUpdate({ _id: req.body._id }, req.body)
       .then((data) => {
         if (data)
-          return res.status(200).send({ message: 'Polish is updated successfully.' })
+          return res.status(200).send({ message: 'Fitting is updated successfully.' })
         else
           return res.status(203).send({ message: 'No entries found' })
       })
@@ -79,9 +79,9 @@ exports.editHinge = async (req, res) => {
 
 // for Changing the Status of the category
 
-exports.changeHingeStatus = async(req,res) =>{
+exports.changeFittingStatus = async(req,res) =>{
   //console.log(req.body)
-  await hinge.findByIdAndUpdate({_id : req.body._id},req.body)
+  await fitting.findByIdAndUpdate({_id : req.body._id},req.body)
   .then((data)=>{
       //console.log(data)
       res.send('all okay')
@@ -89,10 +89,10 @@ exports.changeHingeStatus = async(req,res) =>{
 
   .catch((err)=>{
       //console.log(err)
-      res.status(203).send('Something went wrong !!!')
+      res.send('Something went wrong !!!')
   })
 }
 
 
 
-// ================================================= Apis for categories Ends =======================================================
+// ================================================= Apis for Fitting Ends =======================================================

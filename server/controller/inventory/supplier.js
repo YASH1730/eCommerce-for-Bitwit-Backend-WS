@@ -1,5 +1,5 @@
 
-const Supplier = require("../../database/models/supplier");
+const Supplier = require("../../../database/models/supplier");
 
 
 // ================================================= Apis for Supplier  ======================================================= 
@@ -8,8 +8,6 @@ const Supplier = require("../../database/models/supplier");
 // add Supplier
 
 exports.addSupplier = async (req, res) => {
-
-  //console.log(req.body)
 
   const data = Supplier(req.body)
 

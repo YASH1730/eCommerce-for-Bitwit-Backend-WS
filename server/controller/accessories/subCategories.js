@@ -1,5 +1,5 @@
-const subCategories = require("../../database/models/subCategories");
-const categories = require("../../database/models/categories");
+const subCategories = require("../../../database/models/subCategories");
+const categories = require("../../../database/models/categories");
 
 // ================================================= Apis for sub categories =======================================================
 //==============================================================================================================================

@@ -1,5 +1,5 @@
 
-const knob = require("../../database/models/knob");
+const knob = require("../../../database/models/knob");
 
 
 // ================================================= Apis for knob  ======================================================= 

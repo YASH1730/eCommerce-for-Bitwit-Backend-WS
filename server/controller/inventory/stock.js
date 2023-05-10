@@ -1,8 +1,8 @@
-const stock = require("../../database/models/stock");
-const inward = require("../../database/models/Inward");
-const outward = require("../../database/models/outward");
-const product = require("../../database/models/products");
-const transfer = require("../../database/models/transfer");
+const stock = require("../../../database/models/stock");
+const inward = require("../../../database/models/Inward");
+const outward = require("../../../database/models/outward");
+// const product = require("../../../database/models/products");
+const transfer = require("../../../database/models/transfer");
 const uuid = require("uuid");
 
 // ============================ APIs for Stock ======================================

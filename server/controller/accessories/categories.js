@@ -1,7 +1,7 @@
 require("dotenv").config();
 
-const categories = require("../../database/models/categories");
-const subCategories = require("../../database/models/subCategories");
+const categories = require("../../../database/models/categories");
+const subCategories = require("../../../database/models/subCategories");
 
 // ================================================= Apis for categories =======================================================
 //==============================================================================================================================

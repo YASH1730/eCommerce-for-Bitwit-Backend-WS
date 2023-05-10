@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const textile = require("../../database/models/textile");
+const textile = require("../../../database/models/textile");
 
 
 // ================================================= Apis for textile ======================================================= 
