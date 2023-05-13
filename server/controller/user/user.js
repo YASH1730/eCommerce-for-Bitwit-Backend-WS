@@ -56,7 +56,7 @@ exports.updateUser = async (req, res) => {
 // list users 
 exports.listUser = async (req, res) => {
   try {
-    let data = await userDB.find({});
+    let data = await userDB.find({},{password : 0}).sort({user_name : 1});
     if(data)
     {
       return res.send(data)
@@ -171,6 +171,7 @@ exports.listLogs = async (req, res) => {
     return res.sendStatus(500);
   }
 };
+
 
 // ================================================= Apis for User Ends =======================================================
 // https://github.com/YASH1730/WoodShala.git
