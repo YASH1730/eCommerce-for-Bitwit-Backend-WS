@@ -15,8 +15,7 @@ const {Server} = require('socket.io');
 const chat = require('./server/controller/chat/chat_operations');
 const instance = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"],
+    origin: [process.env.CLIENT,process.env.CLIENT_FRONTEND],
   },
 });
 // active users
@@ -83,7 +82,21 @@ instance.on('connection',(socket)=>{
 
   // message transactions 
   socket.on('send_message',(message)=>{
+    // console.log(message)
     socket.to(message.to).emit('receive_notification',{
+      type : "New_Message",
+      payload : {
+           type : "message",
+           from : message.from,
+           email :message.sender_mail,
+           receiver_email :message.receiver_email,
+           message : message.message
+      }
+    })
+   })
+  // message transactions from frontend Site woodshala.in
+  socket.on('send_message_site',(message)=>{
+    socket.broadcast.emit('receive_notification',{
       type : "New_Message",
       payload : {
            type : "message",

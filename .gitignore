@@ -5,3 +5,5 @@
 /upload
 
 .gitignore
+
+/server/controller/chat/online.json

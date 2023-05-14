@@ -30,6 +30,7 @@ const stock = require("./controller/inventory/stock");
 const logging = require("../database/models/logging");
 const cod = require("./controller/inventory/cod");
 const review = require("./controller/product/review");
+const chat = require("./controller/chat/chat");
 // axios
 const { default: axios } = require("axios");
 // middleware for the multer setup
@@ -753,9 +754,14 @@ route.post("/uploadAllImage", upload, order.uploadImage);
 // get order details
 route.get("/getOrderDetails", order.getDetails);
 
-// ============= coupone ===
+// ============= coupons ===
 route.get("/listCoupon", AuthJwt, order.listCoupon);
 
 route.get("/getCouponDetails", AuthJwt, order.getCouponDetails);
+
+// Chat operations
+route.get("/getCustomer", AuthJwt, chat.listCustomer);
+
+route.get("/getTeam", AuthJwt, chat.listTeam);
 
 module.exports = route;
