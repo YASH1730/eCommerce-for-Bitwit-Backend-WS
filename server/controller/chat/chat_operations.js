@@ -34,7 +34,7 @@ async function Add_User(data, id) {
 async function Logout_User(data, id) {
   const current_user_mail = lastData.filter((row) => data.email !== row.email);
 
-  // console.log(data)
+  // console.log(current_user_mail)
   // console.log(current_user_mail)
   // deleting unnecessary data from obj 
   // delete data.access

@@ -28,3 +28,20 @@ exports.listTeam = async (req,res)=>{
         return res.status(500).send("Something went wrong !!!")
     }
 }
+exports.getCustomerByEmail = async (req,res)=>{
+    try {
+
+        let {email} = req.query
+        
+        let data = await customer.find({email});
+        // console.log
+        if(data)
+        {
+            return res.send({data})
+        }
+        return res.status(203).send({message : "no details found",data})
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send("Something went wrong !!!")
+    }
+}

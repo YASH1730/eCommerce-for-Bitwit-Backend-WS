@@ -66,20 +66,6 @@ instance.on('connection',(socket)=>{
     })
   })
   
-  socket.on('is_typing',data=>{
-    socket.broadcast.emit('typing',data)
-  })
-  
-  socket.on('logout',data=>{
-    chat.Logout_User(data)
-    // for removing the user on the current time
-    const current_user_mail = users.filter((row) => data.email !== row.email);
-    socket.broadcast.emit('receive_notification',{
-      type : "User_Logout",
-      payload : current_user_mail
-    })
-  })
-
   // message transactions 
   socket.on('send_message',(message)=>{
     // console.log(message)
@@ -106,6 +92,21 @@ instance.on('connection',(socket)=>{
       }
     })
    })
+
+   socket.on('is_typing',data=>{
+    socket.broadcast.emit('typing',data)
+  })
+  
+  socket.on('logout',data=>{
+    chat.Logout_User(data)
+    // for removing the user on the current time
+    const current_user_mail = users.filter((row) => data.email !== row.email);
+    socket.broadcast.emit('receive_notification',{
+      type : "User_Logout",
+      payload : current_user_mail
+    })
+  })
+
 })
 
 
