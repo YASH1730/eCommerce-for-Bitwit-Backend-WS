@@ -68,13 +68,13 @@ instance.on('connection',(socket)=>{
   
   // message transactions 
   socket.on('send_message',(message)=>{
-    // console.log(message)
+    chat.Save_Message(message)
     socket.to(message.to).emit('receive_notification',{
       type : "New_Message",
       payload : {
            type : "message",
            from : message.from,
-           email :message.sender_mail,
+           email :message.sender_email,
            receiver_email :message.receiver_email,
            message : message.message
       }
@@ -82,12 +82,13 @@ instance.on('connection',(socket)=>{
    })
   // message transactions from frontend Site woodshala.in
   socket.on('send_message_site',(message)=>{
+    chat.Save_Message(message)
     socket.broadcast.emit('receive_notification',{
       type : "New_Message",
       payload : {
            type : "message",
            from : message.from,
-           email :message.sender_mail,
+           email :message.sender_email,
            message : message.message
       }
     })

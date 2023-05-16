@@ -1,1 +1,9 @@
-[{"isAuth":true,"email":"super@woodshala.com","role":"Admin","id":"EHvA2GUwOTmsH8lYAAAT"}]
+[
+    {
+        "isAuth": true,
+        "role": "Staff",
+        "name": "test",
+        "email": "test@gmail.com",
+        "id": "KL3BQilucZZ4dMfuAAAP"
+    }
+]

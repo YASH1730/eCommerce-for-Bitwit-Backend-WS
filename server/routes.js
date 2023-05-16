@@ -766,6 +766,8 @@ route.get("/getTeam", AuthJwt, chat.listTeam);
 
 route.get("/getCustomerByEmail", AuthJwt, chat.getCustomerByEmail);
 
+route.get("/getMessage", AuthJwt, chat.getMessage);
+
 
 
 module.exports = route;

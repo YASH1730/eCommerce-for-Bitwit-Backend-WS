@@ -6,4 +6,4 @@
 
 .gitignore
 
-/server/controller/chat/online.json
+server/controller/chat/online.json
