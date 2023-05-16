@@ -1,9 +1,0 @@
-/node_modules
-
-/.env
-
-/upload
-
-.gitignore
-
-server/controller/chat/online.json
