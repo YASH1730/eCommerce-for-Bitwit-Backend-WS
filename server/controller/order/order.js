@@ -4,6 +4,7 @@ const coupon = require("../../../database/models/coupon");
 const customer = require("../../../database/models/customer");
 const product = require("../../../database/models/products");
 const abandoned = require("../../../database/models/abandoned");
+const operations = require("../../../database/models/product_operations");
 const cp = require("../../../database/models/customProduct");
 const { v4: uuidv4 } = require("uuid");
 const wishlist = require("../../../database/models/wishlist");
@@ -78,7 +79,7 @@ exports.listOrder = async (req, res) => {
         { $match: query },
         { $skip: params.page > 0 ? (params.page - 1) * params.limit : 0 },
         { $limit: params.limit },
-        {$sort : {order_time : -1}}
+        { $sort: { order_time: -1 } },
       ])
       .then((response) => {
         if (response) {
@@ -493,7 +494,7 @@ exports.getDetails = async (req, res) => {
               default_product.map(async (row) => {
                 let data = "";
                 data = await product.findOne(
-                  { SKU: row.split('(')[0] },
+                  { SKU: row.split("(")[0] },
                   {
                     _id: 1,
                     SKU: 1,
@@ -507,11 +508,10 @@ exports.getDetails = async (req, res) => {
             )
           : [];
 
-          default_product = default_product.map((row,i)=>{
-            row.SKU = part_product[i]
-            return row
-          })
-
+      default_product = default_product.map((row, i) => {
+        row.SKU = part_product[i];
+        return row;
+      });
 
       // console.log(data, custom_product, default_product);
       return res.send({ data, custom_product, product: default_product });
@@ -602,5 +602,163 @@ exports.getCouponDetails = async (req, res) => {
     }
   } catch (error) {
     return res.status(500).send({ message: "Something went wrong." });
+  }
+};
+
+exports.getOrderByID = async (req, res) => {
+  try {
+    let newQuantity = {}
+
+    console.log(req.query);
+    const data = await order.findOne(
+      { O: req.query.O.trim() },
+      { quantity: 1, O: 1, dispatched_qty : 1 }
+    );
+
+    if (data) {
+       Object.keys(data.quantity).map(row=>{
+        if(data.dispatched_qty[row])
+        Object.assign(newQuantity,{[row] : data.quantity[row] - data.dispatched_qty[row].quantity })
+        else
+        Object.assign(newQuantity,{[row] : data.quantity[row] })
+       })
+       data.quantity = newQuantity
+      return res.send(data);
+    }
+    return res.status(203).send({message : "May be invalid Order ID."});
+  } catch (error) {
+    console.log("Error >>> ", error);
+    return res.status(500).send("Something went wrong !!!");
+  }
+};
+
+// this set Order Status will update the quantity in order as well i add the SKU in manufacturing
+exports.setOrderStatus = async (req, res) => {
+  try {
+
+    
+    let data = operations(req.body);
+    let orderProduct = await order.findOne(
+      { O: req.body.O },
+      { dispatched_qty: 1 }
+    );
+
+    // return res.send("ALl")
+
+    let dispatched_qty = orderProduct.dispatched_qty;
+    
+    console.log(orderProduct.dispatched_qty)
+    
+    // return res.send("200")
+    // this update the reserved Qty for order
+    if (dispatched_qty[req.body.SKU] && dispatched_qty[req.body.SKU].status === req.body.status )
+      dispatched_qty = {
+        ...dispatched_qty,
+        [req.body.SKU]: {
+          quantity: dispatched_qty[req.body.SKU].quantity + parseInt(req.body.quantity),
+          status: req.body.status,
+        },
+      };
+    else
+      dispatched_qty = { [req.body.SKU]: {
+        quantity: parseInt(req.body.quantity),
+        status: req.body.status}
+      };
+
+    // now Update the last dispatched_qty to new one
+    orderProduct = await order.findOneAndUpdate(
+      { O: req.body.O },
+      { dispatched_qty }
+    );
+    if (orderProduct) {
+      data = await data.save();
+      if (data) {
+        return res.send({ message: "Status saved." });
+      }
+      return res.status(203).send({ message: "Some issues with payload." });
+    }
+    else{
+      return res.status(203).send({ message: "Some issues with payload." });
+    }
+  } catch (error) {
+    console.log("Error >>> ", error);
+    return res.status(500).send("Something went wrong !!!");
+  }
+};
+// this set Order Status will update status of the existing SKU stages
+exports.setOrderStatusToNext = async (req, res) => {
+  try {
+
+    // updating the current one
+    let currentStage = await operations.findOne({_id : req.body._id},{quantity: 1});
+    currentStage = await operations.findOneAndUpdate({_id : req.body._id},{quantity : currentStage.quantity - req.body.quantity})
+    
+    // insert the the new entry
+    delete req.body._id
+    let newStage = operations(req.body);
+    newStage = await newStage.save()
+
+    if(newStage){
+      return res.send({message : "Entry Saved."})
+    }
+    return res.status(203).send({message : "Some error occurred."})
+  } catch (error) {
+    console.log("Error >>> ", error);
+    return res.status(500).send("Something went wrong !!!");
+  }
+};
+
+exports.getStageList = async (req,res)=>{
+  try {
+
+    let data = await operations.find({},{_id : 0,status : 1,quantity : 1});
+
+   let status = {
+    "Manufacturing" : 0,
+    "Manufactured" : 0,
+    "Caning" : 0,
+    "Polish" : 0,
+    "Packing" : 0,
+    "Packed" : 0,
+    "Committed" : 0
+   }
+    
+   if(data)
+   {
+    data.map(row=>{
+      if(row.quantity > 0)
+      status = {...status,[row.status] : status[row.status] + 1 }
+    })
+   }
+   
+   return res.send(status)
+
+  } catch (error) {
+    console.log("Error >>> ", error);
+    return res.status(500).send("Something went wrong !!!");
+  }
+}
+
+exports.getOrderStatus = async (req, res) => {
+  try {
+    console.log(req.query)
+
+    let {status,O} = req.query;
+
+    let data;
+
+    if(O !== undefined)
+    data = await operations.find({status});
+    else
+    data = await operations.find({$and : [{status},{O}]});
+
+    console.log(data)
+
+      if (data) {
+        return res.send(data);
+      }
+  } catch (error) {
+    console.log("Error >>> ", error);
+    return res.status(500).send("Something went wrong !!!");
   }
 };

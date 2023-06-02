@@ -754,6 +754,9 @@ route.post("/uploadAllImage", upload, order.uploadImage);
 // get order details
 route.get("/getOrderDetails", order.getDetails);
 
+// get order details
+route.get("/getOrderByID", order.getOrderByID);
+
 // ============= coupons ===
 route.get("/listCoupon", AuthJwt, order.listCoupon);
 
@@ -767,6 +770,15 @@ route.get("/getTeam", AuthJwt, chat.listTeam);
 route.get("/getCustomerByEmail", AuthJwt, chat.getCustomerByEmail);
 
 route.get("/getMessage", AuthJwt, chat.getMessage);
+
+// order staging
+route.post("/setOrderStatus", AuthJwt, upload, order.setOrderStatus);
+
+route.post("/setOrderStatusToNext", AuthJwt, upload, order.setOrderStatusToNext);
+
+route.get("/getStageList", AuthJwt, order.getStageList);
+
+route.get("/getOrderStatus", AuthJwt, order.getOrderStatus);
 
 
 

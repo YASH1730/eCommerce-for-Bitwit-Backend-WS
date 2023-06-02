@@ -44,6 +44,7 @@ const order = mongoose.Schema({
   AWB : {type : String, default : ''},
   apartment : {type : String, default : ''},
   landmark : {type : String, default : ''},
+  dispatched_qty : {type : Object, default : {}}
 },{
   timestamps : true
 });
