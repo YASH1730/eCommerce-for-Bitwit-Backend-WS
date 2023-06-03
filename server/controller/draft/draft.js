@@ -1531,8 +1531,8 @@ exports.dropDraft = async (req, res) => {
       case "addWarehouse":
         console.log(req.body);
         data = warehouse(req.body);
-        response = await data.save();
-        if (response) {
+        let res2 = await data.save();
+        if (res2) {
           //console.log(req.body.operation)
           draft
             .updateOne(
