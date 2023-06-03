@@ -8,17 +8,18 @@ const material = require("../../../database/models/primaryMaterial");
 const polish = require("../../../database/models/polish");
 const customer = require("../../../database/models/customer");
 const coupon = require("../../../database/models/coupon");
-const review = require("../../../database/models/review")
+const review = require("../../../database/models/review");
 const uuid = require("uuid");
 const blog = require("../../../database/models/blog");
 const order = require("../../../database/models/order");
 const banner = require("../../../database/models/banner");
 const cod = require("../../../database/models/COD");
-const cp = require("../../../database/models/customProduct")
-const merge = require("../../../database/models/mergeProduct")
-const pincode = require("../../../database/models/pincode")
+const cp = require("../../../database/models/customProduct");
+const merge = require("../../../database/models/mergeProduct");
+const pincode = require("../../../database/models/pincode");
+const warehouse = require("../../../database/models/warehouse");
 
-// crypt 
+// crypt
 const Crypt = require("cryptr");
 const crypt = new Crypt(
   "asdf465f4s2d1f65e4s32d1f6534361e65##$#$#$#23$#5er135##4dfd434<>?<?"
@@ -54,6 +55,15 @@ exports.addDraft = async (req, res) => {
     // console.log(req.files);
 
     // console.log(req.body);
+
+    // getting the DID
+    id = await draft.find({}, { _id: 0, DID: 1 }).sort({ _id: -1 }).limit(1);
+
+    if (id) {
+      data.DID = `DID-0${parseInt(id[0].DID.split("-")[1]) + 1}`;
+    } else {
+      data.DID = "D-01001";
+    }
 
     // global var for switch case
 
@@ -389,7 +399,7 @@ exports.addDraft = async (req, res) => {
         if (req.body.CID === null) req.body.CID = "Not Registered";
 
         // this step is for fulfillment obj of the  product
-        req.body.items = {}
+        req.body.items = {};
 
         // {
         //   fulfilled: false,
@@ -398,9 +408,13 @@ exports.addDraft = async (req, res) => {
         //   qty: 0,
         //   date : ""
         // }
-        Object.keys(req.body.quantity).map(row => (req.body.items = {
-          ...req.body.items, [row]:[]
-        }))
+        Object.keys(req.body.quantity).map(
+          (row) =>
+            (req.body.items = {
+              ...req.body.items,
+              [row]: [],
+            })
+        );
 
         data.message = "Alert : Create Order request.";
         data.payload = req.body;
@@ -488,7 +502,6 @@ exports.addDraft = async (req, res) => {
         data.payload = req.body;
         break;
       case "addReview":
-
         if (req.files["review_images"]) {
           if (req.files["review_images"].length > 0) {
             req.files["review_images"].map((file) => {
@@ -557,51 +570,60 @@ exports.addDraft = async (req, res) => {
         data.payload = req.body;
         break;
       case "editOrder":
-        console.log(req.body)
-        let products = JSON.parse(req.body.quantity)
-        let productPrice = JSON.parse(req.body.product_price)
-        let discount = JSON.parse(req.body.discount_per_product)
-        req.body.items = JSON.parse(req.body.items)
+        console.log(req.body);
+        let products = JSON.parse(req.body.quantity);
+        let productPrice = JSON.parse(req.body.product_price);
+        let discount = JSON.parse(req.body.discount_per_product);
+        req.body.items = JSON.parse(req.body.items);
 
-        req.body.quantity = products
+        req.body.quantity = products;
 
-        const ids = Object.keys(products)
+        const ids = Object.keys(products);
 
+        let price = await product.find(
+          { SKU: { $in: ids } },
+          { SKU: 1, selling_price: 1 }
+        );
+        let Cprice = await cp.find(
+          { CUS: { $in: ids } },
+          { CUS: 1, selling_price: 1 }
+        );
 
-        let price = await product.find({ SKU: { $in: ids } }, { SKU: 1, selling_price: 1 })
-        let Cprice = await cp.find({ CUS: { $in: ids } }, { CUS: 1, selling_price: 1 })
-
-        // assigning the new product price to it 
-        price.map(row => {
+        // assigning the new product price to it
+        price.map((row) => {
           if (!productPrice.hasOwnProperty(row.SKU))
-            Object.assign(productPrice, { [row.SKU]: row.selling_price })
-        })
-        // assigning gthe new product price to it 
-        Cprice.map(row => {
+            Object.assign(productPrice, { [row.SKU]: row.selling_price });
+        });
+        // assigning gthe new product price to it
+        Cprice.map((row) => {
           if (!productPrice.hasOwnProperty(row.CUS))
-            Object.assign(productPrice, { [row.CUS]: row.selling_price })
-        })
+            Object.assign(productPrice, { [row.CUS]: row.selling_price });
+        });
 
-        // assigning gthe new product discount to it 
-        ids.map(row => {
+        // assigning gthe new product discount to it
+        ids.map((row) => {
           if (!discount.hasOwnProperty(row))
-            Object.assign(discount, { [row]: 0 })
-        })
+            Object.assign(discount, { [row]: 0 });
+        });
 
-
-        price = Object.keys(productPrice).reduce((sum, row) => { return sum + (products[row] * productPrice[row]) }, 0)
+        price = Object.keys(productPrice).reduce((sum, row) => {
+          return sum + products[row] * productPrice[row];
+        }, 0);
 
         // console.log(price,Cprice)
 
-        req.body.product_price = productPrice
-        req.body.discount_per_product = discount
+        req.body.product_price = productPrice;
+        req.body.discount_per_product = discount;
 
-        req.body.subTotal = price
-        req.body.total = req.body.discount_type === 'percentage' ? price - (price / 100) * req.body.discount : price - req.body.discount
+        req.body.subTotal = price;
+        req.body.total =
+          req.body.discount_type === "percentage"
+            ? price - (price / 100) * req.body.discount
+            : price - req.body.discount;
 
         data.message = "Alert : Update order request.";
         data.payload = req.body;
-        break
+        break;
       case "addOrderFulfillment":
         id = await draft
           .find({}, { _id: 0, DID: 1 })
@@ -613,14 +635,13 @@ exports.addDraft = async (req, res) => {
         } else {
           data.DID = "D-01001";
         }
-        req.body.items = JSON.parse(req.body.items)
-        req.body.DID = data.DID
+        req.body.items = JSON.parse(req.body.items);
+        req.body.DID = data.DID;
         // console.log(data);
         data.message = "Alert : Order fulfillment  request.";
         data.payload = req.body;
         break;
       case "updateProductStatus":
-
         id = await draft
           .find({}, { _id: 0, DID: 1 })
           .sort({ _id: -1 })
@@ -631,7 +652,7 @@ exports.addDraft = async (req, res) => {
         } else {
           data.DID = "D-01001";
         }
-        console.log(req.body)
+        console.log(req.body);
         // check for product ID
         if (req.body._id === undefined)
           return res.status(204).send("Payload is absent.");
@@ -641,7 +662,6 @@ exports.addDraft = async (req, res) => {
         data.payload = req.body;
         break;
       case "updateMergeProductStatus":
-
         id = await draft
           .find({}, { _id: 0, DID: 1 })
           .sort({ _id: -1 })
@@ -652,7 +672,7 @@ exports.addDraft = async (req, res) => {
         } else {
           data.DID = "D-01001";
         }
-        console.log(req.body)
+        console.log(req.body);
         // check for product ID
         if (req.body._id === undefined)
           return res.status(204).send("Payload is absent.");
@@ -662,21 +682,37 @@ exports.addDraft = async (req, res) => {
         data.payload = req.body;
         break;
       case "deletePinCode":
-          id = await draft
-            .find({}, { _id: 0, DID: 1 })
-            .sort({ _id: -1 })
-            .limit(1);
-  
-          if (id) {
-            data.DID = `DID-0${parseInt(id[0].DID.split("-")[1]) + 1}`;
-          } else {
-            data.DID = "D-01001";
-          }
-  
-          data.message = "Alert : Pin code deletion request.";
-          data.payload = await pincode.findOne({_id: data.AID}); 
-      break;
-        default:
+        id = await draft
+          .find({}, { _id: 0, DID: 1 })
+          .sort({ _id: -1 })
+          .limit(1);
+
+        if (id) {
+          data.DID = `DID-0${parseInt(id[0].DID.split("-")[1]) + 1}`;
+        } else {
+          data.DID = "D-01001";
+        }
+
+        data.message = "Alert : Pin code deletion request.";
+        data.payload = await pincode.findOne({ _id: data.AID });
+        break;
+      case "addWarehouse":
+        data.message = "Alert : Adding warehouse request.";
+        data.payload = req.body;
+        break;
+      case "updateWarehouse":
+        // check for product ID
+        console.log('hello')
+        if (req.body._id === undefined)
+          return res.status(204).send("Payload is absent.");
+        data.message = "Alert : Update Warehouse request.";
+        data.payload = req.body;
+        break;
+      case "deleteWarehouse":
+        data.message = "Alert : Delete warehouse request.";
+        data.payload = req.body;
+        break;
+      default:
         console.log("May be operation type not found.");
     }
 
@@ -1307,7 +1343,10 @@ exports.dropDraft = async (req, res) => {
       case "addReply":
         let reply = JSON.parse(req.body.reply);
 
-        let old = await review.findOne({ _id: req.body._id }, { admin_reply: 1 });
+        let old = await review.findOne(
+          { _id: req.body._id },
+          { admin_reply: 1 }
+        );
 
         console.log(old);
 
@@ -1378,10 +1417,7 @@ exports.dropDraft = async (req, res) => {
         }
         break;
       case "editOrder":
-        response = await order.findOneAndUpdate(
-          { O: req.body.AID },
-          req.body
-        );
+        response = await order.findOneAndUpdate({ O: req.body.AID }, req.body);
         if (response) {
           // //console.log(req.body.operation)
           draft
@@ -1401,11 +1437,8 @@ exports.dropDraft = async (req, res) => {
         }
         break;
       case "addOrderFulfillment":
-        console.log(req.body)
-        response = await order.findOneAndUpdate(
-          { O: req.body.AID },
-          req.body
-        );
+        console.log(req.body);
+        response = await order.findOneAndUpdate({ O: req.body.AID }, req.body);
         if (response) {
           // //console.log(req.body.operation)
           draft
@@ -1423,7 +1456,7 @@ exports.dropDraft = async (req, res) => {
                 .send({ message: "Some Error Occurred !!!" });
             });
         }
-        break
+        break;
       case "updateProductStatus":
         product
           .findOneAndUpdate({ _id: req.body.AID }, req.body)
@@ -1475,27 +1508,65 @@ exports.dropDraft = async (req, res) => {
           });
         break;
       case "deletePinCode":
-        console.log(req.body)
-          response = await pincode.findOneAndRemove({ _id: req.body._id });
-          // console.log(req.body.operation);
+        console.log(req.body);
+        response = await pincode.findOneAndRemove({ _id: req.body._id });
+        // console.log(req.body.operation);
+        if (response) {
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
+      case "addWarehouse":
+        console.log(req.body);
+        data = warehouse(req.body);
+        response = await data.save();
+        if (response) {
+          //console.log(req.body.operation)
+          draft
+            .updateOne(
+              { DID: req.body.DID },
+              { draftStatus: req.body.draftStatus, AID: response.CID }
+            )
+            .then(() => {
+              return res.send({ message: "Draft Resolved !!!" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res
+                .status(500)
+                .send({ message: "Some Error Occurred !!!" });
+            });
+        }
+        break;
+      case "updateWarehouse":
+        let response = await warehouse.findOneAndUpdate(
+          { _id: req.body.AID },
+          req.body
+        );
+        if (response) {
+          //console.log(req.body.operation)
+          response = await draft.updateOne(
+            { DID: req.body.DID },
+            { draftStatus: req.body.draftStatus }
+          );
           if (response) {
-            draft
-              .updateOne(
-                { DID: req.body.DID },
-                { draftStatus: req.body.draftStatus }
-              )
-              .then(() => {
-                return res.send({ message: "Draft Resolved !!!" });
-              })
-              .catch((err) => {
-                console.log(err);
-                return res
-                  .status(500)
-                  .send({ message: "Some Error Occurred !!!" });
-              });
+            return res.send({ message: "Draft Resolved !!!" });
           }
-          break;
-        default:
+        }
+        break;
+      default:
         console.log("May be operation type not found.");
         break;
     }
@@ -1638,9 +1709,9 @@ exports.getMetaDraft = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
-  console.log(req.query)
+  console.log(req.query);
   let response = await draft.findOneAndUpdate(
-    { $or :  [{ DID: req.query.DID },{ _id: req.query.id }]},
+    { $or: [{ DID: req.query.DID }, { _id: req.query.id }] },
     { DID: req.query.changeTo }
   );
   res.send("Okay");

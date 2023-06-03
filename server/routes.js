@@ -780,6 +780,10 @@ route.get("/getStageList", AuthJwt, order.getStageList);
 
 route.get("/getOrderStatus", AuthJwt, order.getOrderStatus);
 
+route.get("/getWarehouse", AuthJwt, order.getWarehouse);
+
+route.get("/getWarehouseDetails", AuthJwt, order.getWarehouseDetails);
+
 
 
 module.exports = route;

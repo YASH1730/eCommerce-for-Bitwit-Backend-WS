@@ -9,6 +9,7 @@ const cp = require("../../../database/models/customProduct");
 const { v4: uuidv4 } = require("uuid");
 const wishlist = require("../../../database/models/wishlist");
 const { count } = require("../../../database/models/order");
+const warehouse = require("../../../database/models/warehouse");
 // ================================================= Apis for order =======================================================
 //==============================================================================================================================
 
@@ -660,7 +661,7 @@ exports.setOrderStatus = async (req, res) => {
         },
       };
     else
-      dispatched_qty = { [req.body.SKU]: {
+      dispatched_qty = { ...dispatched_qty, [req.body.SKU]: {
         quantity: parseInt(req.body.quantity),
         status: req.body.status}
       };
@@ -762,3 +763,37 @@ exports.getOrderStatus = async (req, res) => {
     return res.status(500).send("Something went wrong !!!");
   }
 };
+
+exports.getWarehouse = async (req,res) => {
+  try {
+
+    let list = await warehouse.find({});
+    if(list)
+    {
+      return res.send(list)
+    }
+
+    return res.send([])
+
+  } catch (error) {
+    console.log("Error >>> ", error);
+    return res.status(500).send("Something went wrong !!!");
+  }
+}
+
+exports.getWarehouseDetails = async (req,res) => {
+  try {
+
+    let list = await warehouse.findOne({_id : req.query._id});
+    if(list)
+    {
+      return res.send(list)
+    }
+
+    return res.send([])
+
+  } catch (error) {
+    console.log("Error >>> ", error);
+    return res.status(500).send("Something went wrong !!!");
+  }
+}

@@ -11,7 +11,7 @@ const logging = require("../../../database/models/logging");
 
 // for defaulting paging
 exports.home = (req, res) => {
-  res.send("This Apis is written for the WoodSala!!!");
+  res.send("This Apis is written for the WoodShala!!!");
 };
 
 exports.delete = async (req, res) => {
