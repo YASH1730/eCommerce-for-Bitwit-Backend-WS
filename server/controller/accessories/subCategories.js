@@ -33,7 +33,7 @@ exports.addSubCatagories = async (req, res) => {
             res.send({ message: "Duplicate Sub Category !!!" });
           });
       } else {
-        console.log(result);
+        // console.log(result);
         res.status(203);
         res.send({
           message: "Sub Category Name is already exist in category!!!",

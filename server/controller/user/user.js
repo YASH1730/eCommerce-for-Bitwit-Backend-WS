@@ -25,7 +25,7 @@ exports.delete = async (req, res) => {
 
 exports.register = async (req, res) => {
   try {
-    console.log(req.body);
+    // console.log(req.body);
     req.body.access = req.body.access.split(',')
 
     let data = await userDB(req.body).save();
@@ -34,7 +34,7 @@ exports.register = async (req, res) => {
       return res.send({message :'User Added Successfully !!!', response : data})
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).send("Something went wrong !!!")
   }
 };
@@ -48,7 +48,7 @@ exports.updateUser = async (req, res) => {
       return res.send({message : 'User Updated Successfully !!!'})
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).send("Something went wrong !!!")
   }
 };
@@ -62,7 +62,7 @@ exports.listUser = async (req, res) => {
       return res.send(data)
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).send("Something went wrong !!!")
   }
 };
@@ -116,7 +116,7 @@ exports.login = async (req, res) => {
       return res.status(203).send({ message: "User Not Found !!!" });
     }
   } catch (err) {
-    console.log("Error >> ", err);
+    // console.log("Error >> ", err);
     res.status(500).send("Something went wrong !!!");
   }
 };
@@ -158,7 +158,7 @@ exports.refreshToken = async (req, res) => {
       return res.status(203).send({ message: "User Not Found !!!" });
     }
   } catch (err) {
-    console.log("Error >> ", err);
+    // console.log("Error >> ", err);
     res.status(500).send("Something went wrong !!!");
   }
 };
@@ -171,7 +171,7 @@ exports.listLogs = async (req, res) => {
     // console.log(response)
     return res.send(response);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.sendStatus(500);
   }
 };

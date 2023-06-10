@@ -18,7 +18,7 @@ exports.addTextile = async (req, res) => {
 
   await data.save()
   .then((response) => {
-    console.log(response)
+    // console.log(response)
     res.send({message : 'Textile Added successfully !!!',response})
   })
   .catch((error) => {
@@ -78,10 +78,10 @@ exports.editTextile = async (req, res) => {
 
 exports.deleteTextile = async (req,res) =>{
 
-  console.log(req.query)
+  // console.log(req.query)
 
    await textile.deleteOne(req.query).then((data)=>{
-    console.log(data)   
+    // console.log(data)   
     res.send({massage : 'Textile deleted !!!'})
   })
 

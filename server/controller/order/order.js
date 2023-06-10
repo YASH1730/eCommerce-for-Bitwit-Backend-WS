@@ -17,7 +17,7 @@ const warehouse = require("../../../database/models/warehouse");
 
 exports.placeOrder = async (req, res) => {
   try {
-    console.log(req.body);
+    // console.log(req.body);
 
     if (req.body.CID === null) req.body.CID = "Not Registered";
 
@@ -28,7 +28,7 @@ exports.placeOrder = async (req, res) => {
       return res.send({ message: "Order Added !!!", response });
     }
   } catch (error) {
-    console.log("Error", error);
+    // console.log("Error", error);
     return res.status(500).send("Something went wrong !!!");
   }
 };
@@ -38,7 +38,7 @@ exports.placeOrder = async (req, res) => {
 exports.listOrder = async (req, res) => {
   // order.collection.drop();
   try {
-    console.log(req.query);
+    // console.log(req.query);
     const params = JSON.parse(req.query.filter);
     let total = await order.estimatedDocumentCount();
 
@@ -88,14 +88,14 @@ exports.listOrder = async (req, res) => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
         return res
           .sendStatus(500)
           .send({ message: "Something went wrong !!!" });
       }),
       { allowDiskUse: true };
   } catch (err) {
-    console.log("Error>>>", err);
+    // console.log("Error>>>", err);
     res.send(500);
   }
 };
@@ -204,14 +204,14 @@ exports.addCustomProduct = async (req, res) => {
       });
     }
 
-    console.log(req.body);
+    // console.log(req.body);
     let data = await cp(req.body).save();
     if (data) {
       // console.log(data)
       return res.send({ message: "Custom Product added !!!", data });
     }
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     return res.status(500).send("Something Went Wrong");
   }
 };
@@ -275,7 +275,7 @@ exports.customOrderList = async (req, res) => {
 exports.listAbandonedOrder = async (req, res) => {
   // order.collection.drop();
   try {
-    console.log(req.query);
+    // console.log(req.query);
     const params = JSON.parse(req.query.filter);
     let total = await abandoned.estimatedDocumentCount();
 
@@ -324,14 +324,14 @@ exports.listAbandonedOrder = async (req, res) => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
         return res
           .sendStatus(500)
           .send({ message: "Something went wrong !!!" });
       }),
       { allowDiskUse: true };
   } catch (err) {
-    console.log("Error>>>", err);
+    // console.log("Error>>>", err);
     res.send(500);
   }
 };
@@ -341,7 +341,7 @@ exports.listAbandonedOrder = async (req, res) => {
 exports.getWishlist = async (req, res) => {
   // wishlist.collection.drop();
   try {
-    console.log(req.query);
+    // console.log(req.query);
     const params = JSON.parse(req.query.filter);
     let total = await wishlist.estimatedDocumentCount();
 
@@ -421,7 +421,7 @@ exports.getWishlist = async (req, res) => {
 
     if (response) return res.send({ data: response, total: total, mostLiked });
   } catch (err) {
-    console.log("Error>>>", err);
+    // console.log("Error>>>", err);
     res.send(500);
   }
 };
@@ -445,7 +445,7 @@ exports.uploadImage = async (req, res) => {
 
     return res.send({ polish: image_urls, design: design_image_urls });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(500).send([]);
   }
 };
@@ -518,7 +518,7 @@ exports.getDetails = async (req, res) => {
       return res.send({ data, custom_product, product: default_product });
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(500).send([]);
   }
 };
@@ -528,7 +528,7 @@ exports.getDetails = async (req, res) => {
 exports.listCoupon = async (req, res) => {
   try {
     // coupon.collection.drop();
-    console.log(req.query);
+    // console.log(req.query);
     const params = JSON.parse(req.query.filter);
     let total = await coupon.estimatedDocumentCount();
 
@@ -582,14 +582,14 @@ exports.listCoupon = async (req, res) => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
         return res
           .sendStatus(500)
           .send({ message: "Something went wrong !!!" });
       }),
       { allowDiskUse: true };
   } catch (err) {
-    console.log("Error>>>", err);
+    // console.log("Error>>>", err);
     res.send(500);
   }
 };
@@ -598,7 +598,7 @@ exports.getCouponDetails = async (req, res) => {
   try {
     let response = await coupon.findOne({ coupon_code: req.query.code });
     if (response) {
-      console.log(response);
+      // console.log(response);
       return res.send(response);
     }
   } catch (error) {
@@ -610,7 +610,7 @@ exports.getOrderByID = async (req, res) => {
   try {
     let newQuantity = {}
 
-    console.log(req.query);
+    // console.log(req.query);
     const data = await order.findOne(
       { O: req.query.O.trim() },
       { quantity: 1, O: 1, dispatched_qty : 1 }
@@ -628,7 +628,7 @@ exports.getOrderByID = async (req, res) => {
     }
     return res.status(203).send({message : "May be invalid Order ID."});
   } catch (error) {
-    console.log("Error >>> ", error);
+    // console.log("Error >>> ", error);
     return res.status(500).send("Something went wrong !!!");
   }
 };
@@ -648,7 +648,7 @@ exports.setOrderStatus = async (req, res) => {
 
     let dispatched_qty = orderProduct.dispatched_qty;
     
-    console.log(orderProduct.dispatched_qty)
+    // console.log(orderProduct.dispatched_qty)
     
     // return res.send("200")
     // this update the reserved Qty for order
@@ -682,7 +682,7 @@ exports.setOrderStatus = async (req, res) => {
       return res.status(203).send({ message: "Some issues with payload." });
     }
   } catch (error) {
-    console.log("Error >>> ", error);
+    // console.log("Error >>> ", error);
     return res.status(500).send("Something went wrong !!!");
   }
 };
@@ -704,7 +704,7 @@ exports.setOrderStatusToNext = async (req, res) => {
     }
     return res.status(203).send({message : "Some error occurred."})
   } catch (error) {
-    console.log("Error >>> ", error);
+    // console.log("Error >>> ", error);
     return res.status(500).send("Something went wrong !!!");
   }
 };
@@ -735,14 +735,14 @@ exports.getStageList = async (req,res)=>{
    return res.send(status)
 
   } catch (error) {
-    console.log("Error >>> ", error);
+    // console.log("Error >>> ", error);
     return res.status(500).send("Something went wrong !!!");
   }
 }
 
 exports.getOrderStatus = async (req, res) => {
   try {
-    console.log(req.query)
+    // console.log(req.query)
 
     let {status,O} = req.query;
 
@@ -753,13 +753,13 @@ exports.getOrderStatus = async (req, res) => {
     else
     data = await operations.find({$and : [{status},{O}]});
 
-    console.log(data)
+    // console.log(data)
 
       if (data) {
         return res.send(data);
       }
   } catch (error) {
-    console.log("Error >>> ", error);
+    // console.log("Error >>> ", error);
     return res.status(500).send("Something went wrong !!!");
   }
 };
@@ -776,7 +776,7 @@ exports.getWarehouse = async (req,res) => {
     return res.send([])
 
   } catch (error) {
-    console.log("Error >>> ", error);
+    // console.log("Error >>> ", error);
     return res.status(500).send("Something went wrong !!!");
   }
 }
@@ -793,7 +793,25 @@ exports.getWarehouseDetails = async (req,res) => {
     return res.send([])
 
   } catch (error) {
-    console.log("Error >>> ", error);
+    // console.log("Error >>> ", error);
+    return res.status(500).send("Something went wrong !!!");
+  }
+}
+
+exports.searchWarehouseDetails = async (req,res) => {
+  try {
+
+    let list = await warehouse.find({ name : {$regex : `${req.query.name}`, $options : "i"}},{name : 1});
+    if(list)
+    {
+      // console.log(list)
+      return res.send(list)
+    }
+
+    return res.send([])
+
+  } catch (error) {
+    // console.log("Error >>> ", error);
     return res.status(500).send("Something went wrong !!!");
   }
 }

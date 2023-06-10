@@ -26,7 +26,7 @@ exports.uploadPincodeCSV = async (req, res) => {
         data.push(row);
       })
       .on("error", (err) => {
-        console.log((err) => console.log(err));
+        // console.log((err) => // console.log(err));
         return res
           .status(202)
           .send({ message: "File doesn't formatted in right scheme !!!" });
@@ -52,7 +52,7 @@ exports.uploadPincodeCSV = async (req, res) => {
           return res.send({ message: "CSV File Uploaded Successfully !!!" });
       });
   } catch (err) {
-    console.log("Error >> ", err);
+    // console.log("Error >> ", err);
     res.status(500).send({ message: "Something went wrong !!!" });
   }
 };
@@ -93,14 +93,14 @@ exports.listPinCode = async (req, res) => {
 
     return res.send({ data: response, total: total }), { allowDiskUse: true };
   } catch (err) {
-    console.log("Error>>>", err);
+    // console.log("Error>>>", err);
     return res.status(500).send("Something Went Wrong !!!");
   }
 };
 
 exports.statusDelivery = async (req, res) => {
   try {
-    console.log(req.body);
+    // console.log(req.body);
     let response = await pincode.findByIdAndUpdate(
       { _id: req.body._id },
       { delivery_status: req.body.delivery_status }
@@ -108,7 +108,7 @@ exports.statusDelivery = async (req, res) => {
 
     if (response) res.send({ message: "Delivery Status Updated !!!" });
   } catch (err) {
-    console.log(">>Error>>", err);
+    // console.log(">>Error>>", err);
     res.status(500).send({ message: "Something went wrong !!!" });
   }
 };
@@ -121,7 +121,7 @@ exports.deletePincode = async (req, res) => {
     let data = await pincode.deleteOne({ _id: req.query.ID });
     if (data) return res.send({ massage: "Pincode deleted !!!" });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     res.status(500).send({ message: "Something went wrong !!!" });
   }
 };
@@ -131,7 +131,7 @@ exports.downloadCSV = async (req, res) => {
     let fileName = "currentCSV.csv";
     res.download(`upload/${fileName}`, `${fileName}`);
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     res.status(500).send({ message: "Something went wrong !!!" });
   }
 };
@@ -142,7 +142,7 @@ exports.getCod = async (req, res) => {
     let response = await COD.find();
     res.send(response[0]);
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     res.status(500).send({ message: "Something went wrong !!!" });
   }
 }

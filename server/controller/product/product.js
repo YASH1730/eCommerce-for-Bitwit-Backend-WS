@@ -10,8 +10,8 @@ const { match } = require("assert");
 // Add Products this function is not is use
 
 exports.addProduct = async (req, res) => {
-  //console.log('files>>>',req.files);
-  // //console.log(req.body);
+  //// console.log('files>>>',req.files);
+  // //// console.log(req.body);
 
   let image_urls = [];
 
@@ -37,7 +37,7 @@ exports.addProduct = async (req, res) => {
 
   req.body.selling_points = JSON.parse(req.body.selling_points);
 
-  //console.log('Complete>>>',req.body);
+  //// console.log('Complete>>>',req.body);
 
   // return res.send('all okay')
 
@@ -46,11 +46,11 @@ exports.addProduct = async (req, res) => {
   await data
     .save()
     .then((response) => {
-      ////console.log(response)
+      ////// console.log(response)
       res.send({ message: "Product added successfully !!!", response });
     })
     .catch((err) => {
-      console.log(err);
+      // console.log(err);
       res.status(203).send({ message: "Some error occurred !!!" });
     });
 };
@@ -60,7 +60,7 @@ exports.addProduct = async (req, res) => {
 exports.getListProduct = async (req, res) => {
   try {
     // product.collection.drop();
-    //  console.log(req.query)
+    //  // console.log(req.query)
     const params = JSON.parse(req.query.filter);
     let total = await product.estimatedDocumentCount();
 
@@ -110,7 +110,7 @@ exports.getListProduct = async (req, res) => {
 
     return res.send({ data: response, total: total }), { allowDiskUse: true };
   } catch (err) {
-    console.log("Error>>>", err);
+    // console.log("Error>>>", err);
     return res.status(500).send("Something Went Wrong !!!");
   }
 };
@@ -124,14 +124,14 @@ exports.getLastProduct = async (req, res) => {
     .limit(1)
     .then((response) => {
       if (response !== null) {
-        // console.log(">>>", response);
+        // // console.log(">>>", response);
         res.send(response);
       } else {
         res.status(203).send("P-01001");
       }
     })
     .catch((err) => {
-      //  ////console.log(err)
+      //  ////// console.log(err)
       res.status(203).send({ message: "Some error occurred !!!" });
     });
 };
@@ -139,7 +139,7 @@ exports.getLastProduct = async (req, res) => {
 // delete products
 
 exports.deleteProduct = async (req, res) => {
-  console.log(req.query.ID);
+  // console.log(req.query.ID);
   product
     .deleteOne({ _id: req.query.ID })
     .then((data) => {
@@ -153,7 +153,7 @@ exports.deleteProduct = async (req, res) => {
 // update products
 
 exports.updateProduct = async (req, res) => {
-  //console.log("Files >>>>> ",req.files);
+  //// console.log("Files >>>>> ",req.files);
 
   // check for product images
   // let image_urls = [];
@@ -186,14 +186,14 @@ exports.updateProduct = async (req, res) => {
   // // selling points conversation in array
   // req.body.selling_points = JSON.parse(req.body.selling_points);
 
-  //console.log("Complete >>>> ",req.body);
+  //// console.log("Complete >>>> ",req.body);
 
   // return res.send('ALl OKay')
-  console.log(req.query);
+  // console.log(req.query);
   await product
     .findOneAndUpdate({ SKU: req.query.search }, { SKU: req.query.SKU })
     .then((data) => {
-      ////console.log(data)
+      ////// console.log(data)
       if (data)
         return res.status(200).send({
           message: "Product is updated successfully.",
@@ -202,7 +202,7 @@ exports.updateProduct = async (req, res) => {
       else return res.status(203).send({ message: "No entries found" });
     })
     .catch((error) => {
-      console.log(error);
+      // console.log(error);
       return res.status(203).send("Something Went Wrong !!!");
     });
 };
@@ -222,7 +222,7 @@ exports.updateBulk = async (req, res) => {
       res.status(200).send({ message: "Product is updated successfully." });
     })
     .catch((error) => {
-      ////console.log(error)
+      ////// console.log(error)
       res.status(203).send("Something Went Wrong");
     });
 };
@@ -231,7 +231,7 @@ exports.updateBulk = async (req, res) => {
 exports.getPresentSKUs = async (req, res) => {
   try {
 
-    console.log(req.query);
+    // console.log(req.query);
 
     let response = await product
       .aggregate([
@@ -299,7 +299,7 @@ exports.getPresentSKUs = async (req, res) => {
 
 
     if (response) {
-      console.log(response);
+      // console.log(response);
       if (response !== null) {
         res.send(response);
       } else {
@@ -316,13 +316,13 @@ exports.getPresentSKUs = async (req, res) => {
 
 // for product detail to show
 exports.getProductDetails = async (req, res) => {
-  // console.log(req.query)
+  // // console.log(req.query)
   if (req.query === {})
     return res.status(404).send({ message: "Please Provide the product id." });
   await product
     .findOne(req.query)
     .then((data) => {
-      //   console.log(data)
+      //   // console.log(data)
       return res.send(data);
     })
     .catch((err) => {
@@ -365,12 +365,12 @@ exports.variation = async (req, res) => {
     // selling points conversation in array
     req.body.selling_points = JSON.parse(req.body.selling_points);
 
-    // console.log("New Variant >>> ",req.body);
+    // // console.log("New Variant >>> ",req.body);
     //   =============================== Set Up The New Variant end
 
     // this will save the variant to the respective parent product
     // let response = await product.findOne({SKU : req.body.parent_SKU},{variations : 1});
-    // console.log(response, req.body.SKU)
+    // // console.log(response, req.body.SKU)
     // response.variations.push(req.body.SKU)
 
     // let variations = response.variations;
@@ -383,7 +383,7 @@ exports.variation = async (req, res) => {
     if (response)
       return res.send({ message: "Variant Added Successfully", response });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     return res.status(500).send("Something Went Wrong !!!");
   }
 };
@@ -421,7 +421,7 @@ exports.getHardwareDropdown = async (req, res) => {
     );
 
     if (response) {
-      // console.log(response)
+      // // console.log(response)
       data.hinge = response.filter((row) => {
         return row.sub_category_name.toLowerCase() === "hinge";
       });
@@ -447,10 +447,10 @@ exports.getHardwareDropdown = async (req, res) => {
         return row.sub_category_name.toLowerCase() === "dial";
       });
     }
-    console.log(data);
+    // console.log(data);
     return res.send(data);
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     return res.sendStatus(500).send("Something went wrong !!!");
   }
 };
@@ -472,11 +472,11 @@ exports.getArticlesId = async (req, res) => {
       { $group: { _id: "$_id", SKU: { $first: "$SKU" } } },
       { $limit: 10 },
     ]);
-    // console.log(P_SKU)
+    // // console.log(P_SKU)
 
     res.send({ P_SKU, H_SKU });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.sendStatus(500);
   }
 };
@@ -497,11 +497,11 @@ exports.getArticlesId = async (req, res) => {
 //             return row
 //         })
 
-//         // console.log(response)
+//         // // console.log(response)
 
 //     //   return   res.send(newResponse)
 //         Promise.all(newResponse.map(async(row)=>{
-//             console.log(row)
+//             // console.log(row)
 //            return  await product.findOneAndUpdate({SKU : row.SKU},{
 //             featured_image : row.featured_image,
 //             mannequin_image : row.mannequin_image,
@@ -512,13 +512,13 @@ exports.getArticlesId = async (req, res) => {
 //             return res.send(res1)
 //         })
 //         .catch((err)=>{
-//             console.log(err)
+//             // console.log(err)
 //             return res.sendStatus(500).send('Something Wrong')
 //         })
 
 //     })
 //     .catch((err)=>{
-//         console.log(err)
+//         // console.log(err)
 //         return res.send(err)
 //     })
 // }

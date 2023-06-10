@@ -13,7 +13,7 @@ exports.listCustomer = async (req, res) => {
       return res.send(cusList);
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(500).send("Something went wrong !!!");
   }
 };
@@ -25,7 +25,7 @@ exports.listTeam = async (req, res) => {
       return res.send(team);
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(500).send("Something went wrong !!!");
   }
 };
@@ -40,7 +40,7 @@ exports.getCustomerByEmail = async (req, res) => {
     }
     return res.status(203).send({ message: "no details found", data });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(500).send("Something went wrong !!!");
   }
 };
@@ -66,7 +66,7 @@ exports.getMessage = async (req, res) => {
       .sort({ time: 1 });
     if (data) return res.send({ message: data });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).send({ message: "Something Went Wrong !!!" });
   }
 };

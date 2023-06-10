@@ -7,18 +7,18 @@ const banner = require("../../../database/models/banner");
 // this one not in use because this operation need pass action center
 exports.addBanner = async (req, res) => {
   try {
-    console.log(req.files);
+    // console.log(req.files);
     // Web
     if (req.files["web_banner_image"] !== undefined)
       req.body.web_banner_image = `${process.env.Official}/${req.files["web_banner_image"][0].path}`;
     // Mobile
     if (req.files["mobile_banner_image"] !== undefined)
       req.body.mobile_banner_image = `${process.env.Official}/${req.files["mobile_banner_image"][0].path}`;
-    console.log(req.body);
+    // console.log(req.body);
 
     return res.send("All Okay");
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.send(500).send("Something went wrong !!!");
   }
 };
@@ -27,11 +27,11 @@ exports.addBanner = async (req, res) => {
 
 exports.listBanner = async (req, res) => {
   try {
-    console.log(req.query);
+    // console.log(req.query);
     const params = JSON.parse(req.query.filter);
     let total = await banner.estimatedDocumentCount();
 
-    console.log(params);
+    // console.log(params);
 
     // filter Section Starts
 
@@ -69,7 +69,7 @@ exports.listBanner = async (req, res) => {
 
     if (response) return res.send({ data: response, total: total });
   } catch (err) {
-    console.log("Error>>>", err);
+    // console.log("Error>>>", err);
     res.send(500);
   }
 };
@@ -77,18 +77,18 @@ exports.listBanner = async (req, res) => {
 // for Changing the Status of the banner
 
 exports.changeStatus = async (req, res) => {
-  //console.log(req.body)
+  //// console.log(req.body)
   await banner
     .findByIdAndUpdate(
       { _id: req.body._id },
       { banner_Status: req.body.banner_Status }
     )
     .then((data) => {
-      //console.log(data)
+      //// console.log(data)
       res.send("all okay");
     })
     .catch((err) => {
-      //console.log(err)
+      //// console.log(err)
       res.send("Something went Wrong !!!");
     });
 };
@@ -96,7 +96,7 @@ exports.changeStatus = async (req, res) => {
 // get banner details
 exports.getBannerDetails = async (req, res) => {
   try {
-    // console.log(req.query)
+    // // console.log(req.query)
     if (req.query === {})
       return res.status(404).send({ message: "Please Provide the banner id." });
 
@@ -106,7 +106,7 @@ exports.getBannerDetails = async (req, res) => {
       return res.send(data);
     }
   } catch (err) {
-    console.log("error>>>", err);
+    // console.log("error>>>", err);
     return res.status(500).send({ message: "Something went wrang !!!" });
   }
 };
@@ -120,7 +120,7 @@ exports.getSequence = async (req, res) => {
       return res.send(data);
     }
   } catch (err) {
-    console.log("error>>>", err);
+    // console.log("error>>>", err);
     return res.status(500).send({ message: "Something went wrang !!!" });
   }
 };

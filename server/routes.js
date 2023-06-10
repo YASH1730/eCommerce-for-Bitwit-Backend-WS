@@ -47,7 +47,7 @@ const storage = multer.diskStorage({
 const fileFilter = (req, file, cb) => {
   // for removing the space between the image file name to save it properly for URL
   file.originalname = file.originalname.replace(/ /g, "");
-  console.log(file);
+  // console.log(file);
   // reject a file
   if (
     file.mimetype === "image/jpeg" ||
@@ -152,7 +152,7 @@ function AuthJwt(req, res, next) {
 async function tracker(req, res, next) {
   const response = await axios.get("https://geolocation-db.com/json/");
   // console.log(response);
-  console.log(">>>", req.body);
+  // console.log(">>>", req.body);
   let data = logging({
     email: req.body.email,
     role: req.body.role,
@@ -780,9 +780,14 @@ route.get("/getStageList", AuthJwt, order.getStageList);
 
 route.get("/getOrderStatus", AuthJwt, order.getOrderStatus);
 
+
+// warehouse
+
 route.get("/getWarehouse", AuthJwt, order.getWarehouse);
 
 route.get("/getWarehouseDetails", AuthJwt, order.getWarehouseDetails);
+
+route.get("/searchWarehouseDetails", AuthJwt, order.searchWarehouseDetails);
 
 
 

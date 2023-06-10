@@ -48,7 +48,7 @@ exports.getKnob = async (req, res) => {
 
 exports.editKnob = async (req, res) => {
 
-  console.log(req.body);
+  // console.log(req.body);
 
   await knob.findOneAndUpdate({ _id: req.body._id }, req.body)
       .then((data) => {
@@ -58,7 +58,7 @@ exports.editKnob = async (req, res) => {
           return res.status(203).send({ message: 'No entries found' })
       })
       .catch((error) => {
-        console.log(error)
+        // console.log(error)
         return res.status(203).send(error)
       })
 

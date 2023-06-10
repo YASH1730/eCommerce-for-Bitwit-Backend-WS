@@ -98,7 +98,7 @@ exports.getSupplierDropdown = async (req, res) => {
 
     res.send({ Suppliers })
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     res.sendStatus(500)
   }
 }

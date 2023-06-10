@@ -45,7 +45,7 @@ exports.getReview = async (req, res) => {
       { allowDiskUse: true }
     );
   } catch (err) {
-    console.log("Error >>>", err);
+    // console.log("Error >>>", err);
     return res.send(500).send({ message: "Something went wrong !!!" });
   }
 };
@@ -53,7 +53,7 @@ exports.getReview = async (req, res) => {
 // for Changing the Status of the review
 
 exports.changeStatus = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   try {
     let response = await review.findByIdAndUpdate(
       { _id: req.body._id },
@@ -61,11 +61,11 @@ exports.changeStatus = async (req, res) => {
     );
 
     if (response) {
-      //console.log(data)
+      //// console.log(data)
       res.send("all okay");
     }
   } catch (err) {
-    //console.log(err)
+    //// console.log(err)
     res.status(203).send("Something went wrong !!!");
   }
 };
@@ -73,12 +73,12 @@ exports.changeStatus = async (req, res) => {
 // adding reply
 exports.addReply = async (req, res) => {
   try {
-    console.log("body>>>", req.body);
+    // console.log("body>>>", req.body);
     let reply = JSON.parse(req.body.reply);
 
     let old = await review.findOne({ _id: req.body._id }, { admin_reply: 1 });
 
-    console.log(old);
+    // console.log(old);
 
     reply = [...old.admin_reply, ...reply];
 
@@ -91,7 +91,7 @@ exports.addReply = async (req, res) => {
       return res.send("All okay");
     }
   } catch (error) {
-    console.log("Error >>>", error);
+    // console.log("Error >>>", error);
     res.status(500).send({ message: "Something Went Wrong !!!" });
   }
 };
@@ -99,8 +99,8 @@ exports.addReply = async (req, res) => {
 // for adding a review
 exports.addReview = async (req, res) => {
   try {
-    console.log("Files >>>", req.files);
-    console.log("Files >>>", req.body);
+    // console.log("Files >>>", req.files);
+    // console.log("Files >>>", req.body);
 
     let imageURLs = [];
     let videoURLs = [];
@@ -122,7 +122,7 @@ exports.addReview = async (req, res) => {
 
     if (req.body.review === undefined)
       return res.sendStatus(203).send("Review Box doesn't be empty.");
-    console.log("Final Body >>>", req.body);
+    // console.log("Final Body >>>", req.body);
 
     const data = review(req.body);
     const response = await data.save();
@@ -132,19 +132,19 @@ exports.addReview = async (req, res) => {
 
     return res.status(203).send({ message: "Something went wrong." });
   } catch (error) {
-    console.log("ERROR>>>", error);
+    // console.log("ERROR>>>", error);
     return res.sendStatus(500);
   }
 };
 // for updateReview a review
 exports.updateReview = async (req, res) => {
   try {
-    // console.log("Files >>>", req.files);
-    console.log("Files >>>", req.body);
+    // // console.log("Files >>>", req.files);
+    // console.log("Files >>>", req.body);
 
     if (!req.body._id)
       return res.sendStatus(203).send("Please provide the review _id .");
-    console.log("Final Body >>>", req.body);
+    // console.log("Final Body >>>", req.body);
 
     const response = await review.findOneAndUpdate(
       { _id: req.body._id },
@@ -156,19 +156,19 @@ exports.updateReview = async (req, res) => {
 
     return res.status(203).send({ message: "Something went wrong." });
   } catch (error) {
-    console.log("ERROR>>>", error);
+    // console.log("ERROR>>>", error);
     return res.sendStatus(500);
   }
 };
 
 exports.deleteReview = async (req, res) => {
   try {
-    console.log(req.query._id);
+    // console.log(req.query._id);
     let response = await review.findOneAndDelete({ _id: req.query._id });
 
     if (response) return res.send({ message: "Review has removed !!!" });
   } catch (err) {
-    console.log("Error>>>", err);
+    // console.log("Error>>>", err);
     res.status(500).send({ message: "Something went wrong !!!" });
   }
 };
@@ -183,7 +183,7 @@ exports.metaReview = async (req, res) => {
 
     return res.send(data);
   } catch (err) {
-    console.log("Error>>>", err);
+    // console.log("Error>>>", err);
     res.status(500).send({ message: "Something went wrong !!!" });
   }
 };
@@ -194,7 +194,7 @@ exports.getReviewDetails = async (req,res) =>{
     if(response)
     return res.send(response)
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     res.status(500).send('Something Went Wrong !!!')
   }
 }

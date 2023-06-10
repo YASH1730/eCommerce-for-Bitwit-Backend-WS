@@ -26,7 +26,7 @@ async function Add_User(data, id) {
   // now write the data into the connection file here
   fs.writeFile("server/controller/chat/online.json", JSON.stringify(lastData), (err) => {
     if (err) {
-      console.log(err);
+      // console.log(err);
     }
     // console.log("User Added");
     return 1;
@@ -40,7 +40,7 @@ async function Logout_User(data, id) {
   // now write the data into the connection file here
   fs.writeFile("server/controller/chat/online.json", JSON.stringify(current_user_mail), (err) => {
     if (err) {
-      console.log(err);
+      // console.log(err);
     }
     // console.log("User Added");
     return 1;
@@ -69,7 +69,7 @@ async function Save_Message(payload){
         }
         return 1
     } catch (error) {
-        console.log(error)
+        // console.log(error)
     }
 }
 

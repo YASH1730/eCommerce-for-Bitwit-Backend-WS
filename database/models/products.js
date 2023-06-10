@@ -91,7 +91,7 @@ const product = mongoose.Schema({
   drawer_count: { type: Number, default: 0 },
   mobile_store: { type: Boolean, default: true },
   online_store: { type: Boolean, default: true },
-  range: { type: String, default: "None" },
+  range: { type: String, default: "Modern & Contemporary" },
   back_style: { type: String, default: "None" },
   package_length: { type: Number, default: 0 },
   package_height: { type: Number, default: 0 },
@@ -145,6 +145,7 @@ const product = mongoose.Schema({
   mirror_size : {type : Number, default : 0},
   silver: { type: Boolean,default : false },
   mirror: { type: Boolean, default : false },
+  dispatch_time: { type: String, default : "4 to 6 weeks" },
 });
 
 // module.exports = mongoose.model("product", product);

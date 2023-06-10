@@ -7,7 +7,7 @@ const merge = require('../../../database/models/mergeProduct')
 // Add merges 
 
 exports.addMergeProduct = async (req, res) => {
-    console.log(req.files);
+    // console.log(req.files);
 
 
 
@@ -32,7 +32,7 @@ exports.addMergeProduct = async (req, res) => {
     req.body.product_articles = JSON.parse(req.body.product_articles)
     req.body.selling_points = JSON.parse(req.body.selling_points)
 
-    console.log(req.body);
+    // console.log(req.body);
 
     // return res.send('all okay')
 
@@ -43,7 +43,7 @@ exports.addMergeProduct = async (req, res) => {
             res.send({ message: 'Merge added successfully !!!', response })
         })
         .catch((err) => {
-            console.log(err)
+            // console.log(err)
             res.status(203).send({ message: 'Some error occurred !!!' })
         })
 }
@@ -51,7 +51,7 @@ exports.addMergeProduct = async (req, res) => {
 // update merges 
 
 exports.updateMergeProduct = async (req, res) => {
-    console.log(req.files);
+    // console.log(req.files);
 
     let image_urls = []
 
@@ -87,7 +87,7 @@ exports.updateMergeProduct = async (req, res) => {
     req.body.selling_points = JSON.parse(req.body.selling_points);
 
 
-    console.log(req.body);
+    // console.log(req.body);
 
     // ============================
     if (req.body._id === undefined) return res.status(204).send('Payload is absent.')
@@ -102,7 +102,7 @@ exports.updateMergeProduct = async (req, res) => {
                 return res.status(203).send({ message: 'No entries found' })
         })
         .catch((error) => {
-            //console.log(error)
+            //// console.log(error)
             return res.status(203).send('Something Went Wrong')
         })
 }
@@ -111,7 +111,7 @@ exports.updateMergeProduct = async (req, res) => {
 
 exports.getListMergeProduct = async (req, res) => {
     try {
-        //  console.log(req.query)
+        //  // console.log(req.query)
         // merge.collection.drop()
         const params = JSON.parse(req.query.filter)
         let total = await merge.estimatedDocumentCount();
@@ -160,7 +160,7 @@ exports.getListMergeProduct = async (req, res) => {
         return res.send({ data: response, total: total })
             , { allowDiskUse: true };
     } catch (err) {
-        console.log("Error>>>", err);
+        // console.log("Error>>>", err);
         return res.status(500).send('Something Went Wrong !!!');
     }
 }
@@ -176,7 +176,7 @@ exports.getLastMergeProduct = async (req, res) => {
         if (response !== null) res.send(response);
         else res.status(200).send('M-01001');
     } catch (err) {
-        console.log(err)
+        // console.log(err)
         res.status(203).send({ message: 'Some error occurred !!!' })
     }
 }
@@ -185,7 +185,7 @@ exports.getLastMergeProduct = async (req, res) => {
 
 exports.deleteMergeProduct = async (req, res) => {
     // merge.collection.drop();
-    console.log(req.query.ID)
+    // console.log(req.query.ID)
     if (req.query.ID === 'undefined') return res.status(203).send('Please provide the valid ID')
     merge.deleteOne({ _id: req.query.ID })
         .then((data) => {
@@ -216,7 +216,7 @@ exports.updateBulk = async (req, res) => {
             res.status(200).send({ message: 'Merge Product is updated successfully.' })
         })
         .catch((error) => {
-            //console.log(error)
+            //// console.log(error)
             res.status(203).send('Something Went Wrong')
 
         })

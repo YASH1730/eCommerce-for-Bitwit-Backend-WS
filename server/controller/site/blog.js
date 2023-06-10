@@ -8,8 +8,8 @@ const uuid = require("uuid");
 // Api for card creation
 
 exports.createBlog = async (req, res) => {
-  // //console.log(req.user)
-  //console.log(req.files)
+  // //// console.log(req.user)
+  //// console.log(req.files)
 
   req.body.uuid = uuid.v4();
 
@@ -22,11 +22,11 @@ exports.createBlog = async (req, res) => {
   // saving data to db
   await SaveToDb.save()
     .then((response) => {
-      //console.log("Blog Added Successfully !!!");
+      //// console.log("Blog Added Successfully !!!");
       return res.send({ message: "Blog Added Successfully !!!", response });
     })
     .catch((err) => {
-      //console.log({ massage: "Blog Not Added !!!", err });
+      //// console.log({ massage: "Blog Not Added !!!", err });
       return res.status(203).send({ message: "Blog Not Added !!!" });
     });
 };
@@ -34,8 +34,8 @@ exports.createBlog = async (req, res) => {
 // API for update the blog
 
 exports.updateBlog = async (req, res) => {
-  // //console.log(req.user)
-  //console.log(req.files)
+  // //// console.log(req.user)
+  //// console.log(req.files)
 
   // req.body.uuid = uuid.v4();
 
@@ -45,11 +45,11 @@ exports.updateBlog = async (req, res) => {
   await blogDB
     .findOneAndUpdate({ _id: req.body._id }, req.body)
     .then((data) => {
-      //console.log("Blog Update Successfully !!!");
+      //// console.log("Blog Update Successfully !!!");
       return res.send({ message: "Blog Update Successfully !!!" });
     })
     .catch((err) => {
-      //console.log({ massage: "Blog Not Update !!!", err });
+      //// console.log({ massage: "Blog Not Update !!!", err });
       return res.status(203).send({ message: "Blog Not Update !!!" });
     });
 };
@@ -61,19 +61,19 @@ exports.getBlogHome = async (req, res) => {
   await blogDB
     .find()
     .then((data) => {
-      // //console.log("Data fetched", data);
+      // //// console.log("Data fetched", data);
       if (data != null) return res.send(data);
       else return res.send({ message: "No post yet" });
     })
 
     .catch((err) => {
-      // //console.log({ massage: "No Data !!!", err });
+      // //// console.log({ massage: "No Data !!!", err });
       return res.status(203).send({ massage: "No data !!!" });
     });
 };
 
 exports.uploadImage = async (req, res) => {
-  // //console.log(req.files);
+  // //// console.log(req.files);
 
   if (req.files["banner_image"] === undefined)
     return res.status(203).send({ message: "Image Is Required !!!" });
@@ -84,7 +84,7 @@ exports.uploadImage = async (req, res) => {
   await data
     .save()
     .then((data) => {
-      //console.log(data);
+      //// console.log(data);
       return res.send({
         url: data.image_url,
         message: "Copy your image url !!!",
@@ -98,15 +98,15 @@ exports.uploadImage = async (req, res) => {
 // get specific blog by uuid
 
 exports.getBlog = async (req, res) => {
-  //console.log(req.query)
+  //// console.log(req.query)
   await blogDB
     .findOne({ _id: req.query._id })
     .then((data) => {
-      //console.log(data)
+      //// console.log(data)
       res.send(data);
     })
     .catch((err) => {
-      //console.log(err)
+      //// console.log(err)
       return res.status("203").send({ message: "Something Went Wrong !!!" });
     });
 };
@@ -114,14 +114,14 @@ exports.getBlog = async (req, res) => {
 // delete specific blog by uuid
 
 exports.deleteBLog = async (req, res) => {
-  console.log(req.query);
+  // console.log(req.query);
   await blogDB
     .deleteOne({ _id: req.query._id })
     .then((data) => {
       return res.send({ message: "Blog Deleted Successfully !!!" });
     })
     .catch((err) => {
-      // console.log(err)
+      // // console.log(err)
       return res.status("203").send({ message: "Something Went Wrong !!!" });
     });
 };

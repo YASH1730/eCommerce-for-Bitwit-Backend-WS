@@ -7,8 +7,8 @@ const polish = require("../../../database/models/polish");
 
 exports.addPolish = async (req, res) => {
   try {
-    console.log(req.body);
-    console.log(req.files);
+    // console.log(req.body);
+    // console.log(req.files);
 
     let image_urls = [];
 
@@ -35,13 +35,13 @@ exports.addPolish = async (req, res) => {
     const data = polish(req.body);
 
     let response = await data.save();
-    console.log(response);
+    // console.log(response);
     if (response)
       return res.send({ message: "Polish Added successfully !!!", response });
 
     return res.status(203).send({ message: "Duplicate polish !!!" });
   } catch (err) {
-    console.log("Error >>> ", err);
+    // console.log("Error >>> ", err);
     return res.status(500).send("Something Went Wrong !!!");
   }
 };
@@ -65,7 +65,7 @@ exports.getPolish = async (req, res) => {
 
 exports.editPolish = async (req, res) => {
   try {
-    console.log(req.body);
+    // console.log(req.body);
 
     let image_urls = JSON.parse(req.body.savedOutDoor);
 
@@ -86,7 +86,7 @@ exports.editPolish = async (req, res) => {
     }
     req.body.inDoor_image = image_urls;
 
-    console.log(req.body);
+    // console.log(req.body);
 
     // return res.send('all good ')
     await polish
@@ -103,7 +103,7 @@ exports.editPolish = async (req, res) => {
         return res.status(500).send(error);
       });
   } catch (err) {
-    console.log(">>ERROR>> ", err);
+    // console.log(">>ERROR>> ", err);
     res.status(500).send("Something went Wrong !!!");
   }
 };
@@ -145,7 +145,7 @@ exports.changePolishStatus = async (req, res) => {
 
 exports.getPolishDetails = async (req, res) => {
   let response = await polish.findOne({ _id: req.query.ID });
-  console.log(response, req.query.ID);
+  // console.log(response, req.query.ID);
   return res.send(response);
 };
 

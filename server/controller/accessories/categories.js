@@ -61,7 +61,7 @@ exports.getCatagories = async (req, res) => {
     if (response) res.send(response);
     else res.send("no entries found");
   } catch (error) {
-    console.log(">>Error>>", error);
+    // console.log(">>Error>>", error);
     res.status(500).send(error);
   }
 };
@@ -145,7 +145,7 @@ exports.getCategoryList = async (req, res) => {
 
     if (response) return res.send(response);
   } catch (err) {
-    console.log("error >> ", err);
+    // console.log("error >> ", err);
     res.status(500).send("Something went wrong !!!");
   }
 };
@@ -153,14 +153,14 @@ exports.getCategoryList = async (req, res) => {
 // apply discount
 exports.applyDiscount = async (req, res) => {
   try {
-    console.log("body >>", req.body.discount_array);
+    // console.log("body >>", req.body.discount_array);
     if (req.body.discount_array.length > 0) {
       let discount = JSON.parse(req.body.discount_array);
-      console.log(discount);
+      // console.log(discount);
 
       let response = await Promise.all(
         discount.map(async (row) => {
-          console.log(row);
+          // console.log(row);
           return await categories.findOneAndUpdate(
             { category_name: row.name },
             { discount_limit: parseInt(row.discount) }
@@ -176,7 +176,7 @@ exports.applyDiscount = async (req, res) => {
         .send({ message: "Please select some categories first." });
     }
   } catch (error) {
-    console.log(">> error >>", error);
+    // console.log(">> error >>", error);
     res.status(500).send("Something Went Wrong !!!");
   }
 };
