@@ -1,5 +1,6 @@
 require("dotenv").config();
 const banner = require("../../../database/models/banner");
+const introBanner = require("../../../database/models/introBanner");
 
 // ================================================= Apis for banner =======================================================
 //==============================================================================================================================
@@ -124,6 +125,84 @@ exports.getSequence = async (req, res) => {
     return res.status(500).send({ message: "Something went wrang !!!" });
   }
 };
+
+// APIs for the mobile app banner intro 
+
+exports.addMobileIntro = async (req, res) => {
+  try {
+    if (req.files["banner"] !== undefined)
+    req.body.banner = `${process.env.Official}/${req.files["banner"][0].path}`;
+
+    let data  = introBanner(req.body);
+// console.log(req.body)
+    data = await data.save();
+
+    if(data)
+      return res.send({
+        status :200,
+        message : "Banner Added successfully.",
+        data
+      })
+    else
+      return res.status(203).send({
+        status :203,
+        message : "Banner Added successfully.",
+        data
+      })
+
+  } catch (err) {
+    console.log("error>>>", err);
+    return res.status(500).send({ message: "Something went wrang !!!" });
+  }
+};
+exports.listMobileIntro = async (req, res) => {
+  try {
+
+    let data = await introBanner.find().limit(10);
+
+    if(data)
+      return res.send({
+        status :200,
+        message : "Intro banner for mobile fetched successfully.",
+        data
+      })
+    else
+      return res.status(203).send({
+        status :203,
+        message : "No banners found for mobile .",
+        data
+      })
+
+  } catch (err) {
+    // console.log("error>>>", err);
+    return res.status(500).send({ message: "Something went wrang !!!" });
+  }
+};
+
+
+exports.deleteIntroBanner = async (req, res) => {
+  try {
+
+      let deleteCat = await introBanner.findOneAndDelete({_id : req.query.id});
+
+    if (deleteCat) {
+      res.send({
+        status: 200,
+        message: "Intro banner delete successfully.",
+      });
+    } else {
+      res.status(203).send({
+        status: 203,
+        message: "Error occurred in banner delete.",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+};
+
+
 
 // ================================================= Apis for banner ends =======================================================
 //==============================================================================================================================

@@ -2,6 +2,7 @@ require("dotenv").config();
 const product = require("../../../database/models/products");
 const hardware = require("../../../database/models/hardware");
 const polish = require("../../../database/models/polish");
+const catalog = require("../../../database/models/catalog");
 const { match } = require("assert");
 
 // ================================================= Apis for Products =======================================================
@@ -230,73 +231,70 @@ exports.updateBulk = async (req, res) => {
 // get present SKUs
 exports.getPresentSKUs = async (req, res) => {
   try {
-
     // console.log(req.query);
 
-    let response = await product
-      .aggregate([
-        { $match: { SKU: { $regex: req.query.search, $options: "i" } } },
+    let response = await product.aggregate([
+      { $match: { SKU: { $regex: req.query.search, $options: "i" } } },
 
-        {
-          $group: {
-            _id: "$_id",
-            SKU: { $first: "$SKU" },
-            product_title: { $first: "$product_title" },
-            category_name: { $first: "$category_name" },
-            featured_image: { $first: "$featured_image" },
-            length_main: { $first: "$length_main" },
-            breadth: { $first: "$breadth" },
-            height: { $first: "$height" },
-            selling_price: { $first: "$selling_price" },
-            discount_limit: { $first: "$discount_limit" },
-            assembly_part: { $first: "$assembly_part" },
-          },
+      {
+        $group: {
+          _id: "$_id",
+          SKU: { $first: "$SKU" },
+          product_title: { $first: "$product_title" },
+          category_name: { $first: "$category_name" },
+          featured_image: { $first: "$featured_image" },
+          length_main: { $first: "$length_main" },
+          breadth: { $first: "$breadth" },
+          height: { $first: "$height" },
+          selling_price: { $first: "$selling_price" },
+          discount_limit: { $first: "$discount_limit" },
+          assembly_part: { $first: "$assembly_part" },
         },
-        {
-          $lookup: {
-            from: "categories",
-            localField: "category_name",
-            foreignField: "category_name",
-            pipeline: [
-              {
-                $group: {
-                  _id: "$_id",
-                  discount_limit: { $first: "$discount_limit" },
-                },
+      },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "category_name",
+          foreignField: "category_name",
+          pipeline: [
+            {
+              $group: {
+                _id: "$_id",
+                discount_limit: { $first: "$discount_limit" },
               },
-            ],
-            as: "category"
-          }
+            },
+          ],
+          as: "category",
         },
-        {
-          $lookup: {
-            from: "stocks",
-            localField: "SKU",
-            foreignField: "product_id",
-            pipeline: [
-              {
-                $group: {
-                  _id: "$_id",
-                  SKU: { $first: "$product_id" },
-                  quantity: { $first: "$stock" },
-                  warehouse: { $first: "$warehouse" },
-                },
+      },
+      {
+        $lookup: {
+          from: "stocks",
+          localField: "SKU",
+          foreignField: "product_id",
+          pipeline: [
+            {
+              $group: {
+                _id: "$_id",
+                SKU: { $first: "$product_id" },
+                quantity: { $first: "$stock" },
+                warehouse: { $first: "$warehouse" },
               },
-            ],
-            as: "inventory"
-          }
+            },
+          ],
+          as: "inventory",
         },
-        { $limit: 5 },
-      ])
+      },
+      { $limit: 5 },
+    ]);
 
-      // checking the available inventory for product listing 
-      // if(response.length > 0)
-      // {
+    // checking the available inventory for product listing
+    // if(response.length > 0)
+    // {
 
-      //   let check = fine({$and : [{SKU : {$in : response.map(row=>row.SKU)}},{ quantity : {$gt : 0}}]})
+    //   let check = fine({$and : [{SKU : {$in : response.map(row=>row.SKU)}},{ quantity : {$gt : 0}}]})
 
-      // }
-
+    // }
 
     if (response) {
       // console.log(response);
@@ -306,12 +304,9 @@ exports.getPresentSKUs = async (req, res) => {
         res.status(203).send({ message: "Please Add Some Products First !!!" });
       }
     }
-
   } catch (error) {
     res.status(203).send({ message: "Some error occurred !!!" });
-
   }
-
 };
 
 // for product detail to show
@@ -463,7 +458,13 @@ exports.getArticlesId = async (req, res) => {
     const P_SKU = await product.aggregate([
       { $match: { SKU: { $regex: req.query.search, $options: "i" } } },
 
-      { $group: { _id: "$_id", SKU: { $first: "$SKU" } } },
+      {
+        $group: {
+          _id: "$_id",
+          SKU: { $first: "$SKU" },
+          product_title: { $first: "$product_title" },
+        },
+      },
       { $limit: 10 },
     ]);
     const H_SKU = await hardware.aggregate([
@@ -477,6 +478,88 @@ exports.getArticlesId = async (req, res) => {
     res.send({ P_SKU, H_SKU });
   } catch (error) {
     // console.log(error);
+    res.sendStatus(500);
+  }
+};
+
+// get ArticlesId
+
+exports.addCatalog = async (req, res) => {
+  try {
+    let data = catalog(req.body);
+    data = await data.save();
+    if (data) {
+      res.send({
+        status: 200,
+        message: "SKU added to catalog successfully.",
+        data
+      });
+    } else {
+      res.status(203).send({
+        status: 203,
+        message: "Facing problem while saving the data",
+        data : {}
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+};
+
+exports.listCatalog = async (req, res) => {
+  try {
+    let filter = {};
+    let list = "";
+
+    console.log(req.query.catalog_type)
+
+    if (req.query.catalog_type !== "" && req.query.catalog_type ) {
+      filter = { catalog_type: req.query.catalog_type };
+      list = await catalog.find(filter).limit(10);
+    }
+    else{
+      list = await catalog.find(filter);
+    }
+
+    if (list) {
+      res.send({
+        status: 200,
+        message: "Catalog list fetched successfully.",
+        data : list
+      });
+    } else {
+      res.status(203).send({
+        status: 203,
+        message: "Error occurred in fetching the list.",
+        data : []
+
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+};
+
+exports.deleteCatalog = async (req, res) => {
+  try {
+
+      let deleteCat = await catalog.findOneAndDelete({_id : req.query.id});
+
+    if (deleteCat) {
+      res.send({
+        status: 200,
+        message: "Catalog SKU delete successfully.",
+      });
+    } else {
+      res.status(203).send({
+        status: 203,
+        message: "Error occurred in SKU delete.",
+      });
+    }
+  } catch (error) {
+    console.log(error);
     res.sendStatus(500);
   }
 };

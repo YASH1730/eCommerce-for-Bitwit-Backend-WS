@@ -95,6 +95,7 @@ const upload = multer({
   { name: "banner_image" },
   { name: "polish_image" },
   { name: "design_image" },
+  { name: "banner" },
 ]);
 
 // middleware for encryption
@@ -257,6 +258,12 @@ route.get("/getHardwareDropdown", AuthJwt, products.getHardwareDropdown);
 
 route.get("/getArticlesId", products.getArticlesId);
 
+route.post("/addCatalog",upload, products.addCatalog);
+
+route.get("/listCatalog", products.listCatalog);
+
+route.delete("/deleteCatalog", products.deleteCatalog);
+
 // =============== Merge Product routes =======================
 
 // add product
@@ -297,6 +304,12 @@ route.get("/listBanner", AuthJwt, banner.listBanner);
 route.get("/getBannerDetails", AuthJwt, banner.getBannerDetails);
 
 route.get("/getSequence", AuthJwt, banner.getSequence);
+
+route.post("/addMobileIntro", AuthJwt,upload, banner.addMobileIntro);
+
+route.get("/listMobileIntro", AuthJwt, banner.listMobileIntro);
+
+route.delete("/deleteIntroBanner", AuthJwt, banner.deleteIntroBanner);
 
 // ================== Order Routes =============================
 
