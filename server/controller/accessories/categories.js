@@ -57,12 +57,32 @@ exports.addCatagories = async (req, res) => {
 
 exports.getCatagories = async (req, res) => {
   try {
-    let response = await categories.find().sort({ category_name: 1 });
-    if (response) res.send(response);
-    else res.send("no entries found");
+    let data = await categories
+      .find({}, { _id: 1, category_name: 1, category_status: 1 })
+      .sort({ category_name: 1 });
+    if (data.length > 0)
+      return res
+        .status(200)
+        .send({
+          status: 200,
+          message: "Catagories list fetched successfully.",
+          data,
+        });
+    else    return res
+    .status(203)
+    .send({
+      status: 203,
+      message: "Please add some catagories.",
+      data : [],
+    });
   } catch (error) {
-    // console.log(">>Error>>", error);
-    res.status(500).send(error);
+    res
+    .status(500)
+    .send({
+      status: 500,
+      message: "Something went wrong !!!",
+      data : [],
+    });
   }
 };
 

@@ -50,17 +50,38 @@ exports.addSubCatagories = async (req, res) => {
 // get categories ===================
 
 exports.getSubCatagories = async (req, res) => {
-  // subCategories.collection.drop();
-
-  await subCategories
-    .find()
-    .then((data) => {
-      if (data) res.send(data);
-      else res.send("no entries found");
-    })
-    .catch((error) => {
-      res.status(500).send(error);
+  try {
+    let data = await subCategories
+      .find({}, {  _id : 1,
+        category_id : 1,
+        category_name : 1,
+        sub_category_name : 1,
+        sub_category_status : 1, })
+      .sort({ sub_category_name: 1 });
+    if (data.length > 0)
+      return res
+        .status(200)
+        .send({
+          status: 200,
+          message: "Catagories list fetched successfully.",
+          data,
+        });
+    else    return res
+    .status(203)
+    .send({
+      status: 203,
+      message: "Please add some catagories.",
+      data : [],
     });
+  } catch (error) {
+    res
+    .status(500)
+    .send({
+      status: 500,
+      message: "Something went wrong !!!",
+      data : [],
+    });
+  }
 };
 
 // edit categories ======================

@@ -31,17 +31,32 @@ exports.addPrimaryMaterial = async (req, res) => {
 // get categories ===================
 
 exports.getPrimaryMaterial = async (req, res) => {
-  // primaryMaterial.collection.drop();
+  try {
 
-  await primaryMaterial
-    .find()
-    .then((data) => {
-      if (data) res.send(data);
-      else res.send("no entries found");
+    let data = await primaryMaterial.find({},{
+      primaryMaterial_name : 1,
+      _id : 1
     })
-    .catch((error) => {
-      res.status(500).send(error);
-    });
+
+    if(data.length > 0)
+    return res.status(200).send({
+      status : 200,
+      message : "List fetched for primary materials.",
+      data
+    })
+    else
+    return res.status(200).send({
+      status : 200,
+      message : "Please add some data.",
+      data
+    })
+  } catch (error) {
+   return res.status(500).send({
+    status : 500,
+    message : "Something went wrong !!!",
+    data : []
+   }) 
+  }
 };
 
 // edit categories ====================== 626cb3a9b09eb22c92f25303

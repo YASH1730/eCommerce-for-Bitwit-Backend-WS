@@ -52,17 +52,13 @@ exports.addDraft = async (req, res) => {
     let previousImages = [];
     let videoURLs = [];
 
-    // console.log(req.files);
-
-    // console.log(req.body);
-
     // getting the DID
     id = await draft.find({}, { _id: 0, DID: 1 }).sort({ _id: -1 }).limit(1);
 
-    if (id) {
+    if (id.length > 0) {
       data.DID = `DID-0${parseInt(id[0].DID.split("-")[1]) + 1}`;
     } else {
-      data.DID = "D-01001";
+      data.DID = "DID-01001";
     }
 
     // global var for switch case
@@ -261,8 +257,6 @@ exports.addDraft = async (req, res) => {
         data.payload = req.body;
         break;
       case "deleteBlog":
-     
-
         data.message = "Alert : Blog deletion request.";
 
         data.payload = await blog.findOne({ _id: req.body._id });
@@ -350,7 +344,6 @@ exports.addDraft = async (req, res) => {
         data.payload = req.body;
         break;
       case "deleteCustomer":
-      
         data.message = "Alert : Customer deletion request.";
 
         data.payload = await customer.findOne(
@@ -408,13 +401,11 @@ exports.addDraft = async (req, res) => {
         data.payload = req.body;
         break;
       case "deleteBanner":
-       
         data.message = "Alert : Banner deletion request.";
 
         data.payload = await banner.findOne({ uuid: data.AID });
         break;
       case "applyCOD":
-       
         data.message = "Alert : Update COD limits.";
         data.payload = req.body;
         break;
@@ -423,7 +414,6 @@ exports.addDraft = async (req, res) => {
         data.payload = req.body;
         break;
       case "deleteCoupon":
-      
         data.message = "Alert : Coupon deletion request.";
 
         data.payload = await coupon.findOne({ coupon_code: data.AID });
@@ -456,13 +446,11 @@ exports.addDraft = async (req, res) => {
         data.payload = req.body;
         break;
       case "addReply":
-        
         data.message = "Alert : Add reply request.";
 
         data.payload = req.body;
         break;
       case "deleteReview":
-      
         data.message = "Alert : Review deletion request.";
         data.payload = await review.findOne({ _id: data.AID });
         break;
@@ -534,15 +522,12 @@ exports.addDraft = async (req, res) => {
         data.payload = req.body;
         break;
       case "addOrderFulfillment":
-       
         req.body.items = JSON.parse(req.body.items);
-        req.body.DID = data.DID;
         // console.log(data);
         data.message = "Alert : Order fulfillment  request.";
         data.payload = req.body;
         break;
       case "updateProductStatus":
-      
         // console.log(req.body);
         // check for product ID
         if (req.body._id === undefined)
@@ -553,7 +538,6 @@ exports.addDraft = async (req, res) => {
         data.payload = req.body;
         break;
       case "updateMergeProductStatus":
-   
         if (req.body._id === undefined)
           return res.status(204).send("Payload is absent.");
 
@@ -562,8 +546,6 @@ exports.addDraft = async (req, res) => {
         data.payload = req.body;
         break;
       case "deletePinCode":
-       
-
         data.message = "Alert : Pin code deletion request.";
         data.payload = await pincode.findOne({ _id: data.AID });
         break;
@@ -584,15 +566,11 @@ exports.addDraft = async (req, res) => {
         data.payload = req.body;
         break;
       default:
-        // console.log("May be operation type not found.");
+      // console.log("May be operation type not found.");
     }
 
-    // console.log(data);
-
-    // return res.send('ALL okay')
-
     if (!data.payload)
-      return res.status(203).send({ message: "Type not found." });
+      return res.status(203).send({ status: 203, message: "Type not found." });
 
     // console.log(data);
 
@@ -600,72 +578,64 @@ exports.addDraft = async (req, res) => {
 
     let response = await insert.save();
 
-    if (response) return res.send({ message: "Draft Added !!!" });
+    if (response)
+      return res.status(200).send({ status: 200, message: "Draft Added !!!" });
   } catch (err) {
-    // console.log("Error>> ", err);
-    res.status(500).send({ message: "Something went wrong" });
+    console.log("Error>> ", err);
+    res.status(500).send({ status: 500, message: "Something went wrong" });
   }
 };
+
+async function finalDrop(req, res) {
+  try {
+    // console.log(req.body)
+    let response = await draft.updateOne(
+      { DID: req.body.DID },
+      { draftStatus: req.body.draftStatus, AID: req.body.AID },
+      );
+    return response.modifiedCount > 0
+      ? res
+          .status(200)
+          .send({ status: 200, message: "Draft resolved successfully." })
+      : res
+          .status(203)
+          .send({ status: 203, message: "Error while resolving the draft." });
+  } catch (err) {
+    console.log(err);
+    return res
+      .status(500)
+      .send({ status: 500, message: "Some Error Occurred !!!" });
+  }
+}
 
 // Apis for Drop the Data into related table
 exports.dropDraft = async (req, res) => {
   try {
-    // console.log(req.files);
-    // console.log(JSON.parse(req.body));
-    // console.log(req.body);
-
-    // return res.send('All okay ')
+    console.log(req.body)
     let response = "";
     let data = "";
-    switch (req.body.operation) {
+
+    let {operation} = req.body
+
+    if(!operation) return res.status(203).send({
+      status : 203,
+      message : "Operation is missing !!!"
+    })
+
+    switch (operation) {
       case "insertProduct":
+        req.body.SKU = await getSKU();
         data = product(req.body);
-        response = await data.save();
-        if (response) {
-          //console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus, AID: req.body.AID }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        return await data.save() ? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" }); 
       case "updateProduct":
-        req.body.SKU = "P-02964"
-        product
-          .findOneAndUpdate({ _id: "63f3938ea923c8570f8590de" }, req.body)
-          .then(() => {
-            //console.log(req.body.operation)
-            draft
-              .updateOne(
-                { DID: req.body.DID },
-                { draftStatus: req.body.draftStatus }
-              )
-              .then(() => {
-                return res.send({ message: "Draft Resolved !!!" });
-              })
-              .catch((err) => {
-                // console.log(err);
-                return res
-                  .status(500)
-                  .send({ message: "Some Error Occurred !!!" });
-              });
-          })
-          .catch((err) => {
-            // console.log(err);
-            return res.status(500).send({ message: "Some Error Occurred !!!" });
-          });
-        break;
+        // console.log(res.body)
+        return await product.findOneAndUpdate({ _id: req.body._id }, req.body) ? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" }); 
       case "insertHardware":
+        req.body.SKU = await getSKU();
         data = hardware(req.body);
         response = await data.save();
         if (response) {
@@ -1439,15 +1409,17 @@ exports.dropDraft = async (req, res) => {
         }
         break;
       default:
-        // console.log("May be operation type not found.");
+        return res.status(203).send({
+          status : 203,
+          message : "Payload the important payload missing !!!"
+        })
         break;
     }
-
-    // return res.send("All Okay");
-    // if (!data.payload) return res.sendStatus("203").send("Type not found.");
   } catch (err) {
-    // console.log("Error >> ", err);
-    return res.status(500).send("Something went wrong !!!");
+    console.log("Error >> ", err);
+    return res
+      .status(500)
+      .send({ status: 500, message: "Something went wrong !!!" });
   }
 };
 
@@ -1475,61 +1447,38 @@ exports.getDraftID = async (req, res) => {
 // draft getting
 exports.getDraft = async (req, res) => {
   try {
-    // product.collection.drop();
-    const params = JSON.parse(req.query.filter);
-    let total = await draft.estimatedDocumentCount();
-    // // console.log(total);
-
-    // // console.log(params);
-    // filter Section Starts
+    let { pending, approved, page, limit } = req.query;
 
     let query = {};
-    let filterArray = [];
 
-    // if (params.title !== "")
-    //   filterArray.push({
-    //     product_title: { $regex: params.title, $options: "i" },
-    //   });
+    if (pending === "true") query = { draftStatus: "Pending" };
+    else if (approved === "true") query = { draftStatus: "Approved" };
 
-    // if (params.SKU) filterArray.push({ SKU: params.SKU });
+    const response = await draft
+      .find(query)
+      .sort({ _id: -1 })
+      .skip(page > 0 ? (page - 1) * limit : 0)
+      .limit(limit);
+    let total = await draft.estimatedDocumentCount();
 
-    // if (params.category)
-    //   filterArray.push({
-    //     category_name: { $regex: params.category, $options: "i" },
-    //   });
-
-    // if (params.subCategory)
-    //   filterArray.push({
-    //     sub_category_name: { $regex: params.subCategory, $options: "i" },
-    //   });
-
-    // // for checking the filter is free or not
-    // if (filterArray.length > 0) {
-    //   query = { $and: filterArray };
-
-    //   // this is for search document count
-    //   let count = await draft.aggregate([
-    //     { $match: query },
-    //     { $count: "Count" },
-    //   ]);
-    //   total = count.length > 0 ? count[0].Count : 0;
-    // }
-
-    // filter ends
-
-    // final operation center
-
-    const response = await draft.aggregate([
-      { $match: query },
-      { $sort: { _id: -1 } },
-      { $skip: params.page > 0 ? (params.page - 1) * params.limit : 0 },
-      { $limit: params.limit },
-    ]);
-
-    return res.send({ data: response, total: total }), { allowDiskUse: true };
+    if (response)
+      return res.status(200).send({
+        status: 200,
+        message: "Draft list fetched successfully.",
+        data: response,
+        total: total,
+      });
+    else
+      return res.status(203).send({
+        status: 203,
+        message: "Facing an issue while fetching the draft list.",
+        data: response,
+        total: total,
+      });
   } catch (err) {
-    // console.log("Error>>>", err);
-    return res.status(500).send("Something Went Wrong !!!");
+    return res
+      .status(500)
+      .send({ status: 500, message: "Something Went Wrong !!!" });
   }
 };
 
@@ -1580,13 +1529,25 @@ exports.getMetaDraft = async (req, res) => {
   }
 };
 
-exports.update = async (req, res) => {
-  // console.log(req.query);
-  let response = await draft.findOneAndUpdate(
-    { $or: [{ DID: req.query.DID }, { _id: req.query.id }] },
-    { DID: req.query.changeTo }
-  );
-  res.send("Okay");
-};
+// exports.update = async (req, res) => {
+//   // console.log(req.query);
+//   let response = await draft.findOneAndUpdate(
+//     { $or: [{ DID: req.query.DID }, { _id: req.query.id }] },
+//     { DID: req.query.changeTo }
+//   );
+//   res.send("Okay");
+// };
+
+async function getSKU() {
+  let res = await product.find().count();
+  return res > 0 ? `P-0${res + 1001}` : "P-01001";
+}
+
+
+async function getHKU() {
+  let res = await hardware.find().count();
+  return res > 0 ? `H-0${res + 1001}` : "H-01001";
+}
 
 // ================================================= Apis for Products Ends =======================================================
+

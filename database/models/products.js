@@ -146,6 +146,7 @@ const product = mongoose.Schema({
   silver: { type: Boolean,default : false },
   mirror: { type: Boolean, default : false },
   dispatch_time: { type: String, default : "4 to 6 weeks" },
+  video_link: { type: String, default : "" },
 });
 
 // module.exports = mongoose.model("product", product);

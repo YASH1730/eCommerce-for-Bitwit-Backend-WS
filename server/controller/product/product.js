@@ -75,7 +75,7 @@ exports.getListProduct = async (req, res) => {
         product_title: { $regex: params.title, $options: "i" },
       });
 
-    if (params.SKU) filterArray.push({ SKU: params.SKU });
+    if (params.SKU) filterArray.push({ SKU: params.SKU.toUpperCase() });
 
     if (params.category)
       filterArray.push({
@@ -98,8 +98,6 @@ exports.getListProduct = async (req, res) => {
       ]);
       total = count.length > 0 ? count[0].Count : 0;
     }
-
-    // filter ends
 
     // final operation center
 
@@ -407,7 +405,7 @@ exports.getHardwareDropdown = async (req, res) => {
     let response = await hardware.find(
       {},
       {
-        _id: 0,
+        _id: 1,
         SKU: 1,
         title: 1,
         sub_category_name: 1,
@@ -443,10 +441,17 @@ exports.getHardwareDropdown = async (req, res) => {
       });
     }
     // console.log(data);
-    return res.send(data);
+    return res.send({
+      status : 200,
+      message : "Hardware data fetched successfully.",
+      data
+    });
   } catch (err) {
-    // console.log(err);
-    return res.sendStatus(500).send("Something went wrong !!!");
+    return res.status(500).send({
+      status : 200,
+      message : "Something went wrong !!!",
+      data : {}
+    });
   }
 };
 
