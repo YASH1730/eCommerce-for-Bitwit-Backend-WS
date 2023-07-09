@@ -46,20 +46,41 @@ exports.addPolish = async (req, res) => {
   }
 };
 
-// get categories ===================
+// get polish ===================
 
 exports.getPolish = async (req, res) => {
-  // polish.collection.drop()
-  await polish
-    .find()
-    .then((data) => {
-      if (data) res.send(data);
-      else res.send("no entries found");
+  try {
+
+    let { list } = req.query;
+
+    if (list === "true") list = {};
+    else
+      list = {};
+
+
+    let data = await polish.find({},list)
+
+    if(data.length > 0)
+    return res.status(200).send({
+      status : 200,
+      message : "List fetched for polish materials.",
+      data
     })
-    .catch((error) => {
-      res.status(500).send(error);
-    });
+    else
+    return res.status(200).send({
+      status : 200,
+      message : "Please add some data.",
+      data
+    })
+  } catch (error) {
+   return res.status(500).send({
+    status : 500,
+    message : "Something went wrong !!!",
+    data : []
+   }) 
+  }
 };
+
 
 // edit categories ====================== 626cb3a9b09eb22c92f25303
 

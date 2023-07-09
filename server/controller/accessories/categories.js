@@ -57,8 +57,16 @@ exports.addCatagories = async (req, res) => {
 
 exports.getCatagories = async (req, res) => {
   try {
+    let {list} = req.query;
+
+    if(list === 'true')
+    list = {};
+    else
+    list = { _id: 1, category_name: 1, category_status: 1 };
+    
+
     let data = await categories
-      .find({}, { _id: 1, category_name: 1, category_status: 1 })
+      .find({}, list)
       .sort({ category_name: 1 });
     if (data.length > 0)
       return res
@@ -69,9 +77,9 @@ exports.getCatagories = async (req, res) => {
           data,
         });
     else    return res
-    .status(203)
+    .status(200)
     .send({
-      status: 203,
+      status: 200,
       message: "Please add some catagories.",
       data : [],
     });
@@ -89,9 +97,7 @@ exports.getCatagories = async (req, res) => {
 // edit categories ======================
 
 exports.editCatagories = async (req, res) => {
-  //console.log(req.body);
-  //console.log(req.files['category_image'])
-
+  
   if (req.files["category_image"] !== undefined)
     req.body.category_image = `${process.env.Official}/${req.files["category_image"][0].path}`;
 
@@ -140,6 +146,7 @@ exports.changeStatus = async (req, res) => {
     });
 };
 
+
 // list category for discount fields
 exports.getCategoryList = async (req, res) => {
   try {
@@ -153,6 +160,7 @@ exports.getCategoryList = async (req, res) => {
         $group: {
           _id: "$_id",
           category_name: { $first: "$category_name" },
+          category_image: { $first: "$category_image" },
           discount_limit: { $first: "$discount_limit" },
         },
       },

@@ -33,10 +33,17 @@ exports.addPrimaryMaterial = async (req, res) => {
 exports.getPrimaryMaterial = async (req, res) => {
   try {
 
-    let data = await primaryMaterial.find({},{
-      primaryMaterial_name : 1,
-      _id : 1
-    })
+    let { list } = req.query;
+
+    if (list === "true") list = {};
+    else
+      list = {
+        primaryMaterial_name : 1,
+        _id : 1
+      };
+
+
+    let data = await primaryMaterial.find({},list)
 
     if(data.length > 0)
     return res.status(200).send({

@@ -781,6 +781,44 @@ exports.getWarehouse = async (req,res) => {
   }
 }
 
+
+exports.getWarehouse = async (req, res) => {
+  try {
+
+    let { list } = req.query;
+
+    if (list === "true") list = {};
+    else
+      list = {
+        primaryMaterial_name : 1,
+        _id : 1
+      };
+
+
+    let data = await warehouse.find({},list)
+
+    if(data.length > 0)
+    return res.status(200).send({
+      status : 200,
+      message : "List fetched for warehouse materials.",
+      data
+    })
+    else
+    return res.status(200).send({
+      status : 200,
+      message : "Please add some data.",
+      data
+    })
+  } catch (error) {
+   return res.status(500).send({
+    status : 500,
+    message : "Something went wrong !!!",
+    data : []
+   }) 
+  }
+};
+
+
 exports.getWarehouseDetails = async (req,res) => {
   try {
 

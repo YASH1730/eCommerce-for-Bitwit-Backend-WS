@@ -211,12 +211,14 @@ exports.addDraft = async (req, res) => {
           },
         });
 
-        if (duplicate === null) {
+        console.log(duplicate)
+        if (!duplicate) {
           data.message = "Alert : New Category adding request.";
           data.payload = req.body;
         } else {
           res.status(203);
           return res.send({
+            status : 203,
             message: "Category Name is already exist in sub category!!!",
           });
         }
@@ -612,8 +614,7 @@ async function finalDrop(req, res) {
 exports.dropDraft = async (req, res) => {
   try {
     console.log(req.body)
-    let response = "";
-    let data = "";
+    let data = " ";
 
     let {operation} = req.body
 
@@ -630,558 +631,146 @@ exports.dropDraft = async (req, res) => {
         .status(500)
         .send({ message: "Some Error Occurred !!!" }); 
       case "updateProduct":
-        // console.log(res.body)
         return await product.findOneAndUpdate({ _id: req.body._id }, req.body) ? finalDrop(req,res): res
         .status(500)
         .send({ message: "Some Error Occurred !!!" }); 
       case "insertHardware":
         req.body.SKU = await getSKU();
         data = hardware(req.body);
-        response = await data.save();
-        if (response) {
-          //(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus, AID: req.body.AID }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        return await data.save() ? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "updateHardware":
-        response = await hardware.findOneAndUpdate(
+        return await hardware.findOneAndUpdate(
           { SKU: req.body.AID },
           req.body
-        );
-        if (response) {
-          // //console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        ) ? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "deleteHardware":
-        response = await hardware.findOneAndRemove({ SKU: req.body.SKU });
-        // console.log(req.body.operation);
-        if (response) {
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+         return await hardware.findOneAndRemove({ SKU: req.body.SKU }) ? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "insertCategory":
         data = categories(req.body);
-        response = await data.save();
-        if (response) {
-          //console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus, AID: response._id }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+         return await data.save()? finalDrop(req,res): res
+         .status(500)
+         .send({ message: "Some Error Occurred !!!" }); 
       case "updateCategory":
-        response = await categories.findOneAndUpdate(
+        return await categories.findOneAndUpdate(
           { _id: req.body.AID },
           req.body
-        );
-        if (response) {
-          // //console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        )? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "insertSubCategory":
         data = subCategories(req.body);
-        response = await data.save();
-        if (response) {
-          //console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus, AID: response._id }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        return  await data.save()? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "updateSubCategory":
-        response = await subCategories.findOneAndUpdate(
+        return await subCategories.findOneAndUpdate(
           { _id: req.body.AID },
           req.body
-        );
-        if (response) {
-          // //console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        )? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "deleteBlog":
-        response = await blog.findOneAndRemove({ _id: req.body._id });
-        // console.log(req.body.operation);
-        if (response) {
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        return await blog.findOneAndRemove({ _id: req.body._id }) ? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "insertMaterial":
-        // console.log(req.body);
         data = material(req.body);
-        response = await data.save();
-        if (response) {
-          //console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus, AID: response._id }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        return await data.save() ? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "updateMaterial":
-        material
+        return await material
           .findOneAndUpdate({ _id: req.body.AID }, req.body)
-          .then(() => {
-            //console.log(req.body.operation)
-            draft
-              .updateOne(
-                { DID: req.body.DID },
-                { draftStatus: req.body.draftStatus }
-              )
-              .then(() => {
-                return res.send({ message: "Draft Resolved !!!" });
-              })
-              .catch((err) => {
-                // console.log(err);
-                return res
-                  .status(500)
-                  .send({ message: "Some Error Occurred !!!" });
-              });
-          })
-          .catch((err) => {
-            // console.log(err);
-            return res.status(500).send({ message: "Some Error Occurred !!!" });
-          });
-        break;
+          ? finalDrop(req,res): res
+          .status(500)
+          .send({ message: "Some Error Occurred !!!" });
       case "insertPolish":
         data = polish(req.body);
-        response = await data.save();
-        if (response) {
-          //console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus, AID: response._id }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        return await data.save() ? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "updatePolish":
-        polish
+        return await polish
           .findOneAndUpdate({ _id: req.body.AID }, req.body)
-          .then(() => {
-            //console.log(req.body.operation)
-            draft
-              .updateOne(
-                { DID: req.body.DID },
-                { draftStatus: req.body.draftStatus }
-              )
-              .then(() => {
-                return res.send({ message: "Draft Resolved !!!" });
-              })
-              .catch((err) => {
-                // console.log(err);
-                return res
-                  .status(500)
-                  .send({ message: "Some Error Occurred !!!" });
-              });
-          })
-          .catch((err) => {
-            // console.log(err);
-            return res.status(500).send({ message: "Some Error Occurred !!!" });
-          });
-        break;
+          ? finalDrop(req,res): res
+          .status(500)
+          .send({ message: "Some Error Occurred !!!" });
       case "insertBlog":
         data = blog(req.body);
-        response = await data.save();
-        if (response) {
-          //console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus, AID: response.uuid }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        return await data.save()? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "updateBlog":
-        response = await blog.findOneAndUpdate({ _id: req.body.AID }, req.body);
-        if (response) {
-          // //console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        return await blog.findOneAndUpdate({ _id: req.body.AID }, req.body)? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "deleteCustomer":
-        response = await customer.findOneAndRemove({ CID: req.body.CID });
-        // console.log(req.body.operation);
-        if (response) {
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        return await customer.findOneAndRemove({ CID: req.body.CID }) ? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "createOrder":
-        // console.log(req.body);
         data = order(req.body);
-        response = await data.save();
-        if (response) {
-          //console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus, AID: response.O }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        return await data.save()? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "addBanner":
-        // console.log(req.body);
         data = banner(req.body);
-        response = await data.save();
-        if (response) {
-          //// console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus, AID: response.uuid }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        return await data.save()? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "deleteBanner":
-        response = await banner.findOneAndRemove({ uuid: req.body.uuid });
-        // console.log(req.body.operation);
-        if (response) {
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        return await banner.findOneAndRemove({ uuid: req.body.uuid })? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "updateBanner":
-        response = await banner.findOneAndUpdate(
+        return  await banner.findOneAndUpdate(
           { uuid: req.body.AID },
           req.body
-        );
-        if (response) {
-          // //// console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        )? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "applyCOD":
-        response = await cod.findOneAndUpdate(
+      return await cod.findOneAndUpdate(
           { limit: req.body.limit },
           req.body,
           { upsert: true }
-        );
-        if (response) {
-          //// console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus, AID: response._id }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        )? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "addCoupon":
-        // console.log(req.body);
         data = coupon(req.body);
-        response = await data.save();
-        if (response) {
-          //// console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus, AID: response.coupon_code }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        return await data.save()? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "deleteCoupon":
-        response = await coupon.findOneAndRemove({ _id: req.body._id });
-        // // console.log(req.body.operation);
-        if (response) {
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        return await coupon.findOneAndRemove({ _id: req.body._id })? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "updateCoupon":
-        response = await coupon.findOneAndUpdate(
+        return  await coupon.findOneAndUpdate(
           { coupon_code: req.body.AID },
           req.body
-        );
-        if (response) {
-          // //// console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        )? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "addReview":
-        // console.log(req.body);
-        data = review(req.body);
-        response = await data.save();
-        if (response) {
-          //// console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus, AID: response._id }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        data =  review(req.body);
+        return await data.save()? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "updateReview":
-        response = await review.findOneAndUpdate(
+        return await review.findOneAndUpdate(
           { _id: req.body.AID },
           req.body
-        );
-        if (response) {
-          // //// console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        )? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "addReply":
         let reply = JSON.parse(req.body.reply);
 
@@ -1190,224 +779,58 @@ exports.dropDraft = async (req, res) => {
           { admin_reply: 1 }
         );
 
-        // console.log(old);
-
         reply = [...old.admin_reply, ...reply];
 
-        response = await review.findOneAndUpdate(
+        return await review.findOneAndUpdate(
           { _id: req.body._id },
           { admin_reply: reply }
-        );
-        if (response) {
-          // //// console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        )
       case "deleteReview":
-        response = await review.findOneAndRemove({ _id: req.body._id });
-        // // console.log(req.body.operation);
-        if (response) {
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        return await review.findOneAndRemove({ _id: req.body._id })? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "addCustomer":
         // console.log(req.body);
         data = customer(req.body);
-        response = await data.save();
-        if (response) {
-          //// console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus, AID: response.CID }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        return await data.save()? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "editOrder":
-        response = await order.findOneAndUpdate({ O: req.body.AID }, req.body);
-        if (response) {
-          // //// console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        return await order.findOneAndUpdate({ O: req.body.AID }, req.body)? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "addOrderFulfillment":
         // console.log(req.body);
-        response = await order.findOneAndUpdate({ O: req.body.AID }, req.body);
-        if (response) {
-          // //// console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        return  await order.findOneAndUpdate({ O: req.body.AID }, req.body)? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "updateProductStatus":
-        product
-          .findOneAndUpdate({ _id: req.body.AID }, req.body)
-          .then(() => {
-            //// console.log(req.body.operation)
-            draft
-              .updateOne(
-                { DID: req.body.DID },
-                { draftStatus: req.body.draftStatus }
-              )
-              .then(() => {
-                return res.send({ message: "Draft Resolved !!!" });
-              })
-              .catch((err) => {
-                // console.log(err);
-                return res
-                  .status(500)
-                  .send({ message: "Some Error Occurred !!!" });
-              });
-          })
-          .catch((err) => {
-            // console.log(err);
-            return res.status(500).send({ message: "Some Error Occurred !!!" });
-          });
-        break;
+       return await  product
+          .findOneAndUpdate({ _id: req.body.AID }, req.body)? finalDrop(req,res): res
+          .status(500)
+          .send({ message: "Some Error Occurred !!!" });
       case "updateMergeProductStatus":
-        merge
+        return await merge
           .findOneAndUpdate({ _id: req.body.AID }, req.body)
-          .then(() => {
-            //// console.log(req.body.operation)
-            draft
-              .updateOne(
-                { DID: req.body.DID },
-                { draftStatus: req.body.draftStatus }
-              )
-              .then(() => {
-                return res.send({ message: "Draft Resolved !!!" });
-              })
-              .catch((err) => {
-                // console.log(err);
-                return res
-                  .status(500)
-                  .send({ message: "Some Error Occurred !!!" });
-              });
-          })
-          .catch((err) => {
-            // console.log(err);
-            return res.status(500).send({ message: "Some Error Occurred !!!" });
-          });
-        break;
+          ? finalDrop(req,res): res
+          .status(500)
+          .send({ message: "Some Error Occurred !!!" });
       case "deletePinCode":
-        // console.log(req.body);
-        response = await pincode.findOneAndRemove({ _id: req.body._id });
-        // // console.log(req.body.operation);
-        if (response) {
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        return await pincode.findOneAndRemove({ _id: req.body._id })? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "addWarehouse":
-        // console.log(req.body);
         data = warehouse(req.body);
-        let res2 = await data.save();
-        if (res2) {
-          //// console.log(req.body.operation)
-          draft
-            .updateOne(
-              { DID: req.body.DID },
-              { draftStatus: req.body.draftStatus, AID: response.CID }
-            )
-            .then(() => {
-              return res.send({ message: "Draft Resolved !!!" });
-            })
-            .catch((err) => {
-              // console.log(err);
-              return res
-                .status(500)
-                .send({ message: "Some Error Occurred !!!" });
-            });
-        }
-        break;
+        return await data.save()? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       case "updateWarehouse":
-        let response = await warehouse.findOneAndUpdate(
+        return await warehouse.findOneAndUpdate(
           { _id: req.body.AID },
           req.body
-        );
-        if (response) {
-          //// console.log(req.body.operation)
-          response = await draft.updateOne(
-            { DID: req.body.DID },
-            { draftStatus: req.body.draftStatus }
-          );
-          if (response) {
-            return res.send({ message: "Draft Resolved !!!" });
-          }
-        }
-        break;
+        )? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       default:
         return res.status(203).send({
           status : 203,
