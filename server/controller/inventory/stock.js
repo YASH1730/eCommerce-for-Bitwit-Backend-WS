@@ -4,6 +4,7 @@ const outward = require("../../../database/models/outward");
 // const product = require("../../../database/models/products");
 const transfer = require("../../../database/models/transfer");
 const uuid = require("uuid");
+const purchase_order = require("../../../database/models/purchase_order");
 
 // ============================ APIs for Stock ======================================
 
@@ -616,3 +617,29 @@ exports.getStockSKU = async (req, res) => {
     res.status(500).send("Something Went Wrong !!!");
   }
 };
+
+
+// get the list of the Purchase Orders 
+exports.listPurseOrder= async (req,res)=>{
+  try {
+    let list = await purchase_order.find({},{_v : 0,_id : 0})
+    if(list)
+    return res.status(200).send({
+      status : 200,
+      message : "List of purchase order fetched successfully.",
+      data : list
+    })
+    else
+    return res.status(203).send({
+      status : 203,
+      message : "Facing an issue while fetching the list !!!",
+      data : []
+    })
+  } catch (error) {
+    return res.status(203).send({
+      status : 203,
+      message : "Facing an issue while fetching the list !!!",
+      data : []
+    })   
+  }
+}

@@ -2,9 +2,7 @@ require("dotenv").config();
 const customer = require("../../../database/models/customer");
 const { v4: uuidv4 } = require("uuid");
 const Crypt = require("cryptr");
-const crypt = new Crypt(
-  "asdf465f4s2d1f65e4s32d1f6534361e65##$#$#$#23$#5er135##4dfd434<>?<?"
-);
+const crypt = new Crypt(process.env.PASS_Secrete);
 // const decryptedString = crypt.decrypt(encryptedString);
 
 // ================================================= Apis for banner =======================================================

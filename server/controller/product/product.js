@@ -517,8 +517,6 @@ exports.listCatalog = async (req, res) => {
     let filter = {};
     let list = "";
 
-    console.log(req.query.catalog_type)
-
     if (req.query.catalog_type !== "" && req.query.catalog_type ) {
       filter = { catalog_type: req.query.catalog_type };
       list = await catalog.find(filter).limit(10);

@@ -18,21 +18,11 @@ const cp = require("../../../database/models/customProduct");
 const merge = require("../../../database/models/mergeProduct");
 const pincode = require("../../../database/models/pincode");
 const warehouse = require("../../../database/models/warehouse");
+const purchase = require("../../../database/models/purchase_order");
 
 // crypt
 const Crypt = require("cryptr");
-const crypt = new Crypt(
-  "asdf465f4s2d1f65e4s32d1f6534361e65##$#$#$#23$#5er135##4dfd434<>?<?"
-);
-// Schema({
-//     DID : {type: String, unique : true},
-//     AID : {type : String},
-//     type : {type : String},
-//     payload : {type : String}
-//  },{timestamps: {
-//      createdAt: 'created_at',
-//      updatedAt: 'updated_at'
-//    }})
+const crypt = new Crypt(process.env.PASS_Secrete);
 
 // ================================================= Apis for Draft Products =======================================================
 //==============================================================================================================================
@@ -52,6 +42,14 @@ exports.addDraft = async (req, res) => {
     let previousImages = [];
     let videoURLs = [];
 
+    let {operation} = req.body;
+    
+    if (!operation)
+    return res.status(203).send({
+      status : 203,
+      message : "Please Operation Identification."
+    })
+
     // getting the DID
     id = await draft.find({}, { _id: 0, DID: 1 }).sort({ _id: -1 }).limit(1);
 
@@ -64,7 +62,7 @@ exports.addDraft = async (req, res) => {
     // global var for switch case
 
     // selection stage
-    switch (req.body.operation) {
+    switch (operation) {
       case "insertProduct":
         let Product_image_urls = [];
 
@@ -200,6 +198,7 @@ exports.addDraft = async (req, res) => {
       case "deleteHardware":
         data.message = "Alert : HardWare deletion request.";
         data.payload = await hardware.findOne({ _id: req.body._id });
+
       case "insertCategory":
         if (req.files["category_image"] !== undefined)
           req.body.category_image = `${process.env.Official}/${req.files["category_image"][0].path}`;
@@ -460,9 +459,7 @@ exports.addDraft = async (req, res) => {
         req.body.CID = `CID-${uuid.v4()}`;
         if (req.files["profile_image"] !== undefined)
           req.body.profile_image = `${process.env.Official}/${req.files["profile_image"][0].path}`;
-
         req.body.password = crypt.encrypt(req.body.password);
-
         req.body.address = JSON.parse(req.body.shipping);
         req.body.billing = JSON.parse(req.body.billing);
         data.message = "Alert : Add customer request.";
@@ -567,14 +564,26 @@ exports.addDraft = async (req, res) => {
         data.message = "Alert : Delete warehouse request.";
         data.payload = req.body;
         break;
-      default:
-      // console.log("May be operation type not found.");
-    }
+      case "add_purchase_order" :
+        req.body.product_articles = JSON.parse(req.body.product_articles)
+        req.body.hardware_articles = JSON.parse(req.body.hardware_articles)
+        console.log(req.body)
+        data.message = "Alert : Placing a purchase order request.";
+        data.payload = req.body;
+        break;
+        case "deletePurchaseOrder":
+          data.message = "Alert : Purchase order deletion request.";
+          data.payload = await purchase.findOne({ PID: req.body.PID });  break; 
+          default:
+        return res.status(203).send({ status: 203, message: "Type not found." });
+      }
+      
+      
+      console.log(data.payload)
 
     if (!data.payload)
       return res.status(203).send({ status: 203, message: "Type not found." });
 
-    // console.log(data);
 
     const insert = draft(data);
 
@@ -613,7 +622,7 @@ async function finalDrop(req, res) {
 // Apis for Drop the Data into related table
 exports.dropDraft = async (req, res) => {
   try {
-    console.log(req.body)
+    // console.log(req.body)
     let data = " ";
 
     let {operation} = req.body
@@ -635,7 +644,7 @@ exports.dropDraft = async (req, res) => {
         .status(500)
         .send({ message: "Some Error Occurred !!!" }); 
       case "insertHardware":
-        req.body.SKU = await getSKU();
+        req.body.SKU = await getHKU();
         data = hardware(req.body);
         return await data.save() ? finalDrop(req,res): res
         .status(500)
@@ -790,7 +799,6 @@ exports.dropDraft = async (req, res) => {
         .status(500)
         .send({ message: "Some Error Occurred !!!" });
       case "addCustomer":
-        // console.log(req.body);
         data = customer(req.body);
         return await data.save()? finalDrop(req,res): res
         .status(500)
@@ -831,13 +839,28 @@ exports.dropDraft = async (req, res) => {
         )? finalDrop(req,res): res
         .status(500)
         .send({ message: "Some Error Occurred !!!" });
+      case "add_purchase_order":
+          req.body.PID = await getPID();
+          data = purchase(req.body);
+          return await data.save() ? finalDrop(req,res): res
+          .status(500)
+          .send({ message: "Some Error Occurred !!!" });
+      case "add_purchase_order":
+          req.body.PID = await getPID();
+          data = purchase(req.body);
+          return await data.save() ? finalDrop(req,res): res
+          .status(500)
+          .send({ message: "Some Error Occurred !!!" });
+      case "deletePurchaseOrder":
+         return await purchase.findOneAndRemove({ PID: req.body.PID }) ? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" });
       default:
         return res.status(203).send({
           status : 203,
-          message : "Payload the important payload missing !!!"
+          message : "No Operation found !!!"
         })
-        break;
-    }
+      }
   } catch (err) {
     console.log("Error >> ", err);
     return res
@@ -966,11 +989,18 @@ async function getSKU() {
   return res > 0 ? `P-0${res + 1001}` : "P-01001";
 }
 
+async function getPID() {
+  let res = await purchase.find().count();
+  return res > 0 ? `PID-0${res + 1001}` : "PID-01001";
+}
+
 
 async function getHKU() {
-  let res = await hardware.find().count();
-  return res > 0 ? `H-0${res + 1001}` : "H-01001";
+  let res = await customer.find()
+  // console.log(res[0].address)
+  // return res > 0 ? `H-0${res + 1001}` : "H-01001";
 }
+getHKU()
 
 // ================================================= Apis for Products Ends =======================================================
 

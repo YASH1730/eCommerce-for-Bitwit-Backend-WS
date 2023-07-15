@@ -67,13 +67,6 @@ exports.listUser = async (req, res) => {
   }
 };
 
-// async function printTest(){
-//   let res = await userDB.deleteOne({_id : '646c9604a2c59b65d3ba681d'})
-//   console.log(res)
-// }
-// printTest()
-// for login Api
-
 // function for generate JWT
 
 
