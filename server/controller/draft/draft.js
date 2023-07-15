@@ -161,7 +161,7 @@ exports.addDraft = async (req, res) => {
         // selling points conversation in array
         req.body.selling_points = JSON.parse(req.body.selling_points);
 
-        // console.log(req.body)
+        
 
         data.message = "Alert : New HardWare adding request.";
 
@@ -191,14 +191,13 @@ exports.addDraft = async (req, res) => {
 
         req.body.primary_material = req.body.primary_material.split(",");
 
-        // console.log(req.body);
+        
         data.message = `Alert : Hardware ${req.body.SKU} updating request.`;
         data.payload = req.body;
         break;
       case "deleteHardware":
         data.message = "Alert : HardWare deletion request.";
         data.payload = await hardware.findOne({ _id: req.body._id });
-
       case "insertCategory":
         if (req.files["category_image"] !== undefined)
           req.body.category_image = `${process.env.Official}/${req.files["category_image"][0].path}`;
@@ -210,7 +209,7 @@ exports.addDraft = async (req, res) => {
           },
         });
 
-        console.log(duplicate)
+        
         if (!duplicate) {
           data.message = "Alert : New Category adding request.";
           data.payload = req.body;
@@ -377,7 +376,7 @@ exports.addDraft = async (req, res) => {
         data.payload = req.body;
         break;
       case "addBanner":
-        // console.log(req.files);
+        
         // Web
         if (req.files["web_banner"] !== undefined)
           req.body.web_banner = `${process.env.Official}/${req.files["web_banner"][0].path}`;
@@ -385,19 +384,19 @@ exports.addDraft = async (req, res) => {
         if (req.files["mobile_banner"] !== undefined)
           req.body.mobile_banner = `${process.env.Official}/${req.files["mobile_banner"][0].path}`;
         req.body.uuid = uuid.v4();
-        // console.log(req.body);
+        
         data.message = "Alert : Add Banner request.";
         data.payload = req.body;
         break;
       case "updateBanner":
-        // console.log(req.files);
+        
         // Web
         if (req.files["web_banner"] !== undefined)
           req.body.web_banner = `${process.env.Official}/${req.files["web_banner"][0].path}`;
         // Mobile
         if (req.files["mobile_banner"] !== undefined)
           req.body.mobile_banner = `${process.env.Official}/${req.files["mobile_banner"][0].path}`;
-        // console.log(req.body);
+        
         data.message = "Alert : Update Banner request.";
         data.payload = req.body;
         break;
@@ -466,7 +465,7 @@ exports.addDraft = async (req, res) => {
         data.payload = req.body;
         break;
       case "editOrder":
-        // console.log(req.body);
+        
         let products = JSON.parse(req.body.quantity);
         let productPrice = JSON.parse(req.body.product_price);
         let discount = JSON.parse(req.body.discount_per_product);
@@ -506,7 +505,7 @@ exports.addDraft = async (req, res) => {
           return sum + products[row] * productPrice[row];
         }, 0);
 
-        // console.log(price,Cprice)
+        
 
         req.body.product_price = productPrice;
         req.body.discount_per_product = discount;
@@ -522,12 +521,12 @@ exports.addDraft = async (req, res) => {
         break;
       case "addOrderFulfillment":
         req.body.items = JSON.parse(req.body.items);
-        // console.log(data);
+        
         data.message = "Alert : Order fulfillment  request.";
         data.payload = req.body;
         break;
       case "updateProductStatus":
-        // console.log(req.body);
+        
         // check for product ID
         if (req.body._id === undefined)
           return res.status(204).send("Payload is absent.");
@@ -554,7 +553,6 @@ exports.addDraft = async (req, res) => {
         break;
       case "updateWarehouse":
         // check for product ID
-        // console.log('hello')
         if (req.body._id === undefined)
           return res.status(204).send("Payload is absent.");
         data.message = "Alert : Update Warehouse request.";
@@ -567,7 +565,7 @@ exports.addDraft = async (req, res) => {
       case "add_purchase_order" :
         req.body.product_articles = JSON.parse(req.body.product_articles)
         req.body.hardware_articles = JSON.parse(req.body.hardware_articles)
-        console.log(req.body)
+        
         data.message = "Alert : Placing a purchase order request.";
         data.payload = req.body;
         break;
@@ -578,8 +576,6 @@ exports.addDraft = async (req, res) => {
         return res.status(203).send({ status: 203, message: "Type not found." });
       }
       
-      
-      console.log(data.payload)
 
     if (!data.payload)
       return res.status(203).send({ status: 203, message: "Type not found." });
@@ -599,7 +595,7 @@ exports.addDraft = async (req, res) => {
 
 async function finalDrop(req, res) {
   try {
-    // console.log(req.body)
+    
     let response = await draft.updateOne(
       { DID: req.body.DID },
       { draftStatus: req.body.draftStatus, AID: req.body.AID },
@@ -622,7 +618,7 @@ async function finalDrop(req, res) {
 // Apis for Drop the Data into related table
 exports.dropDraft = async (req, res) => {
   try {
-    // console.log(req.body)
+    
     let data = " ";
 
     let {operation} = req.body
@@ -724,6 +720,7 @@ exports.dropDraft = async (req, res) => {
         .status(500)
         .send({ message: "Some Error Occurred !!!" });
       case "createOrder":
+        req.body.O = getO();
         data = order(req.body);
         return await data.save()? finalDrop(req,res): res
         .status(500)
@@ -808,7 +805,7 @@ exports.dropDraft = async (req, res) => {
         .status(500)
         .send({ message: "Some Error Occurred !!!" });
       case "addOrderFulfillment":
-        // console.log(req.body);
+        
         return  await order.findOneAndUpdate({ O: req.body.AID }, req.body)? finalDrop(req,res): res
         .status(500)
         .send({ message: "Some Error Occurred !!!" });
@@ -950,7 +947,7 @@ exports.getMetaDraft = async (req, res) => {
   };
   try {
     const response = await draft.find({}, { _id: 1, draftStatus: 1 });
-    // // console.log(typeof(response))
+
     if (response) {
       response.map((row) => {
         switch (row.draftStatus) {
@@ -970,7 +967,7 @@ exports.getMetaDraft = async (req, res) => {
 
     return res.send(data);
   } catch (error) {
-    // console.log(error);
+    console.log(error);
     res.sendStatus("500").send({ message: "Something Went Wrong !!!" });
   }
 };
@@ -996,11 +993,16 @@ async function getPID() {
 
 
 async function getHKU() {
-  let res = await customer.find()
-  // console.log(res[0].address)
-  // return res > 0 ? `H-0${res + 1001}` : "H-01001";
+  let res = await hardware.find().count();
+  return res > 0 ? `H-0${res + 1001}` : "H-01001";
 }
-getHKU()
+
+
+async function getO() {
+  
+  let res = await order.find().count();
+  return res > 0 ? `O-0${res + 1001}` : "O-01001";
+};
 
 // ================================================= Apis for Products Ends =======================================================
 
