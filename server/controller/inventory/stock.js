@@ -643,3 +643,20 @@ exports.listPurseOrder= async (req,res)=>{
     })   
   }
 }
+
+
+exports.searchPurchaseOrder = async (req, res) => {
+  try {
+    let {search} = req.query;
+    // const H_SKU = await hardware.find({},{_id : 0,SKU : 1})
+    const PID = await purchase_order.aggregate([
+      { $match: { PID: { $regex: search, $options: "i" } } },
+      { $limit: 10 },
+    ]);
+
+    res.send({ PID });
+  } catch (error) {
+    // console.log(error);
+    res.sendStatus(500);
+  }
+};

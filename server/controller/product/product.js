@@ -390,12 +390,16 @@ exports.getHardwareDropdown = async (req, res) => {
       hinge: [],
       knob: [],
       door: [],
+      handle: [],
       fitting: [],
       polish: [],
-      handle: [],
       fabric: [],
-      textile: [],
+      wheel: [],
+      ceramic_drawer: [],
+      ceramic_tiles: [],
       dial: [],
+      cane: [],
+      hook: [],
     };
 
     let polishRes = await polish.find({}, { _id: 1, polish_name: 1 });
@@ -414,7 +418,22 @@ exports.getHardwareDropdown = async (req, res) => {
     );
 
     if (response) {
-      // // console.log(response)
+      
+      data.wheel = response.filter((row) => {
+        return row.sub_category_name.toLowerCase() === "wheel";
+      });
+      data.ceramic_drawer = response.filter((row) => {
+        return row.sub_category_name.toLowerCase() === "ceramic drawer";
+      });
+      data.ceramic_tiles = response.filter((row) => {
+        return row.sub_category_name.toLowerCase() === "ceramic tiles";
+      });
+      data.cane = response.filter((row) => {
+        return row.sub_category_name.toLowerCase() === "cane";
+      });
+      data.hook = response.filter((row) => {
+        return row.sub_category_name.toLowerCase() === "hook";
+      });
       data.hinge = response.filter((row) => {
         return row.sub_category_name.toLowerCase() === "hinge";
       });

@@ -805,5 +805,6 @@ route.get("/searchWarehouseDetails", AuthJwt, order.searchWarehouseDetails);
 // purchase order
 
 route.get("/getPurchaseOrder",AuthJwt,stock.listPurseOrder)
+route.get("/searchPurchaseOrder",AuthJwt,stock.searchPurchaseOrder)
 
 module.exports = route;

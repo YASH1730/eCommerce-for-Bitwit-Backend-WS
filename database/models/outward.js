@@ -1,6 +1,7 @@
 const { default: mongoose } = require("mongoose");
 
 const outward = mongoose.Schema({
+  PID: { type: String },
   product_articles: { type: Array, default: [] },
   hardware_articles: { type: Array, default: [] },
   warehouse: { type: String },

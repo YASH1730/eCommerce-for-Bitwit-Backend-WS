@@ -38,7 +38,19 @@ app.set("view engine", "pug");
 app.set("views", "views");
 
 // set uploads as static
-app.use("/upload", express.static(path.join(__dirname, "upload")));
+// app.use("/upload", express.static(path.join(__dirname, "upload")));
+
+// Serve the image file
+app.get('/upload/:image', (req, res) => {
+  let {image} = req.params;
+  // console.log(image)
+  if(!image) res.status(203).send({
+    status : 203,
+    message : "Please provide the image name."
+  })
+  const imagePath = path.join(__dirname, 'upload', image); // Replace 'image.jpg' with your image file name and extension
+  res.sendFile(imagePath);
+});
 app.use(express.static("frontEnd/build"));
 
 // requiring the routes

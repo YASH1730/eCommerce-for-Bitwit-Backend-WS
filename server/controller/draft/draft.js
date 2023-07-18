@@ -137,6 +137,41 @@ exports.addDraft = async (req, res) => {
 
         data.payload = req.body;
         break;
+      case "variantProduct":
+        image_urls = [];
+
+        if (req.files["product_image"] !== undefined) {
+          req.files["product_image"].map((val) => {
+            image_urls.push(`${process.env.Official}/${val.path}`);
+          });
+        }
+
+        req.body.primary_material = req.body.primary_material.split(",");
+        req.body.polish = req.body.polish.split(",");
+        req.body.warehouse = req.body.warehouse.split(",");
+
+        // check for previously saved image
+        let previousImages = JSON.parse(req.body.savedImages);
+
+        if (previousImages.length > 0) image_urls.push(...previousImages);
+
+        req.body.product_image = image_urls;
+
+        // check for Images
+        if (req.files["featured_image"] !== undefined)
+          req.body.featured_image = `${process.env.Official}/${req.files["featured_image"][0].path}`;
+        if (req.files["specification_image"] !== undefined)
+          req.body.specification_image = `${process.env.Official}/${req.files["specification_image"][0].path}`;
+        if (req.files["mannequin_image"] !== undefined)
+          req.body.mannequin_image = `${process.env.Official}/${req.files["mannequin_image"][0].path}`;
+        // selling points conversation in array
+        req.body.selling_points = JSON.parse(req.body.selling_points);
+
+        data.message = "Alert : New Product adding request.";
+
+        data.payload = req.body;
+
+        break;
       case "insertHardware":
         if (req.files["hardware_image"] !== undefined) {
           if (req.files["hardware_image"] !== null) {
@@ -630,6 +665,12 @@ exports.dropDraft = async (req, res) => {
 
     switch (operation) {
       case "insertProduct":
+        req.body.SKU = await getSKU();
+        data = product(req.body);
+        return await data.save() ? finalDrop(req,res): res
+        .status(500)
+        .send({ message: "Some Error Occurred !!!" }); 
+      case "variantProduct":
         req.body.SKU = await getSKU();
         data = product(req.body);
         return await data.save() ? finalDrop(req,res): res

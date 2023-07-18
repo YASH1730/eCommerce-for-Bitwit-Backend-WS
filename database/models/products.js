@@ -4,7 +4,7 @@ const { stringify } = require("nodemon/lib/utils");
 const product = mongoose.Schema({
   SKU: { type: String, unique: true },
   ACIN: { type: String },
-  CVW: { type: Number },
+  CVW: { type: Number, default : 0 },
   product_title: { type: String },
   category_name: { type: String, default: "None" },
   category_id: { type: String, default: "None" },
@@ -58,7 +58,7 @@ const product = mongoose.Schema({
   assembly_required: { type: String },
   assembly_part: { type: Number, default: 1 },
   legs: { type: String, default: "None" },
-  mirror_length: { type: Number },
+  mirror_length: { type: Number, default : 0 },
   mirror_width: { type: Number },
   silver_weight: { type: Number, default: 0 },
   joints: { type: String },

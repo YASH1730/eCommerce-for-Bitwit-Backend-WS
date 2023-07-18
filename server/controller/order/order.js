@@ -6,10 +6,11 @@ const product = require("../../../database/models/products");
 const abandoned = require("../../../database/models/abandoned");
 const operations = require("../../../database/models/product_operations");
 const cp = require("../../../database/models/customProduct");
-const { v4: uuidv4 } = require("uuid");
+// const { v4: uuidv4 } = require("uuid");
 const wishlist = require("../../../database/models/wishlist");
-const { count } = require("../../../database/models/order");
+// const { count } = require("../../../database/models/order");
 const warehouse = require("../../../database/models/warehouse");
+// const purchase_order = require("../../../database/models/purchase_order");
 // ================================================= Apis for order =======================================================
 //==============================================================================================================================
 
@@ -853,3 +854,5 @@ exports.searchWarehouseDetails = async (req,res) => {
     return res.status(500).send("Something went wrong !!!");
   }
 }
+
+
