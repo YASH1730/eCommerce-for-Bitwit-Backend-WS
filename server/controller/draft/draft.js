@@ -41,7 +41,8 @@ exports.addDraft = async (req, res) => {
     let image_urls = [];
     let previousImages = [];
     let videoURLs = [];
-
+    let checkForCategory = 0;
+    let checkForSubCategory = 0;
     let {operation} = req.body;
     
     if (!operation)
@@ -268,28 +269,50 @@ exports.addDraft = async (req, res) => {
         if (req.files["sub_category_image"] !== undefined)
           req.body.sub_category_image = `${process.env.Official}/${req.files["sub_category_image"][0].path}`;
 
-        // const data = subCategories(req.body);
-        let check = await categories.findOne({
-          category_name: `${req.body.sub_category_name}`,
-        });
+          console.log(req.body.sub_category_name)
+         checkForCategory = await categories.find({
+          category_name: { $regex : `${req.body.sub_category_name}`,$options : "i"},
+        }).count();
+         checkForSubCategory = await subCategories.find({$and : [
+          {category_name: { $regex : `${req.body.category_name}`,$options : "i"}},
+          {sub_category_name: { $regex : `${req.body.sub_category_name}`,$options : "i"}}
+        ]
+        }).count();
 
-        if (check === null) {
+        console.log(checkForCategory,checkForSubCategory)
+        if (checkForCategory === 0 && checkForSubCategory === 0) {
           data.message = "Alert : New Sub Category update request.";
           data.payload = req.body;
         } else {
-          res.status(203);
-          res.send({
+          return res.status(203).send({
             message: "Sub Category Name is already exist in category!!!",
           });
         }
-
         break;
       case "updateSubCategory":
         if (req.files["sub_category_image"] !== undefined)
           req.body.sub_category_image = `${process.env.Official}/${req.files["sub_category_image"][0].path}`;
 
-        data.message = "Alert : New Sub Category update request.";
-        data.payload = req.body;
+          checkForCategory = await categories.find({
+            category_name: { $regex : `${req.body.sub_category_name}`,$options : "i"},
+          }).count();
+          checkForSubCategory = await subCategories.find({$and : [
+            {category_name: { $regex : `${req.body.category_name}`,$options : "i"}},
+            {sub_category_name: { $regex : `${req.body.sub_category_name}`,$options : "i"}}
+          ]
+          }).count();
+  
+          console.log(checkForCategory,checkForSubCategory)
+          if (checkForCategory === 0 && checkForSubCategory === 0) {
+            data.message = "Alert : New Sub Category update request.";
+            data.payload = req.body;
+    
+          } else {
+            return res.status(203).send({
+              message: "Sub Category Name is already exist in category!!!",
+            });
+          } 
+
         break;
       case "deleteBlog":
         data.message = "Alert : Blog deletion request.";
@@ -1045,5 +1068,11 @@ async function getO() {
   return res > 0 ? `O-0${res + 1001}` : "O-01001";
 };
 
+// async function deleteCat(){
+//   let list = await subCategories.findOneAndDelete({sub_category_name : "Easy chair"})
+//   console.log(list)
+// }
+
+// deleteCat()
 // ================================================= Apis for Products Ends =======================================================
 

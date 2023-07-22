@@ -10,19 +10,18 @@ exports.uploadPincodeCSV = async (req, res) => {
       return res.status(400).send({
         message: "Please select or formate the file in correct manner.",
       });
-
     let data = [];
-
     await fs
       .createReadStream(
         path.resolve(
           __dirname,
-          "../../upload",
+          "../../../upload",
           req.files["COD_File"][0].path.split("/")[1]
         )
       )
       .pipe(csv.parse({ headers: true }))
       .on("data", (row) => {
+        console.log(row)
         data.push(row);
       })
       .on("error", (err) => {
@@ -38,7 +37,7 @@ exports.uploadPincodeCSV = async (req, res) => {
             // console.log(row)
             let formateData = {
               pincode: row.pincode || row.Pincode || row.pin_code || 0,
-              delivery_status: row.Status !== undefined ? row.Status : true ,
+              delivery_status: (row.Status && row.Status.toLowerCase() === 'true') ? true : false ,
             };
             return pincode.findOneAndUpdate(
               { pincode: formateData.pincode },
@@ -52,7 +51,7 @@ exports.uploadPincodeCSV = async (req, res) => {
           return res.send({ message: "CSV File Uploaded Successfully !!!" });
       });
   } catch (err) {
-    // console.log("Error >> ", err);
+    console.log("Error >> ", err);
     res.status(500).send({ message: "Something went wrong !!!" });
   }
 };

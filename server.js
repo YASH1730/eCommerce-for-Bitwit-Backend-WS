@@ -38,7 +38,7 @@ app.set("view engine", "pug");
 app.set("views", "views");
 
 // set uploads as static
-// app.use("/upload", express.static(path.join(__dirname, "upload")));
+app.use("/upload", express.static(path.join(__dirname, "upload")));
 
 // Serve the image file
 app.get('/upload/:image', (req, res) => {
