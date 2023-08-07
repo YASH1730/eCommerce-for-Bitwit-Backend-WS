@@ -111,7 +111,6 @@ exports.addDraft = async (req, res) => {
             image_urls.push(`${process.env.Official}/${val.path}`);
           });
         }
-
         // check for previously saved image
         previousImages = JSON.parse(req.body.savedImages);
 
@@ -152,7 +151,7 @@ exports.addDraft = async (req, res) => {
         req.body.warehouse = req.body.warehouse.split(",");
 
         // check for previously saved image
-        let previousImages = JSON.parse(req.body.savedImages);
+         previousImages = JSON.parse(req.body.savedImages);
 
         if (previousImages.length > 0) image_urls.push(...previousImages);
 
@@ -245,7 +244,7 @@ exports.addDraft = async (req, res) => {
           },
         });
 
-        
+        console.log(duplicate)
         if (!duplicate) {
           data.message = "Alert : New Category adding request.";
           data.payload = req.body;

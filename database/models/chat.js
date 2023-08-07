@@ -5,7 +5,8 @@ const chat = mongoose.Schema({
   to : {type : String},
   sender_email : {type : String},
   receiver_email : {type : String},
-  message : {type : String},
+  message : {type : String,default : ""},
+  files : {type : Array,default : []},
   time : {type : Date, default : Date.now()}
 });
 

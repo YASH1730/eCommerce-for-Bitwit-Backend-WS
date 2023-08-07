@@ -33,6 +33,7 @@ const review = require("./controller/product/review");
 const chat = require("./controller/chat/chat");
 // axios
 const { default: axios } = require("axios");
+const COD = require("../database/models/COD");
 // middleware for the multer setup
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -96,6 +97,7 @@ const upload = multer({
   { name: "polish_image" },
   { name: "design_image" },
   { name: "banner" },
+  { name: "images" },
 ]);
 
 // middleware for encryption
@@ -806,5 +808,7 @@ route.get("/searchWarehouseDetails", AuthJwt, order.searchWarehouseDetails);
 
 route.get("/getPurchaseOrder",AuthJwt,stock.listPurseOrder)
 route.get("/searchPurchaseOrder",AuthJwt,stock.searchPurchaseOrder)
+
+route.post("/uploadImageForSend",upload,chat.uploadImageForSend)
 
 module.exports = route;

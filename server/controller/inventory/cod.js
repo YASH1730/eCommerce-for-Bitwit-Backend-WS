@@ -3,6 +3,9 @@ const COD = require("../../../database/models/COD");
 const fs = require("fs");
 const path = require("path");
 const csv = require("fast-csv");
+const products = require("../../../database/models/products");
+const uuid = require("uuid");
+const customer = require("../../../database/models/customer");
 
 exports.uploadPincodeCSV = async (req, res) => {
   try {
@@ -145,3 +148,141 @@ exports.getCod = async (req, res) => {
     res.status(500).send({ message: "Something went wrong !!!" });
   }
 }
+
+
+
+exports.uploadProduct = async (req, res) => {
+  try {
+    
+    let data = [];
+    await fs
+      .createReadStream(
+        path.resolve(
+          __dirname,
+          "../../../data",
+          "product_data.csv"
+        )
+      )
+      .pipe(csv.parse({ headers: true }))
+      .on("data", (row) => {
+        console.log(row)
+        data.push(row);
+      })
+      .on("error", (err) => {
+        // console.log((err) => // console.log(err));
+        return res
+          .status(202)
+          .send({ message: "File doesn't formatted in right scheme !!!" });
+      })
+      .on("end", async (rowCount) => {
+        // promise to save data
+        let response = await Promise.all(
+          data.map((row) => {
+
+
+            if(row.Material2 = "" && row.Material !== '' )
+            row.primary_material = [row.Material,row.Material2]
+            else if(row.Material !== '')
+            row.primary_material = [row.Material]
+            else
+            row.primary_material = []
+
+            row.primary_material_name = row.Material + ","+ row.Material
+            // ACIN number for variations
+            row.ACIN = uuid.v4();
+
+            // convert to integer
+            row.selling_price = row.selling_price ? parseInt(row.selling_price) : 0
+            row.MRP = row.MRP ? parseInt(row.MRP) : 0
+            row.length_main = row.length_main ? parseInt(row.length_main) : 0
+            row.breadth = row.breadth ? parseInt(row.breadth) : 0
+            row.height = row.height ? parseInt(row.height) : 0
+            row.status = true
+
+
+            return products.findOneAndUpdate(
+              { SKU: row.SKU },
+              row,
+              { upsert: true }
+            );
+          })
+        );
+        // promise ends
+        if (response)
+          return res.send({ message: "CSV File Uploaded Successfully !!!" });
+      });
+  } catch (err) {
+    console.log("Error >> ", err);
+    res.status(500).send({ message: "Something went wrong !!!" });
+  }
+};
+
+// exports.uploadCustomer = async (req, res) => {
+//   try {
+    
+//     let data = [];
+//     await fs
+//       .createReadStream(
+//         path.resolve(
+//           __dirname,
+//           "../../../data",
+//           "Customer_Data.csv"
+//         )
+//       )
+//       .pipe(csv.parse({ headers: true }))
+//       .on("data", (row) => {
+//         // console.log(row)
+//         data.push(row);
+//       })
+//       .on("error", (err) => {
+//         // console.log((err) => // console.log(err));
+//         return res
+//           .status(202)
+//           .send({ message: "File doesn't formatted in right scheme !!!" });
+//       })
+//       .on("end", async (rowCount) => {
+//         // promise to save data
+//         let response = await Promise.all(
+//           data.map((row) => {
+
+//             if(row.email && row.email !== undefined )
+// {
+//             row.CID =  `CID-${uuid.v4()}`;
+
+//             if(row.name1 !== "" && row.name2 !== '' )
+//             row.username = row.name1 +" "+ row.name2
+//             else if(row.name1 !== '')
+//             row.username = row.name1 
+//             else
+//             row.username = ""
+
+//             if (row.mobile) row.mobile = parseInt(row.mobile.split("+91")[1])
+//             else delete row.mobile  
+
+//             delete row.name1
+//             delete row.name2
+
+//             console.log(row)
+
+//             return customer.findOneAndUpdate(
+//               { CID: row.CID },
+//               row,
+//               { upsert: true }
+//             );
+// }
+// else {
+// // console.log("empty",row.email)
+//   return 1;
+// }
+//           })
+//         );
+//         // promise ends
+//         if (response)
+//           return res.send({ message: "CSV File Uploaded Successfully !!!" });
+//       });
+//   } catch (err) {
+//     console.log("Error >> ", err);
+//     res.status(500).send({ message: "Something went wrong !!!" });
+//   }
+// };
+

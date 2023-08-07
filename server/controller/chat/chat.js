@@ -1,6 +1,8 @@
 const user = require("../../../database/models/user");
 const customer = require("../../../database/models/customer");
 const chat = require("../../../database/models/chat");
+const client = require("../../redis/redis-config");
+
 
 exports.listCustomer = async (req, res) => {
   try {
@@ -19,14 +21,29 @@ exports.listCustomer = async (req, res) => {
 };
 exports.listTeam = async (req, res) => {
   try {
-    let team = await user.find({}, { user_name: 1, email: 1 });
+    let team = await user.find({}, { user_name: 1, email: 1, _id: 0 });
+
     if (team) {
-      team = team.map((row) => ({ name: row.user_name, email: row.email }));
-      return res.send(team);
+      team = await Promise.allSettled(
+        team.map(async (row) => {
+          let ids = await client.get(row.email);
+          return { name: row.user_name, email: row.email, id: ids };
+        })
+      );
+      team = team.map((row) => row.value);
+      return res.status(200).send({
+        status: 200,
+        message: "List fetched successfully.",
+        data: team,
+      });
     }
   } catch (error) {
     // console.log(error);
-    return res.status(500).send("Something went wrong !!!");
+    return res.status(500).send({
+      status: 500,
+      message: "Something went Wrong.",
+      data: [],
+    });
   }
 };
 exports.getCustomerByEmail = async (req, res) => {
@@ -70,3 +87,28 @@ exports.getMessage = async (req, res) => {
     res.status(500).send({ message: "Something Went Wrong !!!" });
   }
 };
+
+
+exports.uploadImageForSend = async (req,res)=>{
+  try {
+    // console.log(req.files)
+    let {images} = req.files
+    
+    if(!images || images.length === 0)
+    return res.send({ urls: [] });
+
+    let image_urls = [];
+
+    if (images) {
+      images.map((val) => {
+        // image_urls.push(`${process.env.Official}/${val.path}`);
+        image_urls.push(`${process.env.localhost}/${val.path}`);
+      });
+    }
+
+    return res.status(200).send({ status : 200, urls: image_urls });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({status : 500, urls: []});
+  }
+}

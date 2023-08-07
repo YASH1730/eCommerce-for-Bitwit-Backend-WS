@@ -138,15 +138,36 @@ exports.getLastProduct = async (req, res) => {
 // delete products
 
 exports.deleteProduct = async (req, res) => {
-  // console.log(req.query.ID);
-  product
-    .deleteOne({ _id: req.query.ID })
-    .then((data) => {
-      res.send({ message: "Product deleted successfully !!!" });
+  try {
+    
+    let {ID} =req.query;
+
+    if(!ID)
+    return res.status(203).send({
+      status : 203,
+      message : "Please provide the product ID !!!"
     })
-    .catch((err) => {
-      res.send({ message: "Some error occurred !!!" });
-    });
+    
+    let check = await product
+      .deleteOne({ _id: ID })
+      
+      if(check)
+      return res.status(200).send({
+        status : 200,
+        message : "Product Deleted Successfully."
+      })
+      else
+      return res.status(203).send({
+        status : 203,
+        message : "No Product found!!!"
+      })
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send({
+      status : 500,
+      message : "Something went wrong !!!"
+    })
+  }
 };
 
 // update products
