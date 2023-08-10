@@ -102,7 +102,7 @@ exports.uploadImageForSend = async (req,res)=>{
     if (images) {
       images.map((val) => {
         // image_urls.push(`${process.env.Official}/${val.path}`);
-        image_urls.push(`${process.env.localhost}/${val.path}`);
+        image_urls.push(`${process.env.Official}/${val.path}`);
       });
     }
 

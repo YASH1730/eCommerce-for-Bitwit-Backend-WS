@@ -4,6 +4,7 @@ const hardware = require("../../../database/models/hardware");
 const polish = require("../../../database/models/polish");
 const catalog = require("../../../database/models/catalog");
 const { match } = require("assert");
+const purchase_order = require("../../../database/models/purchase_order");
 
 // ================================================= Apis for Products =======================================================
 //==============================================================================================================================
@@ -139,34 +140,32 @@ exports.getLastProduct = async (req, res) => {
 
 exports.deleteProduct = async (req, res) => {
   try {
-    
-    let {ID} =req.query;
+    let { ID } = req.query;
 
-    if(!ID)
-    return res.status(203).send({
-      status : 203,
-      message : "Please provide the product ID !!!"
-    })
-    
-    let check = await product
-      .deleteOne({ _id: ID })
-      
-      if(check)
-      return res.status(200).send({
-        status : 200,
-        message : "Product Deleted Successfully."
-      })
-      else
+    if (!ID)
       return res.status(203).send({
-        status : 203,
-        message : "No Product found!!!"
-      })
+        status: 203,
+        message: "Please provide the product ID !!!",
+      });
+
+    let check = await product.deleteOne({ _id: ID });
+
+    if (check)
+      return res.status(200).send({
+        status: 200,
+        message: "Product Deleted Successfully.",
+      });
+    else
+      return res.status(203).send({
+        status: 203,
+        message: "No Product found!!!",
+      });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(500).send({
-      status : 500,
-      message : "Something went wrong !!!"
-    })
+      status: 500,
+      message: "Something went wrong !!!",
+    });
   }
 };
 
@@ -439,7 +438,6 @@ exports.getHardwareDropdown = async (req, res) => {
     );
 
     if (response) {
-      
       data.wheel = response.filter((row) => {
         return row.sub_category_name.toLowerCase() === "wheel";
       });
@@ -482,15 +480,15 @@ exports.getHardwareDropdown = async (req, res) => {
     }
     // console.log(data);
     return res.send({
-      status : 200,
-      message : "Hardware data fetched successfully.",
-      data
+      status: 200,
+      message: "Hardware data fetched successfully.",
+      data,
     });
   } catch (err) {
     return res.status(500).send({
-      status : 200,
-      message : "Something went wrong !!!",
-      data : {}
+      status: 200,
+      message: "Something went wrong !!!",
+      data: {},
     });
   }
 };
@@ -499,30 +497,48 @@ exports.getHardwareDropdown = async (req, res) => {
 
 exports.getArticlesId = async (req, res) => {
   try {
-    // const H_SKU = await hardware.find({},{_id : 0,SKU : 1})
-    const P_SKU = await product.aggregate([
-      { $match: { SKU: { $regex: req.query.search, $options: "i" } } },
+    let { search, PID } = req.query;
 
+    PID = await purchase_order.findOne(
+      { $and: [{ PID }, { completed: false }] },
+      { product_articles: 1, hardware_articles: 1, _id: 0 }
+    );
+
+    let P_SKU = await product.aggregate([
+      { $match: { SKU: { $regex: search, $options: "i" } } },
       {
-        $group: {
-          _id: "$_id",
-          SKU: { $first: "$SKU" },
-          product_title: { $first: "$product_title" },
+        $project: {
+          _id : 0,
+          SKU:1,
+          product_title: 1,
         },
       },
       { $limit: 10 },
     ]);
-    const H_SKU = await hardware.aggregate([
-      { $match: { SKU: { $regex: req.query.search, $options: "i" } } },
+    // console.log(P_SKU)
 
-      { $group: { _id: "$_id", SKU: { $first: "$SKU" } } },
+    if (PID && PID.product_articles.length > 0) {
+      let product_SKUs = PID.product_articles.map((row) => Object.keys(row)[0]);
+      P_SKU = P_SKU.filter((row) => product_SKUs.includes(row.SKU) && row);
+    }
+
+    let H_SKU = await hardware.aggregate([
+      { $match: { SKU: { $regex: search, $options: "i" } } },
+
+      { $project: {  SKU: 1 } },
       { $limit: 10 },
     ]);
-    // // console.log(P_SKU)
 
-    res.send({ P_SKU, H_SKU });
+    if (PID && PID.hardware_articles.length > 0) {
+      let hardware_SKUs = PID.hardware_articles.map(
+        (row) => Object.keys(row)[0]
+      );
+      H_SKU = H_SKU.filter((row) => hardware_SKUs.includes(row.SKU));
+    }
+    console.log(">>> P",P_SKU,">>> H", H_SKU)
+    return res.send({ P_SKU, H_SKU });
   } catch (error) {
-    // console.log(error);
+    console.log(error);
     res.sendStatus(500);
   }
 };
@@ -537,13 +553,13 @@ exports.addCatalog = async (req, res) => {
       res.send({
         status: 200,
         message: "SKU added to catalog successfully.",
-        data
+        data,
       });
     } else {
       res.status(203).send({
         status: 203,
         message: "Facing problem while saving the data",
-        data : {}
+        data: {},
       });
     }
   } catch (error) {
@@ -557,11 +573,10 @@ exports.listCatalog = async (req, res) => {
     let filter = {};
     let list = "";
 
-    if (req.query.catalog_type !== "" && req.query.catalog_type ) {
+    if (req.query.catalog_type !== "" && req.query.catalog_type) {
       filter = { catalog_type: req.query.catalog_type };
       list = await catalog.find(filter).limit(10);
-    }
-    else{
+    } else {
       list = await catalog.find(filter);
     }
 
@@ -569,14 +584,13 @@ exports.listCatalog = async (req, res) => {
       res.send({
         status: 200,
         message: "Catalog list fetched successfully.",
-        data : list
+        data: list,
       });
     } else {
       res.status(203).send({
         status: 203,
         message: "Error occurred in fetching the list.",
-        data : []
-
+        data: [],
       });
     }
   } catch (error) {
@@ -587,8 +601,7 @@ exports.listCatalog = async (req, res) => {
 
 exports.deleteCatalog = async (req, res) => {
   try {
-
-      let deleteCat = await catalog.findOneAndDelete({_id : req.query.id});
+    let deleteCat = await catalog.findOneAndDelete({ _id: req.query.id });
 
     if (deleteCat) {
       res.send({
