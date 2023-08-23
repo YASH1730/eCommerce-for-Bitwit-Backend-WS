@@ -36,97 +36,97 @@ const { default: axios } = require("axios");
 const COD = require("../database/models/COD");
 // middleware for the multer setup
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./upload/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
+    destination: function(req, file, cb) {
+        cb(null, "./upload/");
+    },
+    filename: function(req, file, cb) {
+        cb(null, file.originalname);
+    },
 });
 
 // check on files
 const fileFilter = (req, file, cb) => {
-  // for removing the space between the image file name to save it properly for URL
-  file.originalname = file.originalname.replace(/ /g, "");
-  // console.log(file);
-  // reject a file
-  if (
-    file.mimetype === "image/jpeg" ||
-    file.mimetype === "image/png" ||
-    file.mimetype === "image/svg" ||
-    file.mimetype === "image/jpg" ||
-    file.mimetype === "text/csv" ||
-    file.mimetype ===
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-  ) {
-    if (file.fieldname === "COD_File") {
-      file.originalname = "currentCSV.csv";
+    // for removing the space between the image file name to save it properly for URL
+    file.originalname = file.originalname.replace(/ /g, "");
+    // console.log(file);
+    // reject a file
+    if (
+        file.mimetype === "image/jpeg" ||
+        file.mimetype === "image/png" ||
+        file.mimetype === "image/svg" ||
+        file.mimetype === "image/jpg" ||
+        file.mimetype === "text/csv" ||
+        file.mimetype ===
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    ) {
+        if (file.fieldname === "COD_File") {
+            file.originalname = "currentCSV.csv";
+        }
+        cb(null, true);
+    } else {
+        cb(null, false);
     }
-    cb(null, true);
-  } else {
-    cb(null, false);
-  }
 };
 
 // multer fields and configurations here
 const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 1024 * 1024 * 50,
-  },
-  fileFilter: fileFilter,
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 50,
+    },
+    fileFilter: fileFilter,
 }).fields([
-  { name: "product_image" },
-  { name: "featured_image" },
-  { name: "category_image" },
-  { name: "sub_category_image" },
-  { name: "web_banner" },
-  { name: "mobile_banner" },
-  { name: "specification_image" },
-  { name: "fabric_image" },
-  { name: "textile_image" },
-  { name: "primaryMaterial_image" },
-  { name: "profile_image" },
-  { name: "mannequin_image" },
-  { name: "hardware_image" },
-  { name: "outDoor_image" },
-  { name: "inDoor_image" },
-  { name: "COD_File" },
-  { name: "review_images" },
-  { name: "banner_image" },
-  { name: "polish_image" },
-  { name: "design_image" },
-  { name: "banner" },
-  { name: "images" },
+    { name: "product_image" },
+    { name: "featured_image" },
+    { name: "category_image" },
+    { name: "sub_category_image" },
+    { name: "web_banner" },
+    { name: "mobile_banner" },
+    { name: "specification_image" },
+    { name: "fabric_image" },
+    { name: "textile_image" },
+    { name: "primaryMaterial_image" },
+    { name: "profile_image" },
+    { name: "mannequin_image" },
+    { name: "hardware_image" },
+    { name: "outDoor_image" },
+    { name: "inDoor_image" },
+    { name: "COD_File" },
+    { name: "review_images" },
+    { name: "banner_image" },
+    { name: "polish_image" },
+    { name: "design_image" },
+    { name: "banner" },
+    { name: "images" },
 ]);
 
 // middleware for encryption
 function encode(req, res, next) {
-  const saltRounds = 10;
-  // console.log(req.body)
-  if (
-    req.body.user_name === undefined ||
-    req.body.mobile === undefined ||
-    req.body.email === undefined ||
-    req.body.password === undefined ||
-    req.body.role === undefined
-  )
-    return res
-      .status(204)
-      .send({ error_massage: "Please enter all the required felids." });
+    const saltRounds = 10;
+    // console.log(req.body)
+    if (
+        req.body.user_name === undefined ||
+        req.body.mobile === undefined ||
+        req.body.email === undefined ||
+        req.body.password === undefined ||
+        req.body.role === undefined
+    )
+        return res
+            .status(204)
+            .send({ error_massage: "Please enter all the required felids." });
 
-  // code to hash the password
+    // code to hash the password
 
-  bcrypt.genSalt(saltRounds, (err, salt) => {
-    bcrypt.hash(req.body.password, salt, function (err, hash) {
-      // //console.log(">>>>>", hash);
-      if (hash !== null) {
-        req.body.password = hash;
-        //console.log(req.body.password);
-        next();
-      }
+    bcrypt.genSalt(saltRounds, (err, salt) => {
+        bcrypt.hash(req.body.password, salt, function(err, hash) {
+            // //console.log(">>>>>", hash);
+            if (hash !== null) {
+                req.body.password = hash;
+                //console.log(req.body.password);
+                next();
+            }
+        });
     });
-  });
 }
 
 // middleware to parse the body
@@ -135,43 +135,43 @@ route.use(bodyParser.json());
 
 // Middleware For Authentication
 function AuthJwt(req, res, next) {
-  // //console.log(req.headers)
+    // //console.log(req.headers)
 
-  if (req.headers.authorization === undefined) return res.sendStatus(401);
+    if (req.headers.authorization === undefined) return res.sendStatus(401);
 
-  let token = req.headers.authorization.split("Bearer ")[1];
+    let token = req.headers.authorization.split("Bearer ")[1];
 
-  JWT.verify(token, process.env.JWT_Secrete, (err, user) => {
-    if (err)
-      return res
-        .status(403)
-        .send({ message: "Please, request with valid token." });
-    req.user = user;
-    next();
-  });
+    JWT.verify(token, process.env.JWT_Secrete, (err, user) => {
+        if (err)
+            return res
+                .status(403)
+                .send({ message: "Please, request with valid token." });
+        req.user = user;
+        next();
+    });
 }
 
 // middleware to track the IP of user
 async function tracker(req, res, next) {
-  const response = await axios.get("https://geolocation-db.com/json/");
-  // console.log(response);
-  // console.log(">>>", req.body);
-  let data = logging({
-    email: req.body.email,
-    role: req.body.role,
-    ip: response.data.IPv4,
-    city: response.data.city,
-    location: {
-      latitude: response.data.latitude,
-      longitude: response.data.longitude,
-    },
-  });
-  data = await data.save();
-  if (data) {
-    next();
-  } else {
-    res.status(500).send({ message: "Problem with tracking !!!" });
-  }
+    const response = await axios.get("https://geolocation-db.com/json/");
+    // console.log(response);
+    // console.log(">>>", req.body);
+    let data = logging({
+        email: req.body.email,
+        role: req.body.role,
+        ip: response.data.IPv4,
+        city: response.data.city,
+        location: {
+            latitude: response.data.latitude,
+            longitude: response.data.longitude,
+        },
+    });
+    data = await data.save();
+    if (data) {
+        next();
+    } else {
+        res.status(500).send({ message: "Problem with tracking !!!" });
+    }
 }
 
 // =============== User routes =======================
@@ -260,11 +260,17 @@ route.get("/getHardwareDropdown", AuthJwt, products.getHardwareDropdown);
 
 route.get("/getArticlesId", products.getArticlesId);
 
-route.post("/addCatalog",upload, products.addCatalog);
+route.post("/addCatalog", upload, products.addCatalog);
 
 route.get("/listCatalog", products.listCatalog);
 
 route.delete("/deleteCatalog", products.deleteCatalog);
+
+route.get("/getLinkedProduct", products.getLinkedProduct);
+
+route.post("/unlinkFromVariations", upload, products.unlinkFromVariations);
+
+route.post("/linkToVariations", upload, products.linkToVariations);
 
 // =============== Merge Product routes =======================
 
@@ -283,10 +289,10 @@ route.delete("/deleteMergeProduct", AuthJwt, mergeProduct.deleteMergeProduct);
 // update MergeProduct
 
 route.patch(
-  "/updateMergeProduct",
-  AuthJwt,
-  upload,
-  mergeProduct.updateMergeProduct
+    "/updateMergeProduct",
+    AuthJwt,
+    upload,
+    mergeProduct.updateMergeProduct
 );
 
 // Find last document for SKU id increment
@@ -307,7 +313,7 @@ route.get("/getBannerDetails", AuthJwt, banner.getBannerDetails);
 
 route.get("/getSequence", AuthJwt, banner.getSequence);
 
-route.post("/addMobileIntro", AuthJwt,upload, banner.addMobileIntro);
+route.post("/addMobileIntro", AuthJwt, upload, banner.addMobileIntro);
 
 route.get("/listMobileIntro", AuthJwt, banner.listMobileIntro);
 
@@ -358,10 +364,10 @@ route.get("/getWishlist", AuthJwt, upload, order.getWishlist);
 
 // addCategory route
 route.post(
-  "/addSubCategories",
-  AuthJwt,
-  upload,
-  subCategories.addSubCatagories
+    "/addSubCategories",
+    AuthJwt,
+    upload,
+    subCategories.addSubCatagories
 );
 
 // list sub cat route
@@ -372,27 +378,27 @@ route.patch("/changeSubStatus", AuthJwt, upload, subCategories.changeSubStatus);
 
 // edit sub cat
 route.patch(
-  "/editSubCatagories",
-  AuthJwt,
-  upload,
-  subCategories.editSubCatagories
+    "/editSubCatagories",
+    AuthJwt,
+    upload,
+    subCategories.editSubCatagories
 );
 // edit sub cat
 route.get(
-  "/getSubCategoryDetails",
-  AuthJwt,
-  upload,
-  subCategories.getSubCategoryDetails
+    "/getSubCategoryDetails",
+    AuthJwt,
+    upload,
+    subCategories.getSubCategoryDetails
 );
 
 // ================== Primary Material Routes =============================
 
 // addCategory route
 route.post(
-  "/addPrimaryMaterial",
-  AuthJwt,
-  upload,
-  primaryMaterial.addPrimaryMaterial
+    "/addPrimaryMaterial",
+    AuthJwt,
+    upload,
+    primaryMaterial.addPrimaryMaterial
 );
 
 // list sub cat route
@@ -400,18 +406,18 @@ route.get("/getPrimaryMaterial", AuthJwt, primaryMaterial.getPrimaryMaterial);
 
 // change status of changePrimaryMaterialStatus route
 route.patch(
-  "/changePrimaryMaterialStatus",
-  AuthJwt,
-  upload,
-  primaryMaterial.changePrimaryMaterialStatus
+    "/changePrimaryMaterialStatus",
+    AuthJwt,
+    upload,
+    primaryMaterial.changePrimaryMaterialStatus
 );
 
 // edit editPrimaryMaterial
 route.patch(
-  "/editPrimaryMaterial",
-  AuthJwt,
-  upload,
-  primaryMaterial.editPrimaryMaterial
+    "/editPrimaryMaterial",
+    AuthJwt,
+    upload,
+    primaryMaterial.editPrimaryMaterial
 );
 
 // delete PrimaryMaterial
@@ -424,33 +430,33 @@ route.get("/getMaterialDetails", AuthJwt, primaryMaterial.getMaterialDetails);
 
 // addCategory route
 route.post(
-  "/addSecondaryMaterial",
-  AuthJwt,
-  upload,
-  secondaryMaterial.addSecondaryMaterial
+    "/addSecondaryMaterial",
+    AuthJwt,
+    upload,
+    secondaryMaterial.addSecondaryMaterial
 );
 
 // list sub cat route
 route.get(
-  "/getSecondaryMaterial",
-  AuthJwt,
-  secondaryMaterial.getSecondaryMaterial
+    "/getSecondaryMaterial",
+    AuthJwt,
+    secondaryMaterial.getSecondaryMaterial
 );
 
 // change  status of changeSecondaryMaterialStatus route
 route.patch(
-  "/changeSecondaryMaterialStatus",
-  AuthJwt,
-  upload,
-  secondaryMaterial.changeSecondaryMaterialStatus
+    "/changeSecondaryMaterialStatus",
+    AuthJwt,
+    upload,
+    secondaryMaterial.changeSecondaryMaterialStatus
 );
 
 // edit editPrimaryMaterial
 route.patch(
-  "/editSecondaryMaterial",
-  AuthJwt,
-  upload,
-  secondaryMaterial.editSecondaryMaterial
+    "/editSecondaryMaterial",
+    AuthJwt,
+    upload,
+    secondaryMaterial.editSecondaryMaterial
 );
 
 // ==================  Polish  Routes =============================
@@ -494,10 +500,10 @@ route.get("/getFitting", AuthJwt, fitting.getFitting);
 
 // change  status of changeFittingStatus route
 route.patch(
-  "/changeFittingStatus",
-  AuthJwt,
-  upload,
-  fitting.changeFittingStatus
+    "/changeFittingStatus",
+    AuthJwt,
+    upload,
+    fitting.changeFittingStatus
 );
 
 // edit editPrimaryMaterial
@@ -650,10 +656,10 @@ route.delete("/deleteTextile", AuthJwt, textile.deleteTextile);
 
 // change category status
 route.patch(
-  "/changeTextileStatus",
-  upload,
-  AuthJwt,
-  textile.changeTextileStatus
+    "/changeTextileStatus",
+    upload,
+    AuthJwt,
+    textile.changeTextileStatus
 );
 
 // =============== Customer routes =======================
@@ -722,10 +728,10 @@ route.get("/getHardwareDetails", AuthJwt, hardware.getHardwareDetails);
 
 // change category status
 route.patch(
-  "/changeHardwareStatus",
-  upload,
-  AuthJwt,
-  hardware.changeHardwareStatus
+    "/changeHardwareStatus",
+    upload,
+    AuthJwt,
+    hardware.changeHardwareStatus
 );
 
 // for token refresh
@@ -806,9 +812,9 @@ route.get("/searchWarehouseDetails", AuthJwt, order.searchWarehouseDetails);
 
 // purchase order
 
-route.get("/getPurchaseOrder",AuthJwt,stock.listPurseOrder)
-route.get("/searchPurchaseOrder",AuthJwt,stock.searchPurchaseOrder)
+route.get("/getPurchaseOrder", AuthJwt, stock.listPurseOrder)
+route.get("/searchPurchaseOrder", AuthJwt, stock.searchPurchaseOrder)
 
-route.post("/uploadImageForSend",upload,chat.uploadImageForSend)
+route.post("/uploadImageForSend", upload, chat.uploadImageForSend)
 
 module.exports = route;
