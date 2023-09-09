@@ -31,6 +31,7 @@ const logging = require("../database/models/logging");
 const cod = require("./controller/inventory/cod");
 const review = require("./controller/product/review");
 const chat = require("./controller/chat/chat");
+const quotation = require("./controller/quotation/quotation");
 // axios
 const { default: axios } = require("axios");
 const COD = require("../database/models/COD");
@@ -98,6 +99,9 @@ const upload = multer({
     { name: "design_image" },
     { name: "banner" },
     { name: "images" },
+    { name: "customUpholsteryImage" },
+    { name: "customDesignImage" },
+    { name: "customPolishImage" }
 ]);
 
 // middleware for encryption
@@ -816,5 +820,9 @@ route.get("/getPurchaseOrder", AuthJwt, stock.listPurseOrder)
 route.get("/searchPurchaseOrder", AuthJwt, stock.searchPurchaseOrder)
 
 route.post("/uploadImageForSend", upload, chat.uploadImageForSend)
+
+// quotation 
+route.post('/placeQuotation',upload,quotation.placeQuotation)
+
 
 module.exports = route;
